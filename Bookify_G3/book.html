@@ -61,7 +61,7 @@
       document.getElementById('bookPublisher').textContent = book.publisher || 'Unknown';
       document.getElementById('bookLang').textContent = book.language || 'English';
       document.getElementById('bookDescription').textContent = book.description || 'No description available.';
-      document.getElementById('bookCover').src = book.cover || 'https://via.placeholder.com/150x220?text=No+Cover';
+      document.getElementById('bookCover').src = book.coverUrl || 'https://via.placeholder.com/150x220?text=No+Cover';
       document.getElementById('bookLocation').textContent = book.location || 'Aisle 4, Shelf 2';
 
       const button = document.getElementById('actionButton');
