@@ -5,7 +5,12 @@
     "author": "J.K. Rowling",
     "subject": "Fantasy",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8377210-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8377210-L.jpg",
+    "year": 1997,
+    "publisher": "Bloomsbury",
+    "language": "English",
+    "description": "A young wizard's journey begins as he attends Hogwarts School of Witchcraft and Wizardry.",
+    "location": "Aisle 1, Shelf 3"
   },
   {
     "id": 2,
@@ -13,7 +18,12 @@
     "author": "Antoine de Saint-Exupéry",
     "subject": "Classic",
     "available": false,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8379500-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8379500-L.jpg",
+    "year": 1943,
+    "publisher": "Reynal & Hitchcock",
+    "language": "French",
+    "description": "A poetic tale about a young prince who travels from planet to planet learning about life.",
+    "location": "Aisle 2, Shelf 5"
   },
   {
     "id": 3,
@@ -21,7 +31,12 @@
     "author": "George Orwell",
     "subject": "Dystopia",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8389607-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8389607-L.jpg",
+    "year": 1949,
+    "publisher": "Secker & Warburg",
+    "language": "English",
+    "description": "A chilling depiction of a totalitarian regime and the power of surveillance and propaganda.",
+    "location": "Aisle 4, Shelf 1"
   },
   {
     "id": 4,
@@ -29,7 +44,12 @@
     "author": "Harper Lee",
     "subject": "Classic",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8228691-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8228691-L.jpg",
+    "year": 1960,
+    "publisher": "J.B. Lippincott & Co.",
+    "language": "English",
+    "description": "A story of racial injustice and childhood innocence in the Deep South.",
+    "location": "Aisle 3, Shelf 4"
   },
   {
     "id": 5,
@@ -37,7 +57,12 @@
     "author": "J.R.R. Tolkien",
     "subject": "Fantasy",
     "available": false,
-    "coverUrl": "https://covers.openlibrary.org/b/id/6979861-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/6979861-L.jpg",
+    "year": 1937,
+    "publisher": "George Allen & Unwin",
+    "language": "English",
+    "description": "Bilbo Baggins embarks on an unexpected adventure to reclaim a lost dwarf kingdom.",
+    "location": "Aisle 5, Shelf 2"
   },
   {
     "id": 6,
@@ -45,7 +70,12 @@
     "author": "Jane Austen",
     "subject": "Romance",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8091016-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8091016-L.jpg",
+    "year": 1813,
+    "publisher": "T. Egerton",
+    "language": "English",
+    "description": "Elizabeth Bennet navigates love, social expectations, and personal growth in 19th century England.",
+    "location": "Aisle 2, Shelf 1"
   },
   {
     "id": 7,
@@ -53,7 +83,12 @@
     "author": "F. Scott Fitzgerald",
     "subject": "Classic",
     "available": false,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8225260-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8225260-L.jpg",
+    "year": 1925,
+    "publisher": "Charles Scribner's Sons",
+    "language": "English",
+    "description": "A tale of wealth, love, and tragedy in the roaring twenties.",
+    "location": "Aisle 3, Shelf 2"
   },
   {
     "id": 8,
@@ -61,7 +96,12 @@
     "author": "J.D. Salinger",
     "subject": "Coming of Age",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8231856-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8231856-L.jpg",
+    "year": 1951,
+    "publisher": "Little, Brown and Company",
+    "language": "English",
+    "description": "Holden Caulfield narrates his rebellious journey through New York after being expelled.",
+    "location": "Aisle 6, Shelf 1"
   },
   {
     "id": 9,
@@ -69,7 +109,12 @@
     "author": "Aldous Huxley",
     "subject": "Dystopia",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8776041-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8776041-L.jpg",
+    "year": 1932,
+    "publisher": "Chatto & Windus",
+    "language": "English",
+    "description": "A vision of a future society shaped by technology, control, and a loss of individuality.",
+    "location": "Aisle 5, Shelf 3"
   },
   {
     "id": 10,
@@ -77,7 +122,12 @@
     "author": "Paulo Coelho",
     "subject": "Philosophy",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8108697-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8108697-L.jpg",
+    "year": 1988,
+    "publisher": "HarperOne",
+    "language": "Portuguese",
+    "description": "A journey of self-discovery and following your personal legend through mystical storytelling.",
+    "location": "Aisle 1, Shelf 1"
   },
   {
     "id": 11,
@@ -85,7 +135,12 @@
     "author": "George Orwell",
     "subject": "Satire",
     "available": false,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8774946-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8774946-L.jpg",
+    "year": 1945,
+    "publisher": "Secker & Warburg",
+    "language": "English",
+    "description": "An allegorical tale about revolution, equality, and the corruption of ideals.",
+    "location": "Aisle 6, Shelf 2"
   },
   {
     "id": 12,
@@ -93,6 +148,11 @@
     "author": "Mary Shelley",
     "subject": "Gothic",
     "available": true,
-    "coverUrl": "https://covers.openlibrary.org/b/id/8235116-L.jpg"
+    "coverUrl": "https://covers.openlibrary.org/b/id/8235116-L.jpg",
+    "year": 1818,
+    "publisher": "Lackington, Hughes, Harding, Mavor & Jones",
+    "language": "English",
+    "description": "Victor Frankenstein creates a creature that turns into a tragic monster.",
+    "location": "Aisle 7, Shelf 4"
   }
 ]
