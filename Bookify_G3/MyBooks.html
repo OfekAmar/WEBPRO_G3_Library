@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Books - Bookify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <div class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold text-blue-700 mb-6">📚 My Books</h1>
+
+    <!-- Active Borrowings -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">🔄 Active Borrowings</h2>
+      <ul id="activeList" class="space-y-2"></ul>
+    </div>
+
+    <!-- Borrowing History -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-2">📜 Borrowing History</h2>
+      <ul id="historyList" class="space-y-2"></ul>
+    </div>
+
+    <!-- Want to Read List -->
+    <div>
+      <h2 class="text-xl font-semibold mb-2">📖 Want to Read</h2>
+      <ul id="wantList" class="space-y-2"></ul>
+    </div>
+  </div>
+
+  <script>
+    const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
+    const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+    const wantToRead = JSON.parse(localStorage.getItem('wantToRead')) || [];
+
+    function renderList(containerId, list) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = list.length ? '' : '<li class="text-gray-500">No books found.</li>';
+      list.forEach(book => {
+        const item = document.createElement('li');
+        item.className = 'bg-white p-4 shadow rounded';
+        item.innerHTML = `<strong>${book.title}</strong> by ${book.author}`;
+        container.appendChild(item);
+      });
+    }
+
+    renderList('activeList', active);
+    renderList('historyList', history);
+    renderList('wantList', wantToRead);
+  </script>
+</body>
+</html>
