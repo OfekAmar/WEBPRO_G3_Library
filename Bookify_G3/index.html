@@ -15,8 +15,10 @@
     <nav class="space-x-4">
       <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
       <button class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
-      <button onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤 Profile</button>
-      <button onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My Books</button>
+      <button onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤
+        Profile</button>
+      <button onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+        Books</button>
 
     </nav>
   </header>
@@ -41,32 +43,55 @@
 
   <!-- Book Lists Section (Carousel Style) -->
   <section class="p-6 max-w-6xl mx-auto space-y-10">
+
+    <!-- Trending Books -->
     <div class="relative">
       <h3 class="text-xl font-bold mb-4">📈 Trending Books</h3>
-      <button onclick="scrollLeft('trending')"
-        class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
-      <div id="Trending" class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4 scroll-smooth">
-        
+      <button data-left="trending" onclick="scrollCarouselLeft('trending')"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
+
+      <div id="trending" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6" style="scrollbar-width: none;">
+        <!-- ספרים נטענים דינמית -->
       </div>
-      <button onclick="scrollRight('trending')"
-        class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
+
+      <button data-right="trending" onclick="scrollCarouselRight('trending')"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
     </div>
 
-
-    <div>
+    <!-- Newly Added Books -->
+    <div class="relative">
       <h3 class="text-xl font-bold mb-4">🆕 Newly Added Books</h3>
-      <div id = "NewlyAdded" class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4">
 
+      <button data-left="newlyAdded" onclick="scrollCarouselLeft('newlyAdded')"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
+
+      <div id="newlyAdded" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6" style="scrollbar-width: none;">
+        <!-- ספרים נטענים דינמית -->
       </div>
+
+      <button data-right="newlyAdded" onclick="scrollCarouselRight('newlyAdded')"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
     </div>
 
-    <div>
+
+    <!-- Recently Returned Books -->
+    <div class="relative">
       <h3 class="text-xl font-bold mb-4">🔁 Recently Returned Books</h3>
-      <div id = "RecentlyReturned" class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4">
+      <button data-left="recentlyReturned" onclick="scrollCarouselLeft('recentlyReturned')"
+        class="absolute left-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
 
+      <div id="recentlyReturned" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6"
+        style="scrollbar-width: none;">
+        <!-- ספרים נטענים דינמית -->
       </div>
+
+      <button data-right="recentlyReturned" onclick="scrollCarouselRight('recentlyReturned')"
+        class="absolute right-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
     </div>
+
   </section>
+
+
 
   <!-- Results Section -->
   <section class="p-6 max-w-6xl mx-auto">
@@ -83,8 +108,8 @@
       .then(data => {
         fakeBooks = data;
         console.log("Books loaded:", fakeBooks);
-        renderNewlyAddedBooks();
         renderTrending();
+        renderNewlyAddedBooks();
         renderRecentlyReturned();
       })
       .catch(error => console.error("Failed to load books.json:", error));
@@ -132,45 +157,79 @@
     }
 
     function renderNewlyAddedBooks() {
-      const container = document.getElementById('NewlyAdded');
-      fakeBooks.slice(0, 6).forEach(book => {
+      const container = document.getElementById('newlyAdded');
+      fakeBooks.slice(0, 8).forEach(book => {
         const img = document.createElement('img');
         img.src = book.coverUrl;
-        img.className = 'rounded shadow w-32 inline-block cursor-pointer';
+        img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
         img.onclick = () => openBook(book.id);
         container.appendChild(img);
       });
+      setTimeout(() => updateArrows('newlyAdded'), 100);
     }
 
     function renderTrending() {
-      const container = document.getElementById('Trending');
-      fakeBooks.slice(0, 6).forEach(book => {
+      const container = document.getElementById('trending');
+      fakeBooks.slice(0, 23).forEach(book => {
         const img = document.createElement('img');
         img.src = book.coverUrl;
-        img.className = 'rounded shadow w-32 inline-block cursor-pointer';
+        img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
         img.onclick = () => openBook(book.id);
         container.appendChild(img);
       });
+
+      setTimeout(() => updateArrows('trending'), 100);
     }
 
     function renderRecentlyReturned() {
-      const container = document.getElementById('RecentlyReturned');
-      fakeBooks.slice(0, 6).forEach(book => {
+      const container = document.getElementById('recentlyReturned');
+      fakeBooks.slice(16, 23).forEach(book => {
         const img = document.createElement('img');
         img.src = book.coverUrl;
-        img.className = 'rounded shadow w-32 inline-block cursor-pointer';
+        img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
         img.onclick = () => openBook(book.id);
         container.appendChild(img);
       });
+      setTimeout(() => updateArrows('recentlyReturned'), 100);
     }
 
-    function scrollLeft(id) {
-      document.getElementById(id).scrollBy({ left: -300, behavior: 'smooth' });
+    function scrollCarouselLeft(id) {
+      const el = document.getElementById(id);
+      const targetScroll = el.scrollLeft - 300;
+
+      el.scrollTo({
+        left: targetScroll < 0 ? 0 : targetScroll,
+        behavior: 'smooth'
+      });
+
+      setTimeout(() => updateArrows(id), 400);
     }
 
-    function scrollRight(id) {
-      document.getElementById(id).scrollBy({ left: 300, behavior: 'smooth' });
+    function scrollCarouselRight(id) {
+      const el = document.getElementById(id);
+      el.scrollTo({
+        left: el.scrollLeft + 300,
+        behavior: 'smooth'
+      });
+
+      setTimeout(() => updateArrows(id), 400);
     }
+
+
+    function updateArrows(id) {
+      const container = document.getElementById(id);
+      const leftBtn = document.querySelector(`[data-left='${id}']`);
+      const rightBtn = document.querySelector(`[data-right='${id}']`);
+
+      if (!container || !leftBtn || !rightBtn) return;
+
+      const canScrollRight = container.scrollLeft + container.offsetWidth < container.scrollWidth - 5;
+      const canScrollLeft = container.scrollLeft > 0;
+
+      rightBtn.style.display = canScrollRight ? 'block' : 'none';
+      leftBtn.style.display = canScrollLeft ? 'block' : 'none';
+    }
+
     function openBook(bookId) {
       const book = fakeBooks.find(b => b.id === bookId);
       if (book) {
