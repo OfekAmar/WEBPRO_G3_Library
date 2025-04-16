@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "subject": "Fantasy",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8377210-L.jpg"
+  },
+  {
+    "id": 2,
+    "title": "The Little Prince",
+    "author": "Antoine de Saint-Exupéry",
+    "subject": "Classic",
+    "available": false,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8379500-L.jpg"
+  },
+  {
+    "id": 3,
+    "title": "1984",
+    "author": "George Orwell",
+    "subject": "Dystopia",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8389607-L.jpg"
+  },
+  {
+    "id": 4,
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "subject": "Classic",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8228691-L.jpg"
+  },
+  {
+    "id": 5,
+    "title": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "subject": "Fantasy",
+    "available": false,
+    "coverUrl": "https://covers.openlibrary.org/b/id/6979861-L.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "subject": "Romance",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8091016-L.jpg"
+  },
+  {
+    "id": 7,
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "subject": "Classic",
+    "available": false,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8225260-L.jpg"
+  },
+  {
+    "id": 8,
+    "title": "The Catcher in the Rye",
+    "author": "J.D. Salinger",
+    "subject": "Coming of Age",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8231856-L.jpg"
+  },
+  {
+    "id": 9,
+    "title": "Brave New World",
+    "author": "Aldous Huxley",
+    "subject": "Dystopia",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8776041-L.jpg"
+  },
+  {
+    "id": 10,
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "subject": "Philosophy",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8108697-L.jpg"
+  },
+  {
+    "id": 11,
+    "title": "Animal Farm",
+    "author": "George Orwell",
+    "subject": "Satire",
+    "available": false,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8774946-L.jpg"
+  },
+  {
+    "id": 12,
+    "title": "Frankenstein",
+    "author": "Mary Shelley",
+    "subject": "Gothic",
+    "available": true,
+    "coverUrl": "https://covers.openlibrary.org/b/id/8235116-L.jpg"
+  }
+]

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bookify - Smart Library</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 font-sans">
   <!-- Header -->
   <header class="bg-white shadow p-4 flex justify-between items-center">
@@ -38,7 +40,8 @@
   <section class="p-6 max-w-6xl mx-auto space-y-10">
     <div class="relative">
       <h3 class="text-xl font-bold mb-4">📈 Trending Books</h3>
-      <button onclick="scrollLeft('trending')" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
+      <button onclick="scrollLeft('trending')"
+        class="absolute left-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
       <div id="trending" class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4 scroll-smooth">
         <img src="https://covers.openlibrary.org/b/id/8377210-L.jpg" class="rounded shadow w-32 inline-block">
         <img src="https://covers.openlibrary.org/b/id/8379500-L.jpg" class="rounded shadow w-32 inline-block">
@@ -54,9 +57,10 @@
         <img src="https://covers.openlibrary.org/b/id/8452981-L.jpg" class="rounded shadow w-32 inline-block">
         <!-- Book Covers Here -->
       </div>
-      <button onclick="scrollRight('trending')" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
+      <button onclick="scrollRight('trending')"
+        class="absolute right-0 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">→</button>
     </div>
-    
+
 
     <div>
       <h3 class="text-xl font-bold mb-4">🆕 Newly Added Books</h3>
@@ -92,11 +96,14 @@
   </section>
 
   <script>
-    const fakeBooks = [
-      { id: 1, title: "Harry Potter", author: "J.K. Rowling", subject: "Fantasy", available: true },
-      { id: 2, title: "The Little Prince", author: "Antoine de Saint-Exupéry", subject: "Classic", available: false },
-      { id: 3, title: "1984", author: "George Orwell", subject: "Dystopia", available: true },
-    ];
+    let fakeBooks = [];
+    fetch('books.json')
+      .then(response => response.json())
+      .then(data => {
+        fakeBooks = data;
+        console.log("Books loaded:", fakeBooks);
+      })
+      .catch(error => console.error("Failed to load books.json:", error));
 
     function searchBooks() {
       const type = document.getElementById('searchType').value;
@@ -137,13 +144,16 @@
         container.appendChild(card);
       });
     }
-    function scrollLeft(id) {
-  document.getElementById(id).scrollBy({ left: -300, behavior: 'smooth' });
-}
-function scrollRight(id) {
-  document.getElementById(id).scrollBy({ left: 300, behavior: 'smooth' });
-}
 
+    function scrollLeft(id) {
+      document.getElementById(id).scrollBy({ left: -300, behavior: 'smooth' });
+    }
+
+    function scrollRight(id) {
+      document.getElementById(id).scrollBy({ left: 300, behavior: 'smooth' });
+    }
   </script>
+
 </body>
+
 </html>
