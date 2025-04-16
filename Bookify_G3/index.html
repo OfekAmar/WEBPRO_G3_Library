@@ -61,7 +61,7 @@
     <div>
       <h3 class="text-xl font-bold mb-4">🆕 Newly Added Books</h3>
       <div class="overflow-x-auto whitespace-nowrap space-x-4 flex pb-4">
-        <img src="https://covers.openlibrary.org/b/id/8377210-L.jpg" class="rounded shadow w-32 inline-block">
+        <img src="https://covers.openlibrary.org/b/id/8377210-L.jpg" onclick="openBook(1)" class="cursor-pointer">
         <img src="https://covers.openlibrary.org/b/id/8379500-L.jpg" class="rounded shadow w-32 inline-block">
         <img src="https://covers.openlibrary.org/b/id/8389607-L.jpg" class="rounded shadow w-32 inline-block">
         <img src="https://covers.openlibrary.org/b/id/8398044-L.jpg" class="rounded shadow w-32 inline-block">
@@ -93,7 +93,7 @@
 
   <script>
     const fakeBooks = [
-      { id: 1, title: "Harry Potter", author: "J.K. Rowling", subject: "Fantasy", available: true },
+      { id: 1, title: "Harry Potter", author: "J.K. Rowling", subject: "Fantasy", available: true, cover: "https://covers.openlibrary.org/b/id/8155416-L.jpg" ,location: "Aisle 4, Shelf 2" },
       { id: 2, title: "The Little Prince", author: "Antoine de Saint-Exupéry", subject: "Classic", available: false },
       { id: 3, title: "1984", author: "George Orwell", subject: "Dystopia", available: true },
     ];
@@ -142,6 +142,13 @@
 }
 function scrollRight(id) {
   document.getElementById(id).scrollBy({ left: 300, behavior: 'smooth' });
+}
+function openBook(bookId) {
+  const book = fakeBooks.find(b => b.id === bookId);
+  if (book) {
+    sessionStorage.setItem('selectedBook', JSON.stringify(book));
+    window.location.href = 'book.html';
+  }
 }
 
   </script>
