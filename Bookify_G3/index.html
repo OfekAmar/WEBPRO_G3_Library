@@ -9,19 +9,61 @@
 </head>
 
 <body class="bg-gray-50 font-sans">
-  <!-- Header -->
-  <header class="bg-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-blue-600">📚 Bookify</h1>
-    <nav class="space-x-4">
+  <header class="bg-white shadow p-4 flex justify-between items-center relative">
+    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
+    <div class="flex items-center gap-4 relative">
+      <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+      <div class="relative">
+        
+        <button onclick="toggleLoginPopup()" id="profileBtn"
+          class="bg-gray-400 text-white px-3 py-2 rounded">👤</button>
+  
+        <!-- Login popup positioned correctly under button -->
+        <div id="loginPopup"
+          class="absolute right-0 mt-2 bg-white shadow-xl rounded-lg p-4 w-80 hidden z-50">
+          <div class="flex justify-between items-center mb-3">
+            <h2 class="text-lg font-bold">Log in / Register</h2>
+            <button onclick="toggleLoginPopup()" class="text-gray-500 text-xl">×</button>
+          </div>
+  
+          <label class="block text-sm font-semibold mb-1">Telephone / Email</label>
+          <input type="text" class="w-full p-2 rounded bg-blue-100 mb-3" placeholder="example@mail.com">
+  
+          <label class="block text-sm font-semibold mb-1">Password</label>
+          <div class="relative mb-3">
+            <input type="password" class="w-full p-2 rounded bg-red-100 pr-10">
+            <span class="absolute right-2 top-2 text-gray-500 cursor-pointer">👁️</span>
+          </div>
+  
+          <label class="flex items-center text-sm mb-3">
+            <input type="checkbox" class="mr-2"> Stay logged in
+          </label>
+  
+          <button class="bg-green-500 text-white w-full py-2 rounded mb-3">Next</button>
+  
+          <p class="text-sm text-center underline text-gray-600 cursor-pointer">Access with code</p>
+          <p class="text-xs text-center text-gray-500 mt-2">
+            If you don’t know your password, <a href="#" class="text-blue-600 underline">CLICK HERE</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+  <!-- Sidebar -->
+  <div id="sidebar"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
+    <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
+    <nav class="flex flex-col space-y-4">
       <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
       <button class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
       <button onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤
         Profile</button>
       <button onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
         Books</button>
-
     </nav>
-  </header>
+  </div>
 
   <!-- Search Section -->
   <section class="p-6 max-w-4xl mx-auto">
@@ -242,6 +284,24 @@
         window.location.href = 'book.html';
       }
     }
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("translate-x-full");
+    }
+
+    function toggleLoginPopup() {
+      const popup = document.getElementById("loginPopup");
+      popup.classList.toggle("hidden");
+    }
+
+ 
+    document.addEventListener('click', function (event) {
+      const popup = document.getElementById('loginPopup');
+      const profileBtn = document.getElementById('profileBtn');
+      if (!popup.contains(event.target) && !profileBtn.contains(event.target)) {
+        popup.classList.add('hidden');
+      }
+    });
   </script>
 
 </body>
