@@ -28,18 +28,24 @@
     <h2 class="text-xl font-semibold mb-4">Search Books</h2>
     <div class="flex gap-4 mb-6">
       <select id="searchType" class="p-2 border rounded">
-        <option value="all">All</option>
+        <option value="all">Free Text</option>
         <option value="title">Title</option>
         <option value="author">Author</option>
-        <option value="text">Text</option>
         <option value="subject">Subject</option>
-        <option value="lists">Lists</option>
-        <option value="advanced">Advanced</option>
       </select>
       <input id="searchInput" type="text" placeholder="Search..." class="flex-grow p-2 border rounded">
       <button onclick="searchBooks()" class="bg-blue-600 text-white px-4 py-2 rounded">🔍 Search</button>
     </div>
   </section>
+
+  <!-- Results Section -->
+  <section class="p-6 max-w-6xl mx-auto">
+    <h3 id="searchresultlabel" class="text-lg font-semibold mb-4"></h3>
+    <div id="results" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Book dynamicly added  -->
+    </div>
+  </section>
+
 
   <!-- Book Lists Section (Carousel Style) -->
   <section class="p-6 max-w-6xl mx-auto space-y-10">
@@ -51,7 +57,7 @@
         class="absolute left-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
 
       <div id="trending" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6" style="scrollbar-width: none;">
-        <!-- ספרים נטענים דינמית -->
+        <!-- dynamicly books loading -->
       </div>
 
       <button data-right="trending" onclick="scrollCarouselRight('trending')"
@@ -66,7 +72,7 @@
         class="absolute left-2 top-1/2 -translate-y-1/2 bg-white shadow p-2 rounded-full z-10">←</button>
 
       <div id="newlyAdded" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6" style="scrollbar-width: none;">
-        <!-- ספרים נטענים דינמית -->
+
       </div>
 
       <button data-right="newlyAdded" onclick="scrollCarouselRight('newlyAdded')"
@@ -82,7 +88,7 @@
 
       <div id="recentlyReturned" class="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6"
         style="scrollbar-width: none;">
-        <!-- ספרים נטענים דינמית -->
+
       </div>
 
       <button data-right="recentlyReturned" onclick="scrollCarouselRight('recentlyReturned')"
@@ -91,15 +97,6 @@
 
   </section>
 
-
-
-  <!-- Results Section -->
-  <section class="p-6 max-w-6xl mx-auto">
-    <h3 class="text-lg font-semibold mb-4">Search Results:</h3>
-    <div id="results" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Book cards will be inserted here -->
-    </div>
-  </section>
 
   <script>
     let fakeBooks = [];
@@ -133,8 +130,16 @@
     }
 
     function displayResults(books) {
+      const containerlabel = document.getElementById('searchresultlabel');
+      containerlabel.textContent = 'Search Results:';
+
       const container = document.getElementById('results');
       container.innerHTML = '';
+
+      if (books.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">No books found.</p>';
+        return;
+      }
 
       books.forEach(book => {
         const card = document.createElement('div');
@@ -158,7 +163,7 @@
 
     function renderNewlyAddedBooks() {
       const container = document.getElementById('newlyAdded');
-      fakeBooks.slice(0, 8).forEach(book => {
+      fakeBooks.slice(0, 23).forEach(book => {
         const img = document.createElement('img');
         img.src = book.coverUrl;
         img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
@@ -170,7 +175,7 @@
 
     function renderTrending() {
       const container = document.getElementById('trending');
-      fakeBooks.slice(0, 23).forEach(book => {
+      fakeBooks.slice(12, 23).forEach(book => {
         const img = document.createElement('img');
         img.src = book.coverUrl;
         img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
