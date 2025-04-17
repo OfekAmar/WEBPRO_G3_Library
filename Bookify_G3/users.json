@@ -1,0 +1,27 @@
+[
+    {
+      "id": 1,
+      "name": "Nora Reader",
+      "email": "nora@example.com",
+      "password": "123456",
+      "phone": "0501234567",
+      "role": "user"
+    },
+    {
+      "id": 2,
+      "name": "David Admin",
+      "email": "admin@bookify.com",
+      "password": "admin123",
+      "phone": "0509999999",
+      "role": "admin"
+    },
+    {
+      "id": 3,
+      "name": "Lina Bookworm",
+      "email": "lina@gmail.com",
+      "password": "booklover",
+      "phone": "0524442233",
+      "role": "user"
+    }
+  ]
+  
