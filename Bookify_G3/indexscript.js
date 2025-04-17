@@ -219,4 +219,20 @@ function handleLogout() {
     alert("You have been logged out.");
     location.reload(); 
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const myProfileBtn = document.getElementById("myProfileBtn");
+    const myBooksBtn = document.getElementById("myBooksBtn");
   
+    const checkLoginAndRedirect = (urlIfLoggedIn) => {
+      const user = localStorage.getItem("loggedInUser");
+      if (user) {
+        window.location.href = urlIfLoggedIn;
+      } else {
+        window.location.href = "login.html";
+      }
+    };
+  
+    myProfileBtn?.addEventListener("click", () => checkLoginAndRedirect("userProfile.html"));
+    myBooksBtn?.addEventListener("click", () => checkLoginAndRedirect("MyBooks.html"));
+  });

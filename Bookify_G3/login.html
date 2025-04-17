@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Bookify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex justify-between items-center relative">
+    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
+    <div class="flex items-center gap-4 relative">
+      <button id="profileBtn"
+        onclick="window.location.href='login.html'"
+        class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
+      <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
+    <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
+    <nav class="flex flex-col space-y-4">
+      <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded"
+        onclick="window.location.href='login.html'">Login</button>
+      <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+      <button id="myProfileBtn" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My Profile</button>
+      <button id="myBooksBtn" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My Books</button>
+      <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪 Logout</button>
+    </nav>
+  </div>
+
+  
+  <div class="flex items-center justify-center min-h-[80vh] px-4">
+    <div class="bg-white shadow-lg rounded-lg flex w-full max-w-4xl overflow-hidden">
+      
+      <!-- Left Panel -->
+      <div class="w-1/2 bg-gray-50 p-8 border-r">
+        <h2 class="text-2xl font-bold mb-4">🔐 Log In</h2>
+        <p class="text-gray-700">
+          You need to be logged in to access pages like 
+          <strong>My Books</strong> or <strong>My Profile</strong>.
+          Use your email and password to sign in, or create a free account to get started.
+        </p>
+      </div>
+
+      <!-- Right Panel (Login Form) -->
+      <div class="w-1/2 p-8">
+        <h2 class="text-xl font-bold text-center mb-6">Welcome Back</h2>
+
+        <label class="block mb-2 font-semibold">Email</label>
+        <input type="email" id="loginEmail" class="w-full p-2 border rounded mb-4" placeholder="you@example.com">
+
+        <label class="block mb-2 font-semibold">Password</label>
+        <input type="password" id="loginPassword" class="w-full p-2 border rounded mb-4">
+
+        <label class="flex items-center mb-4">
+          <input type="checkbox" class="mr-2"> Stay logged in
+        </label>
+
+        <button onclick="handleLogin()" class="bg-blue-600 w-full text-white py-2 rounded hover:bg-blue-700">Log In</button>
+
+        <p class="text-center mt-4 text-sm text-gray-600">
+          Don't have an account? <a href="#" class="text-blue-500 underline">Sign up now</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="indexscript.js"></script>
+</body>

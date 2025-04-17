@@ -7,6 +7,64 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow p-4 flex justify-between items-center relative">
+        <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
+        <div class="flex items-center gap-4 relative">
+          <button id="profileBtn" onclick="toggleLoginPopup()"
+          class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
+          <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+          <div class="relative">
+    
+           
+    
+            <!-- Login popup -->
+            <div id="loginPopup" class="absolute right-0 mt-2 bg-white shadow-xl rounded-lg p-4 w-80 hidden z-50">
+              <div class="flex justify-between items-center mb-3">
+                <h2 class="text-lg font-bold">Log in / Register</h2>
+                <button onclick="toggleLoginPopup()" class="text-gray-500 text-xl">×</button>
+              </div>
+    
+              <label class="block text-sm font-semibold mb-1">Telephone / Email</label>
+              <input type="text" id="loginEmail" class="w-full p-2 rounded bg-blue-100 mb-3" placeholder="example@mail.com">
+    
+              <label class="block text-sm font-semibold mb-1">Password</label>
+              <div class="relative mb-3">
+                <input type="password" id="loginPassword" class="w-full p-2 rounded bg-red-100 pr-10">
+                <span class="absolute right-2 top-2 text-gray-500 cursor-pointer">👁️</span>
+              </div>
+    
+              <label class="flex items-center text-sm mb-3">
+                <input type="checkbox" class="mr-2"> Stay logged in
+              </label>
+    
+              <button onclick="handleLogin()" class="bg-green-500 text-white w-full py-2 rounded mb-3">Login</button>
+    
+              <p class="text-sm text-center underline text-gray-600 cursor-pointer">Access with code</p>
+              <p class="text-xs text-center text-gray-500 mt-2">
+                If you don’t know your password, <a href="#" class="text-blue-600 underline">CLICK HERE</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+    
+    
+      <!-- Sidebar -->
+      <div id="sidebar"
+        class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
+        <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
+        <nav class="flex flex-col space-y-4">
+          <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+          <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+          <button onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
+            Profile</button>
+          <button onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+            Books</button>
+          <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪
+            Logout</button>
+        </nav>
+    
+      </div>
   <div class="max-w-5xl mx-auto p-6">
     <h1 class="text-3xl font-bold text-blue-700 mb-6">📚 My Books</h1>
 
@@ -30,24 +88,74 @@
   </div>
 
   <script>
-    const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
-    const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
-    const wantToRead = JSON.parse(localStorage.getItem('wantToRead')) || [];
-
-    function renderList(containerId, list) {
+    async function initializeMyBooksData() {
+      const books = await fetch('books.json').then(res => res.json());
+  
+      if (!localStorage.getItem('activeBooks')) {
+        const active = [books[0], books[2], books[5]]; // לדוגמה
+        localStorage.setItem('activeBooks', JSON.stringify(active));
+      }
+  
+      if (!localStorage.getItem('borrowHistory')) {
+        const history = [books[3], books[10]];
+        localStorage.setItem('borrowHistory', JSON.stringify(history));
+      }
+  
+      if (!localStorage.getItem('wantToRead')) {
+        const want = [books[8], books[13], books[17]];
+        localStorage.setItem('wantToRead', JSON.stringify(want));
+      }
+    }
+  
+    function renderList(containerId, list, isActive = false) {
       const container = document.getElementById(containerId);
       container.innerHTML = list.length ? '' : '<li class="text-gray-500">No books found.</li>';
-      list.forEach(book => {
+  
+      list.forEach((book, index) => {
         const item = document.createElement('li');
-        item.className = 'bg-white p-4 shadow rounded';
-        item.innerHTML = `<strong>${book.title}</strong> by ${book.author}`;
+        item.className = 'bg-white p-4 shadow rounded flex justify-between items-center';
+  
+        item.innerHTML = `
+          <div>
+            <strong>${book.title}</strong> by ${book.author}
+          </div>
+          ${isActive ? '<button class="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Return</button>' : ''}
+        `;
+  
+        if (isActive) {
+          item.querySelector('button').addEventListener('click', () => {
+            returnBook(index);
+          });
+        }
+  
         container.appendChild(item);
       });
     }
-
-    renderList('activeList', active);
-    renderList('historyList', history);
-    renderList('wantList', wantToRead);
+  
+    function returnBook(index) {
+      const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
+      const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+  
+      const returned = active.splice(index, 1)[0];
+      history.unshift(returned);
+  
+      localStorage.setItem('activeBooks', JSON.stringify(active));
+      localStorage.setItem('borrowHistory', JSON.stringify(history));
+  
+      renderList('activeList', active, true);
+      renderList('historyList', history);
+    }
+  
+    initializeMyBooksData().then(() => {
+      const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
+      const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+      const wantToRead = JSON.parse(localStorage.getItem('wantToRead')) || [];
+  
+      renderList('activeList', active, true);
+      renderList('historyList', history);
+      renderList('wantList', wantToRead);
+    });
   </script>
+  <script src="indexscript.js"></script>
 </body>
 </html>

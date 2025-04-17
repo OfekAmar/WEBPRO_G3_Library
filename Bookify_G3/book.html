@@ -7,6 +7,30 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 font-sans">
+      <!-- Header -->
+  <header class="bg-white shadow p-4 flex justify-between items-center relative">
+    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
+    <div class="flex items-center gap-4 relative">
+      <button id="profileBtn"
+        onclick="window.location.href='login.html'"
+        class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
+      <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div id="sidebar"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
+    <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
+    <nav class="flex flex-col space-y-4">
+      <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded"
+        onclick="window.location.href='login.html'">Login</button>
+      <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+      <button id="myProfileBtn" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My Profile</button>
+      <button id="myBooksBtn" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My Books</button>
+      <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪 Logout</button>
+    </nav>
+  </div>
   <div class="max-w-5xl mx-auto p-6">
     <button onclick="history.back()" class="mb-4 text-blue-600 hover:underline">← Back</button>
     <div class="flex flex-col md:flex-row gap-6 bg-white p-6 rounded shadow">

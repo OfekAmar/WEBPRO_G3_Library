@@ -12,11 +12,12 @@
   <header class="bg-white shadow p-4 flex justify-between items-center relative">
     <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
     <div class="flex items-center gap-4 relative">
+      <button id="profileBtn" onclick="toggleLoginPopup()"
+      class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
       <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
       <div class="relative">
 
-        <button id="profileBtn" onclick="toggleLoginPopup()"
-          class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
+       
 
         <!-- Login popup -->
         <div id="loginPopup" class="absolute right-0 mt-2 bg-white shadow-xl rounded-lg p-4 w-80 hidden z-50">
@@ -25,14 +26,18 @@
             <button onclick="toggleLoginPopup()" class="text-gray-500 text-xl">×</button>
           </div>
 
-          <label class="block text-sm font-semibold mb-1">Telephone / Email</label>
+          <label class="block text-sm font-semibold mb-1">Email</label>
           <input type="text" id="loginEmail" class="w-full p-2 rounded bg-blue-100 mb-3" placeholder="example@mail.com">
 
           <label class="block text-sm font-semibold mb-1">Password</label>
           <div class="relative mb-3">
+            
             <input type="password" id="loginPassword" class="w-full p-2 rounded bg-red-100 pr-10">
             <span class="absolute right-2 top-2 text-gray-500 cursor-pointer">👁️</span>
+            <p class="text-xs text-left text-gray-500 mt-2">
+            <a href="#" class="text-blue-600 underline">Forgot your Password?</a>
           </div>
+          
 
           <label class="flex items-center text-sm mb-3">
             <input type="checkbox" class="mr-2"> Stay logged in
@@ -40,9 +45,8 @@
 
           <button onclick="handleLogin()" class="bg-green-500 text-white w-full py-2 rounded mb-3">Login</button>
 
-          <p class="text-sm text-center underline text-gray-600 cursor-pointer">Access with code</p>
           <p class="text-xs text-center text-gray-500 mt-2">
-            If you don’t know your password, <a href="#" class="text-blue-600 underline">CLICK HERE</a>.
+            Don't have an account? <a href="#" class="text-blue-600 underline">Sign up now.</a>
           </p>
         </div>
       </div>
@@ -57,9 +61,9 @@
     <nav class="flex flex-col space-y-4">
       <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
       <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
-      <button onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
+      <button id="myProfileBtn" onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
         Profile</button>
-      <button onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+      <button id="myBooksBtn" onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
         Books</button>
       <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪
         Logout</button>
