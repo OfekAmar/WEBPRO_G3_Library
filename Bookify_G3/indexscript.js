@@ -1,88 +1,40 @@
 
 // when load the page list of operations to check and execute
 window.addEventListener("DOMContentLoaded", () => {
-    const user = localStorage.getItem("loggedInUser");
-  
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const profilePopupBtn = document.getElementById("profileBtn");
-  
-    if (user) {
-      if (logoutBtn) logoutBtn.classList.remove("hidden");
-      if (loginBtn) loginBtn.classList.add("hidden");
-      if (registerBtn) registerBtn.classList.add("hidden");
-      if (profilePopupBtn) profilePopupBtn.classList.add("hidden");
-    } else {
-      if (logoutBtn) logoutBtn.classList.add("hidden");
-      if (loginBtn) loginBtn.classList.remove("hidden");
-      if (registerBtn) registerBtn.classList.remove("hidden");
-      if (profilePopupBtn) profilePopupBtn.classList.remove("hidden");
-    }
-  });
-  
+  const user = localStorage.getItem("loggedInUser");
 
-let fakeBooks = [];
+  const logoutBtn = document.getElementById("logoutBtn");
+  const loginBtn = document.getElementById("loginBtn");
+  const registerBtn = document.getElementById("registerBtn");
+  const profilePopupBtn = document.getElementById("profileBtn");
+
+  if (user) {
+    if (logoutBtn) logoutBtn.classList.remove("hidden");
+    if (loginBtn) loginBtn.classList.add("hidden");
+    if (registerBtn) registerBtn.classList.add("hidden");
+    if (profilePopupBtn) profilePopupBtn.classList.add("hidden");
+  } else {
+    if (logoutBtn) logoutBtn.classList.add("hidden");
+    if (loginBtn) loginBtn.classList.remove("hidden");
+    if (registerBtn) registerBtn.classList.remove("hidden");
+    if (profilePopupBtn) profilePopupBtn.classList.remove("hidden");
+  }
+});
+
+
+window.fakeBooks = [];
+window.booksReady = false;
 fetch('books.json')
   .then(response => response.json())
   .then(data => {
-    fakeBooks = data;
+    window.fakeBooks = data;
+    window.booksReady = true;
     console.log("Books loaded:", fakeBooks);
     renderTrending();
     renderNewlyAddedBooks();
     renderRecentlyReturned();
   })
   .catch(error => console.error("Failed to load books.json:", error));
-
-function searchBooks() {
-  const type = document.getElementById('searchType').value;
-  const input = document.getElementById('searchInput').value.toLowerCase();
-
-  const filtered = fakeBooks.filter(book => {
-    if (type === 'all') {
-      return (
-        book.title.toLowerCase().includes(input) ||
-        book.author.toLowerCase().includes(input) ||
-        book.subject.toLowerCase().includes(input)
-      );
-    }
-    return book[type]?.toLowerCase().includes(input);
-  });
-
-  displayResults(filtered);
-}
-
-function displayResults(books) {
-  const containerlabel = document.getElementById('searchresultlabel');
-  containerlabel.textContent = 'Search Results:';
-
-  const container = document.getElementById('results');
-  container.innerHTML = '';
-
-  if (books.length === 0) {
-    container.innerHTML = '<p class="text-gray-500">No books found.</p>';
-    return;
-  }
-
-  books.forEach(book => {
-    const card = document.createElement('div');
-    card.className = 'bg-white p-4 shadow rounded cursor-pointer';
-    card.onclick = () => openBook(book.id);
-
-    card.innerHTML = `
-  <img src="${book.coverUrl}" alt="${book.title}" class="w-full h-60 object-cover mb-3 rounded">
-  <h4 class="text-lg font-bold mb-2">${book.title}</h4>
-  <p><strong>Author:</strong> ${book.author}</p>
-  <p><strong>Subject:</strong> ${book.subject}</p>
-  <p><strong>Availability:</strong> ${book.available ? '✅ Available' : '❌ Unavailable'}</p>
-  <button class="mt-3 px-4 py-2 rounded text-white ${book.available ? 'bg-green-600' : 'bg-gray-600'}">
-    ${book.available ? '📖 Borrow' : '📩 Notify Me'}
-  </button>
-`;
-
-    container.appendChild(card);
-  });
-}
 
 function renderNewlyAddedBooks() {
   const container = document.getElementById('newlyAdded');
@@ -202,7 +154,7 @@ function handleLogin() {
         localStorage.setItem("loggedInUser", JSON.stringify(user));
         alert("✅ Login successful! Welcome, " + user.name);
         toggleLoginPopup();
-        location.reload(); 
+        location.reload();
         //window.location.href = "userProfile.html";
       } else {
         alert("❌ Invalid email or password.");
@@ -215,24 +167,24 @@ function handleLogin() {
 }
 
 function handleLogout() {
-    localStorage.removeItem("loggedInUser");
-    alert("You have been logged out.");
-    location.reload(); 
-  }
+  localStorage.removeItem("loggedInUser");
+  alert("You have been logged out.");
+  location.reload();
+}
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const myProfileBtn = document.getElementById("myProfileBtn");
-    const myBooksBtn = document.getElementById("myBooksBtn");
-  
-    const checkLoginAndRedirect = (urlIfLoggedIn) => {
-      const user = localStorage.getItem("loggedInUser");
-      if (user) {
-        window.location.href = urlIfLoggedIn;
-      } else {
-        window.location.href = "login.html";
-      }
-    };
-  
-    myProfileBtn?.addEventListener("click", () => checkLoginAndRedirect("userProfile.html"));
-    myBooksBtn?.addEventListener("click", () => checkLoginAndRedirect("MyBooks.html"));
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const myProfileBtn = document.getElementById("myProfileBtn");
+  const myBooksBtn = document.getElementById("myBooksBtn");
+
+  const checkLoginAndRedirect = (urlIfLoggedIn) => {
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+      window.location.href = urlIfLoggedIn;
+    } else {
+      window.location.href = "login.html";
+    }
+  };
+
+  myProfileBtn?.addEventListener("click", () => checkLoginAndRedirect("userProfile.html"));
+  myBooksBtn?.addEventListener("click", () => checkLoginAndRedirect("MyBooks.html"));
+});

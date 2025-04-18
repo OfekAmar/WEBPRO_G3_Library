@@ -1,52 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 font-sans">
   <header class="bg-white shadow p-4 flex justify-between items-center relative">
-    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
-    <div class="flex items-center gap-4 relative">
-      <button id="profileBtn" onclick="toggleLoginPopup()"
-      class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
-      <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+    <a href="index.html">
+      <h1
+        class="text-2xl font-bold text-blue-600 mr-auto hover:underline hover:text-blue-800 transition-colors duration-200">
+        📚 Bookify</h1>
+    </a>
+
+    <div class="flex items-center gap-4 relative"> <button onclick="toggleSidebar()"
+        class="text-gray-800 text-2xl">&#9776;</button>
       <div class="relative">
-
-       
-
-        <!-- Login popup -->
-        <div id="loginPopup" class="absolute right-0 mt-2 bg-white shadow-xl rounded-lg p-4 w-80 hidden z-50">
-          <div class="flex justify-between items-center mb-3">
-            <h2 class="text-lg font-bold">Log in / Register</h2>
-            <button onclick="toggleLoginPopup()" class="text-gray-500 text-xl">×</button>
-          </div>
-
-          <label class="block text-sm font-semibold mb-1">Telephone / Email</label>
-          <input type="text" id="loginEmail" class="w-full p-2 rounded bg-blue-100 mb-3" placeholder="example@mail.com">
-
-          <label class="block text-sm font-semibold mb-1">Password</label>
-          <div class="relative mb-3">
-            <input type="password" id="loginPassword" class="w-full p-2 rounded bg-red-100 pr-10">
-            <span class="absolute right-2 top-2 text-gray-500 cursor-pointer">👁️</span>
-          </div>
-
-          <label class="flex items-center text-sm mb-3">
-            <input type="checkbox" class="mr-2"> Stay logged in
-          </label>
-
-          <button onclick="handleLogin()" class="bg-green-500 text-white w-full py-2 rounded mb-3">Login</button>
-
-          <p class="text-sm text-center underline text-gray-600 cursor-pointer">Access with code</p>
-          <p class="text-xs text-center text-gray-500 mt-2">
-            If you don’t know your password, <a href="#" class="text-blue-600 underline">CLICK HERE</a>.
-          </p>
-        </div>
       </div>
     </div>
   </header>
+
+
+  <!-- Sidebar -->
+  <div id="sidebar"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
+    <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
+    <nav class="flex flex-col space-y-4">
+      <button id="loginBtn" onclick="window.location.href='login.html'"
+        class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+      <button id="registerBtn" onclick="window.location.href='login.html?mode=signup'"
+        class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+      <button id="myProfileBtn" onclick="window.location.href='userProfile.html'"
+        class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
+        Profile</button>
+      <button id="myBooksBtn" onclick="window.location.href='MyBooks.html'"
+        class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+        Books</button>
+      <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪
+        Logout</button>
+    </nav>
+
+  </div>
 
 
   <!-- Sidebar -->
@@ -65,46 +62,49 @@
     </nav>
 
   </div>
-  <div class="max-w-2xl mx-auto p-6 bg-white shadow rounded mt-10">
+  <div class="max-w-2xl mx-auto p-8 bg-white shadow-2xl border border-gray-200 rounded-2xl mt-10 scale-105 backdrop-blur-sm bg-opacity-95 transition-transform">
     <h1 class="text-2xl font-bold text-blue-700 mb-6">👤 User Profile</h1>
-
+  
     <form id="profileForm" class="space-y-6">
       <div>
         <label class="block font-semibold mb-1">Full Name</label>
-        <input type="text" id="fullName" class="w-full p-2 border rounded" readonly value="Nora Reader">
+        <input type="text" id="fullName" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" readonly value="Nora Reader">
       </div>
-
+  
       <div>
         <label class="block font-semibold mb-1">Email</label>
-        <input type="email" id="email" class="w-full p-2 border rounded" value="nora@example.com">
+        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="nora@example.com">
       </div>
-
+  
       <div>
         <label class="block font-semibold mb-1">Phone Number</label>
-        <input type="tel" id="phone" class="w-full p-2 border rounded" value="050-1234567">
+        <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="050-1234567">
       </div>
-
+  
       <div>
         <label class="block font-semibold mb-1">Password</label>
-        <input type="password" id="password" class="w-full p-2 border rounded" value="123456">
+        <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="123456">
       </div>
-
+  
       <div>
         <label class="block font-semibold mb-1">Preferred Notification Method</label>
-        <select id="notification" class="w-full p-2 border rounded">
+        <select id="notification" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           <option value="email">Email</option>
           <option value="sms">SMS</option>
         </select>
       </div>
-
-      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">💾 Save Changes</button>
+  
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md shadow flex items-center gap-2 transition">
+        💾 <span>Save Changes</span>
+      </button>
     </form>
-
+  
     <p id="saveStatus" class="text-green-600 mt-4 hidden">Changes saved successfully ✅</p>
   </div>
+  
 
   <script>
-    document.getElementById('profileForm').addEventListener('submit', function(event) {
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
       event.preventDefault();
 
       // Simulate saving to local/session storage or backend
@@ -125,4 +125,5 @@
   </script>
   <script src="indexscript.js"></script>
 </body>
+
 </html>

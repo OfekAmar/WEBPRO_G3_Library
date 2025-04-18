@@ -1,54 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | Bookify</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 font-sans">
 
   <!-- Header -->
   <header class="bg-white shadow p-4 flex justify-between items-center relative">
-    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
-    <div class="flex items-center gap-4 relative">
-      <button id="profileBtn"
-        onclick="window.location.href='login.html'"
-        class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
-      <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
+    <a href="index.html">
+      <h1
+        class="text-2xl font-bold text-blue-600 mr-auto hover:underline hover:text-blue-800 transition-colors duration-200">
+        📚 Bookify</h1>
+    </a>
+
+    <div class="flex items-center gap-4 relative"> <button onclick="toggleSidebar()"
+        class="text-gray-800 text-2xl">&#9776;</button>
+      <div class="relative">
+      </div>
     </div>
   </header>
+
 
   <!-- Sidebar -->
   <div id="sidebar"
     class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
     <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
     <nav class="flex flex-col space-y-4">
-      <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded"
-        onclick="window.location.href='login.html'">Login</button>
-      <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
-      <button id="myProfileBtn" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My Profile</button>
-      <button id="myBooksBtn" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My Books</button>
-      <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪 Logout</button>
+      <button id="loginBtn" onclick="window.location.href='login.html'"
+        class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+      <button id="registerBtn" onclick="window.location.href='login.html?mode=signup'"
+        class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+      <button id="myProfileBtn" onclick="window.location.href='userProfile.html'"
+        class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
+        Profile</button>
+      <button id="myBooksBtn" onclick="window.location.href='MyBooks.html'"
+        class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+        Books</button>
+      <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪
+        Logout</button>
     </nav>
+
   </div>
 
-  
+
   <div class="flex items-center justify-center min-h-[80vh] px-4">
-    <div class="bg-white shadow-lg rounded-lg flex w-full max-w-4xl overflow-hidden">
-      
+    <div
+      class="bg-white shadow-2xl border border-gray-300 rounded-2xl flex w-full max-w-4xl overflow-hidden p-10 scale-105 hover:scale-105 transition-transform duration-300 ease-in-out backdrop-blur-sm bg-opacity-95">
+
       <!-- Left Panel -->
-      <div class="w-1/2 bg-gray-50 p-8 border-r">
-        <h2 class="text-2xl font-bold mb-4">🔐 Log In</h2>
-        <p class="text-gray-700">
-          You need to be logged in to access pages like 
+      <div id="leftPanel" class="w-1/2 bg-gray-50 p-8 border-r">
+        <h2 id="leftTitle" class="text-2xl font-bold mb-4">🔐 Log In</h2>
+        <p id="leftText" class="text-gray-700">
+          You need to be logged in to access pages like
           <strong>My Books</strong> or <strong>My Profile</strong>.
           Use your email and password to sign in, or create a free account to get started.
         </p>
       </div>
 
+
       <!-- Right Panel (Login Form) -->
-      <div class="w-1/2 p-8">
+      <div id="formContainer" class="w-1/2 p-8">
         <h2 class="text-xl font-bold text-center mb-6">Welcome Back</h2>
 
         <label class="block mb-2 font-semibold">Email</label>
@@ -61,10 +77,11 @@
           <input type="checkbox" class="mr-2"> Stay logged in
         </label>
 
-        <button onclick="handleLogin()" class="bg-blue-600 w-full text-white py-2 rounded hover:bg-blue-700">Log In</button>
+        <button onclick="handleLogin()" class="bg-blue-600 w-full text-white py-2 rounded hover:bg-blue-700">Log
+          In</button>
 
         <p class="text-center mt-4 text-sm text-gray-600">
-          Don't have an account? <a href="#" class="text-blue-500 underline">Sign up now</a>
+          Don't have an account? <a href="#" class="text-blue-500 underline" onclick="showSignup()">Sign up now</a>
         </p>
       </div>
     </div>
@@ -72,4 +89,5 @@
 
 
   <script src="indexscript.js"></script>
+  <script src="loginpagescript.js"></script>
 </body>

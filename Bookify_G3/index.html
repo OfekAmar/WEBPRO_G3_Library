@@ -10,14 +10,18 @@
 
 <body class="bg-gray-50 font-sans">
   <header class="bg-white shadow p-4 flex justify-between items-center relative">
-    <h1 class="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
+    <a href="index.html">
+      <h1
+        class="text-2xl font-bold text-blue-600 mr-auto hover:underline hover:text-blue-800 transition-colors duration-200">
+        📚 Bookify</h1>
+    </a>
+
     <div class="flex items-center gap-4 relative">
-      <button id="profileBtn" onclick="toggleLoginPopup()"
-      class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
+      <button id="profileBtn" onclick="toggleLoginPopup()" class="bg-gray-300 text-white px-3 py-2 rounded">👤</button>
       <button onclick="toggleSidebar()" class="text-gray-800 text-2xl">&#9776;</button>
       <div class="relative">
 
-       
+
 
         <!-- Login popup -->
         <div id="loginPopup" class="absolute right-0 mt-2 bg-white shadow-xl rounded-lg p-4 w-80 hidden z-50">
@@ -31,13 +35,13 @@
 
           <label class="block text-sm font-semibold mb-1">Password</label>
           <div class="relative mb-3">
-            
+
             <input type="password" id="loginPassword" class="w-full p-2 rounded bg-red-100 pr-10">
             <span class="absolute right-2 top-2 text-gray-500 cursor-pointer">👁️</span>
             <p class="text-xs text-left text-gray-500 mt-2">
-            <a href="#" class="text-blue-600 underline">Forgot your Password?</a>
+              <a href="#" class="text-blue-600 underline">Forgot your Password?</a>
           </div>
-          
+
 
           <label class="flex items-center text-sm mb-3">
             <input type="checkbox" class="mr-2"> Stay logged in
@@ -46,7 +50,7 @@
           <button onclick="handleLogin()" class="bg-green-500 text-white w-full py-2 rounded mb-3">Login</button>
 
           <p class="text-xs text-center text-gray-500 mt-2">
-            Don't have an account? <a href="#" class="text-blue-600 underline">Sign up now.</a>
+            Don't have an account? <a href="login.html" class="text-blue-600 underline">Sign up now.</a>
           </p>
         </div>
       </div>
@@ -59,11 +63,13 @@
     class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg p-6 transform translate-x-full transition-transform z-50">
     <button onclick="toggleSidebar()" class="mb-6 text-xl text-red-500">✖</button>
     <nav class="flex flex-col space-y-4">
-      <button id="loginBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
-      <button id="registerBtn" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
-      <button id="myProfileBtn" onclick="window.location.href='userProfile.html'" class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
+      <button id="loginBtn" onclick="window.location.href='login.html'" class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+      <button id="registerBtn" onclick="window.location.href='login.html?mode=signup'" class="bg-green-500 text-white px-4 py-2 rounded">Register</button>
+      <button id="myProfileBtn" onclick="window.location.href='userProfile.html'"
+        class="bg-purple-600 text-white px-4 py-2 rounded">👤 My
         Profile</button>
-      <button id="myBooksBtn" onclick="window.location.href='MyBooks.html'" class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
+      <button id="myBooksBtn" onclick="window.location.href='MyBooks.html'"
+        class="bg-yellow-500 text-white px-4 py-2 rounded">📘 My
         Books</button>
       <button id="logoutBtn" onclick="handleLogout()" class="bg-red-500 text-white px-4 py-2 rounded hidden">🚪
         Logout</button>
@@ -73,27 +79,26 @@
 
   <!-- Search Section -->
   <section class="p-6 max-w-4xl mx-auto">
-    <h2 class="text-xl font-semibold mb-4">Search Books</h2>
-    <div class="flex gap-4 mb-6">
-      <select id="searchType" class="p-2 border rounded">
+    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">🔍 Search Books</h2>
+    <div
+      class="bg-white shadow-lg rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-center border border-gray-270">
+      <select id="searchType"
+        class="w-full sm:w-auto px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
         <option value="all">Free Text</option>
         <option value="title">Title</option>
         <option value="author">Author</option>
         <option value="subject">Subject</option>
       </select>
-      <input id="searchInput" type="text" placeholder="Search..." class="flex-grow p-2 border rounded">
-      <button onclick="searchBooks()" class="bg-blue-600 text-white px-4 py-2 rounded">🔍 Search</button>
+
+      <input id="searchInput" type="text" placeholder="Search for books..."
+        class="flex-grow px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 w-full sm:w-auto">
+
+      <button onclick="searchBooks()"
+        class="bg-blue-600 text-white px-6 py-2 rounded-md font-semibold shadow hover:bg-blue-700 transition duration-200 flex items-center gap-2">
+        🔍 <span>Search</span>
+      </button>
     </div>
   </section>
-
-  <!-- Results Section -->
-  <section class="p-6 max-w-6xl mx-auto">
-    <h3 id="searchresultlabel" class="text-lg font-semibold mb-4"></h3>
-    <div id="results" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Book dynamicly added  -->
-    </div>
-  </section>
-
 
   <!-- Book Lists Section (Carousel Style) -->
   <section class="p-6 max-w-6xl mx-auto space-y-10">
@@ -144,8 +149,9 @@
     </div>
 
   </section>
-
+  <script src="searchscript.js"></script>
   <script src="indexscript.js"></script>
+
 </body>
 
 </html>
