@@ -39,7 +39,7 @@ function renderNewlyAddedBooks() {
   const container = document.getElementById('newlyAdded');
   fakeBooks.slice(0, 23).forEach(book => {
     const img = document.createElement('img');
-    img.src = book.coverUrl;
+    img.src = book.photo;
     img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
     img.onclick = () => openBook(book.id);
     container.appendChild(img);

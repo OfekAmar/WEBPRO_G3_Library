@@ -14,15 +14,21 @@ function searchBooks() {
             book.author.toLowerCase().includes(input) ||
             book.subject.toLowerCase().includes(input)
           );
-        } else if (type === 'title') {
+        } else if (type === 'name') {
           return book.name.toLowerCase().includes(input);
         } else if (type === 'author') {
           return book.author.toLowerCase().includes(input);
         } else if (type === 'subject') {
           return book.subject.toLowerCase().includes(input);
-        }
+        } 
         return false;
       });
+
+      filtered.forEach(book =>{
+        book.available = book.available_copies && book.available_copies>0;
+      });
+
+      
 
       sessionStorage.setItem('searchResults', JSON.stringify(filtered));
       window.location.href = 'search.html';

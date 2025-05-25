@@ -150,8 +150,8 @@
                 card.className = 'bg-white p-5 shadow-lg rounded-xl hover:shadow-2xl transition cursor-pointer';
 
                 card.innerHTML = `
-          <img src="${book.coverUrl}" alt="${book.title}" class="w-full h-60 object-cover rounded mb-4">
-          <h3 class="text-lg font-bold text-gray-800 mb-1">${book.title}</h3>
+          <img src="${book.photo}" alt="${book.name}" class="w-full h-60 object-cover rounded mb-4">
+          <h3 class="text-lg font-bold text-gray-800 mb-1">${book.name}</h3>
           <p class="text-sm text-gray-600 mb-1"><strong>Author:</strong> ${book.author}</p>
           <p class="text-sm text-gray-600 mb-1"><strong>Subject:</strong> ${book.subject}</p>
           <p class="text-sm ${book.available ? 'text-green-600' : 'text-red-600'} font-semibold mb-2">
@@ -162,12 +162,17 @@
             ${book.available ? '📖 Borrow' : '📩 Notify Me'}
           </button>
         `;
+        card.onclick = () =>{
+          sessionStorage.setItem('selectedBook',JSON.stringify(book));
+          window.location.href = 'book.html';
+        }
 
                 resultsContainer.appendChild(card);
             });
         }
     </script>
     <script src="indexscript.js"></script>
+    <script src="searchscript.js"></script>
 </body>
 
 </html>
