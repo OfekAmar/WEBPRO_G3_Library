@@ -146,23 +146,35 @@ function handleLogin() {
 
   firebase.database().ref('users').once('value')
   .then(snapshot => {
-    const users = Object.values(snapshot.val());
-    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
-      if (user) {
-        localStorage.setItem("loggedInUser", JSON.stringify(user));
-        alert("✅ Login successful! Welcome, " + user.name);
-        toggleLoginPopup();
-        location.reload();
-        //window.location.href = "userProfile.html";
-      } else {
-        alert("❌ Invalid email or password.");
+    const rawUsers = snapshot.val();
+    const users = [];
+
+    // יוצרים מערך של משתמשים עם id אמיתי מה-DB
+    Object.entries(rawUsers).forEach(([id, user]) => {
+      if (user && id !== "0") {
+        user.id = parseInt(id);
+        users.push(user);
       }
-    })
-    .catch(err => {
-      console.error("Login error:", err);
-      alert("Error loading users.");
     });
+
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+    if (user) {
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      alert("✅ Login successful! Welcome, " + user.name);
+      toggleLoginPopup?.();
+      location.reload();
+    } else {
+      alert("❌ Invalid email or password.");
+    }
+  })
+  .catch(err => {
+    console.error("Login error:", err);
+    alert("Error loading users.");
+  });
+
 }
+
 
 function handleLogout() {
   localStorage.removeItem("loggedInUser");
