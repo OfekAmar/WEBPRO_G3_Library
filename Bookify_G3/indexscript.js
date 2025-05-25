@@ -24,17 +24,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.fakeBooks = [];
 window.booksReady = false;
-fetch('books.json')
-  .then(response => response.json())
-  .then(data => {
-    window.fakeBooks = data;
+firebase.database().ref('books').once('value')
+  .then(snapshot => {
+    const data = snapshot.val();
+    window.fakeBooks = Object.values(data); // Converts {"1": {...}} to array
     window.booksReady = true;
-    console.log("Books loaded:", fakeBooks);
     renderTrending();
     renderNewlyAddedBooks();
     renderRecentlyReturned();
   })
-  .catch(error => console.error("Failed to load books.json:", error));
+  .catch(error => console.error("Failed to load books from Firebase:", error));
 
 function renderNewlyAddedBooks() {
   const container = document.getElementById('newlyAdded');
@@ -145,11 +144,10 @@ function handleLogin() {
     return;
   }
 
-  fetch('users.json')
-    .then(res => res.json())
-    .then(users => {
-      const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
-
+  firebase.database().ref('users').once('value')
+  .then(snapshot => {
+    const users = Object.values(snapshot.val());
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
       if (user) {
         localStorage.setItem("loggedInUser", JSON.stringify(user));
         alert("✅ Login successful! Welcome, " + user.name);
