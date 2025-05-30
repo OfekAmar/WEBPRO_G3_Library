@@ -2,6 +2,29 @@
 <html lang="en">
 
 <head>
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  // Your Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxwnhBepOVOWojJ973FO8DOfL153iXSVc",
+    authDomain: "bookifydb-a368c.firebaseapp.com",
+    databaseURL: "https://bookifydb-a368c-default-rtdb.firebaseio.com",
+    projectId: "bookifydb-a368c",
+    storageBucket: "bookifydb-a368c.firebasestorage.app",
+    messagingSenderId: "416508769490",
+    appId: "1:416508769490:web:fa5d34347f4d356cf5a90b",
+    measurementId: "G-5BG9V2K9NX"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results | Bookify</title>
@@ -127,8 +150,8 @@
                 card.className = 'bg-white p-5 shadow-lg rounded-xl hover:shadow-2xl transition cursor-pointer';
 
                 card.innerHTML = `
-          <img src="${book.coverUrl}" alt="${book.title}" class="w-full h-60 object-cover rounded mb-4">
-          <h3 class="text-lg font-bold text-gray-800 mb-1">${book.title}</h3>
+          <img src="${book.photo}" alt="${book.name}" class="w-full h-60 object-cover rounded mb-4">
+          <h3 class="text-lg font-bold text-gray-800 mb-1">${book.name}</h3>
           <p class="text-sm text-gray-600 mb-1"><strong>Author:</strong> ${book.author}</p>
           <p class="text-sm text-gray-600 mb-1"><strong>Subject:</strong> ${book.subject}</p>
           <p class="text-sm ${book.available ? 'text-green-600' : 'text-red-600'} font-semibold mb-2">
@@ -139,12 +162,17 @@
             ${book.available ? '📖 Borrow' : '📩 Notify Me'}
           </button>
         `;
+        card.onclick = () =>{
+          sessionStorage.setItem('selectedBook',JSON.stringify(book));
+          window.location.href = 'book.html';
+        }
 
                 resultsContainer.appendChild(card);
             });
         }
     </script>
     <script src="indexscript.js"></script>
+    <script src="searchscript.js"></script>
 </body>
 
 </html>

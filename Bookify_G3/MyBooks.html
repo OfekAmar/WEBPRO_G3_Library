@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  // Your Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxwnhBepOVOWojJ973FO8DOfL153iXSVc",
+    authDomain: "bookifydb-a368c.firebaseapp.com",
+    databaseURL: "https://bookifydb-a368c-default-rtdb.firebaseio.com",
+    projectId: "bookifydb-a368c",
+    storageBucket: "bookifydb-a368c.firebasestorage.app",
+    messagingSenderId: "416508769490",
+    appId: "1:416508769490:web:fa5d34347f4d356cf5a90b",
+    measurementId: "G-5BG9V2K9NX"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Books - Bookify</title>
@@ -89,61 +112,146 @@
 
   <script>
     async function initializeMyBooksData() {
-      const books = await fetch('books.json').then(res => res.json());
-  
-      if (!localStorage.getItem('activeBooks')) {
-        const active = [books[0], books[2], books[5]]; // לדוגמה
-        localStorage.setItem('activeBooks', JSON.stringify(active));
-      }
-  
-      if (!localStorage.getItem('borrowHistory')) {
-        const history = [books[3], books[10]];
-        localStorage.setItem('borrowHistory', JSON.stringify(history));
-      }
-  
-      if (!localStorage.getItem('wantToRead')) {
-        const want = [books[8], books[13], books[17]];
-        localStorage.setItem('wantToRead', JSON.stringify(want));
-      }
+  const user = JSON.parse(localStorage.getItem('loggedInUser'));
+  if (!user) {
+    alert("Please log in.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const userId = user.id;
+
+  const booksSnapshot = await firebase.database().ref('books').once('value');
+  const books = booksSnapshot.val();
+
+  const borrowsSnapshot = await firebase.database().ref('borrows').once('value');
+  const borrows = borrowsSnapshot.val();
+
+  const activeBooks = [];
+  const historyBooks = [];
+
+  for (const i in borrows) {
+    const borrow = borrows[i];
+    if (!borrow || parseInt(borrow.user_id) !== parseInt(userId)) continue;
+
+    const book = books[parseInt(borrow.book_id)];
+    if (!book) continue;
+
+    // ✅ כאן מוסיפים מזהה ותאריך החזרה
+    book.id = parseInt(borrow.book_id);
+    book.ret_date = borrow.ret_date;
+
+    if (borrow.status === "borrow") {
+      activeBooks.push(book);
+    } else {
+      historyBooks.push(book);
     }
+  }
+
+  localStorage.setItem('activeBooks', JSON.stringify(activeBooks));
+  localStorage.setItem('borrowHistory', JSON.stringify(historyBooks));
+}
+
+
   
     function renderList(containerId, list, isActive = false) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = list.length ? '' : '<li class="text-gray-500">No books found.</li>';
-  
-      list.forEach((book, index) => {
-        const item = document.createElement('li');
-        item.className = 'bg-white p-4 shadow rounded flex justify-between items-center';
-  
-        item.innerHTML = `
-          <div>
-            <strong>${book.title}</strong> by ${book.author}
-          </div>
-          ${isActive ? '<button class="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Return</button>' : ''}
-        `;
-  
-        if (isActive) {
-          item.querySelector('button').addEventListener('click', () => {
-            returnBook(index);
-          });
-        }
-  
-        container.appendChild(item);
+  const container = document.getElementById(containerId);
+  container.innerHTML = list.length ? '' : '<li class="text-gray-500">No books found.</li>';
+
+  list.forEach((book, index) => {
+    const card = document.createElement('div');
+    card.className = 'bg-white p-3 shadow-md rounded-lg hover:shadow-lg transition w-64';
+
+    const isOverdue = isActive && book.ret_date && new Date(book.ret_date) < new Date();
+
+    card.innerHTML = `
+      <img src="${book.photo || 'https://via.placeholder.com/120x180?text=No+Image'}"
+           alt="${book.name}"
+           class="w-full h-40 object-cover rounded mb-2">
+
+      <h3 class="text-base font-bold text-gray-800 mb-1">${book.name}</h3>
+      <p class="text-xs text-gray-600 mb-1"><strong>Author:</strong> ${book.author}</p>
+      <p class="text-xs text-gray-600 mb-1"><strong>Subject:</strong> ${book.subject}</p>
+      <p class="text-xs text-gray-500 mb-2">${book.description}</p>
+
+      ${book.ret_date ? `
+        <p class="text-xs font-semibold ${isOverdue ? 'text-red-600' : 'text-gray-700'}">
+          Return by: ${book.ret_date}
+        </p>` : ''}
+
+      ${isActive
+        ? `<button class="w-full mt-2 py-1 text-sm rounded text-white font-semibold shadow bg-red-500 hover:bg-red-600">
+             🔁 Return
+           </button>`
+        : ''}
+    `;
+
+    if (isActive) {
+      card.querySelector('button').addEventListener('click', () => {
+        returnBook(index);
       });
     }
+
+    container.appendChild(card);
+  });
+}
+
+
   
     function returnBook(index) {
-      const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
-      const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
-  
-      const returned = active.splice(index, 1)[0];
-      history.unshift(returned);
-  
-      localStorage.setItem('activeBooks', JSON.stringify(active));
-      localStorage.setItem('borrowHistory', JSON.stringify(history));
-  
-      renderList('activeList', active, true);
-      renderList('historyList', history);
+      async function returnBook(index) {
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+        const userId = user.id;
+
+        const active = JSON.parse(localStorage.getItem('activeBooks')) || [];
+        const history = JSON.parse(localStorage.getItem('borrowHistory')) || [];
+
+        const returnedBook = active.splice(index, 1)[0];
+
+        console.log("returned book:", returnedBook);
+        console.log("returned book id:", returnedBook.id);
+        
+        history.unshift(returnedBook);
+
+        // 🔁 1. עדכון הסטטוס של ההשאלה ל־"returned"
+        const borrowsSnapshot = await firebase.database().ref('borrows').once('value');
+        const borrows = borrowsSnapshot.val();
+
+        for (let i = 1; i < borrows.length; i++) {
+          const borrow = borrows[i];
+          if (!borrow) continue;
+
+          if (
+            parseInt(borrow.user_id) === parseInt(userId) &&
+            parseInt(borrow.book_id) === parseInt(returnedBook.id) &&
+            borrow.status === "borrow"
+          ) {
+            await firebase.database().ref(`borrows/${i}/status`).set("returned");
+            break;
+          }
+        }
+
+        //  2. עדכון מספר העותקים הפנויים של הספר
+        const bookRef = firebase.database().ref(`books/${returnedBook.id}/available_copies`);
+        const currentCopiesSnapshot = await bookRef.once('value');
+        const currentCopies = currentCopiesSnapshot.val() || 0;
+        await bookRef.set(currentCopies + 1);
+
+        //  3. עדכון localStorage והתצוגה
+        localStorage.setItem('activeBooks', JSON.stringify(active));
+        localStorage.setItem('borrowHistory', JSON.stringify(history));
+
+        renderList('activeList', active, true);
+        renderList('historyList', history);
+
+        //  4. הודעת הצלחה
+        alert(`📚 הספר "${returnedBook.name}"The book has been successfully returned!`);
+      }
+
+          if (confirm("Are you sure you want to return this book?")) {
+            returnBook(index);
+          }
+
     }
   
     initializeMyBooksData().then(() => {

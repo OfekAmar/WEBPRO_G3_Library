@@ -2,6 +2,29 @@
 <html lang="en">
 
 <head>
+ <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+  // Your Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxwnhBepOVOWojJ973FO8DOfL153iXSVc",
+    authDomain: "bookifydb-a368c.firebaseapp.com",
+    databaseURL: "https://bookifydb-a368c-default-rtdb.firebaseio.com",
+    projectId: "bookifydb-a368c",
+    storageBucket: "bookifydb-a368c.firebasestorage.app",
+    messagingSenderId: "416508769490",
+    appId: "1:416508769490:web:fa5d34347f4d356cf5a90b",
+    measurementId: "G-5BG9V2K9NX"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Details</title>
@@ -136,17 +159,18 @@
     const book = JSON.parse(sessionStorage.getItem('selectedBook'));
 
     if (book) {
-      document.getElementById('bookTitle').textContent = book.title;
+      document.getElementById('bookTitle').textContent = book.name;
       document.getElementById('bookAuthor').textContent = 'by ' + book.author;
       document.getElementById('bookYear').textContent = book.year || 'Unknown';
       document.getElementById('bookPublisher').textContent = book.publisher || 'Unknown';
       document.getElementById('bookLang').textContent = book.language || 'English';
       document.getElementById('bookDescription').textContent = book.description || 'No description available.';
-      document.getElementById('bookCover').src = book.coverUrl || 'https://via.placeholder.com/150x220?text=No+Cover';
+      document.getElementById('bookCover').src = book.photo || 'https://via.placeholder.com/150x220?text=No+Cover';
       document.getElementById('bookLocation').textContent = book.location || 'Aisle 4, Shelf 2';
 
       const button = document.getElementById('actionButton');
       const availability = document.getElementById('bookAvailability');
+      book.available = book.available_copies && book.available_copies>0
       if (book.available) {
         button.textContent = '📖 Borrow';
         button.classList.remove('bg-gray-600');

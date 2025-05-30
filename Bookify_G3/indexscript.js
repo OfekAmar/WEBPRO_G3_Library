@@ -24,23 +24,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.fakeBooks = [];
 window.booksReady = false;
-fetch('books.json')
-  .then(response => response.json())
-  .then(data => {
-    window.fakeBooks = data;
+firebase.database().ref('books').once('value')
+  .then(snapshot => {
+    const data = snapshot.val();
+    window.fakeBooks = Object.values(data); // Converts {"1": {...}} to array
     window.booksReady = true;
-    console.log("Books loaded:", fakeBooks);
     renderTrending();
     renderNewlyAddedBooks();
     renderRecentlyReturned();
   })
-  .catch(error => console.error("Failed to load books.json:", error));
+  .catch(error => console.error("Failed to load books from Firebase:", error));
 
 function renderNewlyAddedBooks() {
   const container = document.getElementById('newlyAdded');
   fakeBooks.slice(0, 23).forEach(book => {
     const img = document.createElement('img');
-    img.src = book.coverUrl;
+    img.src = book.photo;
     img.className = 'w-40 h-60 object-cover flex-shrink-0 rounded shadow cursor-pointer';
     img.onclick = () => openBook(book.id);
     container.appendChild(img);
@@ -145,26 +144,37 @@ function handleLogin() {
     return;
   }
 
-  fetch('users.json')
-    .then(res => res.json())
-    .then(users => {
-      const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+  firebase.database().ref('users').once('value')
+  .then(snapshot => {
+    const rawUsers = snapshot.val();
+    const users = [];
 
-      if (user) {
-        localStorage.setItem("loggedInUser", JSON.stringify(user));
-        alert("✅ Login successful! Welcome, " + user.name);
-        toggleLoginPopup();
-        location.reload();
-        //window.location.href = "userProfile.html";
-      } else {
-        alert("❌ Invalid email or password.");
+    // יוצרים מערך של משתמשים עם id אמיתי מה-DB
+    Object.entries(rawUsers).forEach(([id, user]) => {
+      if (user && id !== "0") {
+        user.id = parseInt(id);
+        users.push(user);
       }
-    })
-    .catch(err => {
-      console.error("Login error:", err);
-      alert("Error loading users.");
     });
+
+    const user = users.find(u => u.email.toLowerCase() === email && u.password === password);
+
+    if (user) {
+      localStorage.setItem("loggedInUser", JSON.stringify(user));
+      alert("✅ Login successful! Welcome, " + user.name);
+      toggleLoginPopup?.();
+      location.reload();
+    } else {
+      alert("❌ Invalid email or password.");
+    }
+  })
+  .catch(err => {
+    console.error("Login error:", err);
+    alert("Error loading users.");
+  });
+
 }
+
 
 function handleLogout() {
   localStorage.removeItem("loggedInUser");
