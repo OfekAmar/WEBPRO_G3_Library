@@ -171,11 +171,12 @@
       const button = document.getElementById('actionButton');
       const availability = document.getElementById('bookAvailability');
       book.available = book.available_copies && book.available_copies>0
+      button.onclick = () => borrowBook(book);
       if (book.available) {
         button.textContent = '📖 Borrow';
         button.classList.remove('bg-gray-600');
         button.classList.add('bg-green-600');
-        availability.textContent = 'Available';
+        availability.textContent = `${book.available_copies || 0} copies available`;
         availability.classList.remove('text-red-600');
         availability.classList.add('text-green-600');
       } else {
