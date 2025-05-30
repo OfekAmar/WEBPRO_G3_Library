@@ -27,7 +27,10 @@ window.booksReady = false;
 firebase.database().ref('books').once('value')
   .then(snapshot => {
     const data = snapshot.val();
-    window.fakeBooks = Object.values(data); // Converts {"1": {...}} to array
+    window.fakeBooks = Object.entries(data)
+    .filter(([id, book]) => book) // להיפטר מ־null הראשון
+    .map(([id, book]) => ({ ...book, id: parseInt(id) }));
+
     window.booksReady = true;
     renderTrending();
     renderNewlyAddedBooks();
