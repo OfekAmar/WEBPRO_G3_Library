@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from './firebase';
-import { ref, get, update } from 'firebase/database';
+import { ref, get, set, update } from 'firebase/database';
+import { checkDueNotifications } from './utils/notifications'; // 👈 Make sure this path is correct
 
 function MyBooksPage() {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
@@ -13,58 +14,49 @@ function MyBooksPage() {
 
     const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
-
-    const fetchBorrows = async () => {
-      const borrowsSnapshot = await get(ref(db, 'borrows'));
-      const borrows = borrowsSnapshot.val() || [];
-      const usersSnapshot = await get(ref(db, 'users'));
-      const users = usersSnapshot.val() || [];
-      const booksSnapshot = await get(ref(db, 'books'));
-      const books = booksSnapshot.val() || [];
-
-      let userId = null;
-      for (let i = 1; i < users.length; i++) {
-        if (users[i]?.email === parsedUser.username) {
-          userId = i;
-          break;
-        }
-      }
-
-      if (userId === null) return;
-
-      const active = [];
-      const history = [];
-
-     for (let i = 0; i < borrows.length; i++) {
-        const b = borrows[i];
-        if(!b) continue; // skip undefined or null entries
-        if (b.user_id === userId) {
-          const book = books[b.book_id];
-          const entry = {
-            id: i,
-            bookName: book.name,
-            photo: book.photo,
-            ret_date: b.ret_date,
-            status: b.status,
-            book_id: b.book_id
-          };
-          if (b.status === 'borrow') active.push(entry);
-          else history.push(entry);
-        }
-      }
-
-      setBorrowedBooks(active);
-      setReturnedBooks(history);
-    };
-
-    fetchBorrows();
+    fetchBorrows(parsedUser);
+    checkDueNotifications(parsedUser); // ✅ run notification check on mount
   }, []);
 
+  const fetchBorrows = async (parsedUser) => {
+    const borrowsSnapshot = await get(ref(db, 'borrows'));
+    const borrows = borrowsSnapshot.val() || [];
+    const booksSnapshot = await get(ref(db, 'books'));
+    const books = booksSnapshot.val() || [];
+
+    const userId = parsedUser.user_id;
+    const active = [];
+    const history = [];
+
+    for (const key in borrows) {
+      const b = borrows[key];
+      if (!b || typeof b.user_id === 'undefined') continue;
+
+      if (b.user_id === userId) {
+        const book = books[b.book_id];
+        if (!book) continue;
+
+        const entry = {
+          id: key,
+          bookName: book.name,
+          photo: book.photo,
+          ret_date: b.ret_date,
+          status: b.status,
+          book_id: b.book_id
+        };
+
+        if (b.status === 'borrow') active.push(entry);
+        else history.push(entry);
+      }
+    }
+
+    setBorrowedBooks(active);
+    setReturnedBooks(history);
+  };
+
   const returnBook = async (borrow) => {
-    // Update status to returned
     await update(ref(db, `borrows/${borrow.id}`), { status: 'returned' });
 
-    // Increase available copies
     const bookRef = ref(db, `books/${borrow.book_id}`);
     const bookSnapshot = await get(bookRef);
     const bookData = bookSnapshot.val();
@@ -72,12 +64,42 @@ function MyBooksPage() {
       available_copies: bookData.available_copies + 1
     });
 
-    // Refresh list
+    // 🔔 Send notifications to wishers
+    const usersSnap = await get(ref(db, 'users'));
+    const allUsers = usersSnap.val() || [];
+
+    const bookName = bookData.name || 'a book';
+    const now = new Date().toISOString();
+
+    const notifSnap = await get(ref(db, 'managment/noti_index'));
+    let notiId = notifSnap.val() + 1;
+
+    for (let i = 1; i < allUsers.length; i++) {
+      const user = allUsers[i];
+      if (!user || !user.wish_list) continue;
+
+      if (user.wish_list.includes(borrow.book_id)) {
+        await set(ref(db, `notifications/${notiId}`), {
+          noti_id: notiId,
+          user_index: i,
+          user_id: user.user_id,
+          type: "System",
+          content: `Good news! '${bookName}' from your wishlist is now available.`,
+          time: now
+        });
+        notiId++;
+      }
+    }
+
+    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
+
     setBorrowedBooks(prev => prev.filter(b => b.id !== borrow.id));
     setReturnedBooks(prev => [...prev, { ...borrow, status: 'returned' }]);
   };
 
-  if (!user) return <p className="text-red-500 p-4">You must be logged in to view your borrowed books.</p>;
+  if (!user) {
+    return <p className="text-red-500 p-4">You must be logged in to view your borrowed books.</p>;
+  }
 
   return (
     <div className="p-6">

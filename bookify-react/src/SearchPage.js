@@ -10,10 +10,12 @@ function SearchPage({ onSelectBook }) {
     const fetchBooks = async () => {
       const snapshot = await get(ref(db, 'books'));
       const data = snapshot.val();
-      const bookList = Object.entries(data || {}).map(([id, book]) => ({
-        ...book,
-        id: parseInt(id)
-      }));
+      const bookList = Object.entries(data || {})
+        .filter(([_, book]) => book !== null)
+        .map(([_, book]) => ({
+            ...book,
+            id: book.book_id // ✅ use internal ID for consistency
+        }));
       setBooks(bookList);
     };
 

@@ -14,7 +14,7 @@ function UserProfilePage() {
     setUser(parsed);
 
     const fetchData = async () => {
-      const snap = await get(ref(db, 'users/' + parsed.username));
+      const snap = await get(ref(db, 'users/' + parsed.user_id));
       setData(snap.val());
     };
 

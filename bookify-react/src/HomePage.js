@@ -3,26 +3,37 @@ import { db } from './firebase';
 import { ref, get } from 'firebase/database';
 
 function HomePage({ onSelectBook }) {
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useState({ trending: [], new: [] });
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      const snapshot = await get(ref(db, 'books'));
-      const data = snapshot.val();
-      const bookList = Object.entries(data || {}).map(([id, book]) => ({
+ useEffect(() => {
+  const fetchBooks = async () => {
+    const snapshot = await get(ref(db, 'books'));
+    const data = snapshot.val();
+    const allBooks = Object.entries(data || {})
+      .filter(([_, book]) => book !== null)
+      .map(([_, book]) => ({
         ...book,
-        id: parseInt(id)
+        id: book.book_id
       }));
-      setBooks(bookList);
-    };
 
-    fetchBooks();
-    const saved = localStorage.getItem("loggedInUser");
-    if (saved) {
-      setUser(JSON.parse(saved));
-    }
-  }, []);
+    const ratedBooks = allBooks
+      .filter(book => typeof book.rate === 'number')
+      .sort((a, b) => b.rate - a.rate)
+      .slice(0, 5);
+
+    const ratedIds = new Set(ratedBooks.map(b => b.book_id));
+    const newBooks = allBooks.filter(b => !ratedIds.has(b.book_id));
+
+    setBooks({ trending: ratedBooks, new: newBooks });
+  };
+
+  fetchBooks();
+  const saved = localStorage.getItem("loggedInUser");
+  if (saved) {
+    setUser(JSON.parse(saved));
+  }
+}, []);
 
   const renderSection = (title, bookSlice) => (
     <section className="mt-8">
@@ -47,27 +58,14 @@ function HomePage({ onSelectBook }) {
   return (
     <div className="p-4">
       <header className="bg-white shadow p-4 flex justify-between items-center relative">
-        <h1 className="text-2xl font-bold text-blue-600 mr-auto">📚 Bookify</h1>
-        <div className="flex items-center gap-4 relative">
-          {user ? (
-            <button className="bg-red-500 text-white px-3 py-2 rounded" onClick={() => {
-              localStorage.removeItem("loggedInUser");
-              setUser(null);
-            }}>🚪 Logout</button>
-          ) : (
-            <>
-              <button className="bg-blue-500 text-white px-3 py-2 rounded">Login</button>
-              <button className="bg-green-500 text-white px-3 py-2 rounded">Register</button>
-            </>
-          )}
-        </div>
+        
+        
       </header>
 
       <main className="mt-6">
         <h2 className="text-xl font-semibold mb-4">📖 Welcome to Bookify</h2>
-        {renderSection("🔥 Trending", books.slice(12, 23))}
-        {renderSection("🆕 Newly Added", books.slice(0, 10))}
-        {renderSection("📥 Recently Returned", books.slice(16, 23))}
+        {renderSection("🔥 Trending", books.trending)}
+        {renderSection("🆕 Newly Added", books.new)}
       </main>
     </div>
   );

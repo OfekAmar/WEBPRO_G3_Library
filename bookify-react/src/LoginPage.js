@@ -13,10 +13,14 @@ function LoginPage({ onLogin }) {
     const allUsers = snapshot.val();
 
     let matchedUser = null;
-    for (let key in allUsers) {
-      const user = allUsers[key];
+
+   for (let i = 1; i < allUsers.length; i++) {
+    const user = allUsers[i];
+    if (!user) continue;
       if (user.email === username && user.password === password) {
         matchedUser = user;
+        matchedUser.index = i;
+
         break;
       }
     }
@@ -24,7 +28,12 @@ function LoginPage({ onLogin }) {
     if (!matchedUser) {
       setMsg("Incorrect email or password");
     } else {
-      localStorage.setItem("loggedInUser", JSON.stringify({ username: matchedUser.email }));
+     localStorage.setItem("loggedInUser", JSON.stringify({
+        username: matchedUser.email,
+        user_id: matchedUser.user_id,
+        userIndex: matchedUser.index,
+        name: matchedUser.name
+        }));
       setMsg("Login successful!");
       onLogin({ username: matchedUser.email });
     }

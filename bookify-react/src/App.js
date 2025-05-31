@@ -6,6 +6,8 @@ import RegisterPage from './RegisterPage';
 import SearchPage from './SearchPage';
 import MyBooksPage from './MyBooksPage';
 import UserProfilePage from './UserProfilePage';
+import MyWishlistPage from './MyWishlistPage';
+import NotificationsPage from './NotificationsPage';
 
 
 function App() {
@@ -40,14 +42,17 @@ function App() {
   <>
     <button onClick={() => setPage('search')} className="bg-gray-300 text-black px-3 py-2 rounded">Search</button>
     <button onClick={() => setPage('mybooks')} className="bg-yellow-400 text-black px-3 py-2 rounded">My Books</button>
+    <button onClick={() => setPage('wishlist')} className="bg-pink-500 text-white px-3 py-2 rounded">Wishlist</button>
     <button className="bg-red-500 text-white px-3 py-2 rounded" onClick={handleLogout}>Logout</button>
+    <button onClick={() => setPage('profile')} className="bg-purple-500 text-white px-3 py-2 rounded">Profile</button>
+    <button onClick={() => setPage('notifications')} className="bg-orange-400 text-white px-3 py-2 rounded">Notifications</button>
   </>
 ) : (
   <>
     <button className="bg-blue-500 text-white px-3 py-2 rounded" onClick={() => setPage('login')}>Login</button>
     <button className="bg-green-500 text-white px-3 py-2 rounded" onClick={() => setPage('register')}>Register</button>
     <button onClick={() => setPage('search')} className="bg-gray-300 text-black px-3 py-2 rounded">Search</button>
-    <button onClick={() => setPage('profile')} className="bg-purple-500 text-white px-3 py-2 rounded">Profile</button>
+    
   </>
 )}
       </div>
@@ -76,8 +81,13 @@ function App() {
     }} />
   ) : page === 'mybooks' ? (
   <MyBooksPage />
-) : page === 'profile' ? (
+) : page === 'wishlist' ? (
+  <MyWishlistPage />
+): page === 'profile' ? (
   <UserProfilePage />
+) : page === 'notifications' ? (
+    <NotificationsPage />
+
   ) : selectedBook ? (
     <>
       <button onClick={() => {

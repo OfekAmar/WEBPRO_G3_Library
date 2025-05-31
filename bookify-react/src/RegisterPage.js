@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { db } from './firebase';
-import { ref, get, set } from 'firebase/database';
+import { ref, get, set ,update} from 'firebase/database';
 
 function RegisterPage({ onRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [userId, setUserId] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [msg, setMsg] = useState('');
@@ -14,7 +15,9 @@ function RegisterPage({ onRegister }) {
       setMsg("Please fill in all fields");
       return;
     }
-
+    
+    const mgmtSnap = await get(ref(db, 'managment/users_index'));
+    const newUserIndex = mgmtSnap.val() + 1;
     const usersRef = ref(db, 'users');
     const snapshot = await get(usersRef);
     const allUsers = snapshot.val() || {};
@@ -25,21 +28,30 @@ function RegisterPage({ onRegister }) {
       return;
     }
 
-    const ids = Object.keys(allUsers)
-      .map(id => parseInt(id))
-      .filter(id => !isNaN(id));
-    const nextId = ids.length > 0 ? Math.max(...ids) + 1 : 1;
+    const parsedId = parseInt(userId);
+    if (isNaN(parsedId)) {
+    setMsg("User ID must be a number");
+    return;
+    }
+    const idTaken = Object.values(allUsers).some(u => u.user_id === parsedId);
+    if (idTaken) {
+    setMsg("User ID already in use");
+    return;
+    }
 
-    await set(ref(db, 'users/' + nextId), {
+    await set(ref(db, 'users/' + newUserIndex),{
       email,
       password,
+      user_id: parsedId,
       name,
       phone,
       role: 'user',
       notification_method: 'Email'
     });
+    await update(ref(db, 'managment'), { users_index: newUserIndex });
+    
 
-    localStorage.setItem("loggedInUser", JSON.stringify({ username: email }));
+    localStorage.setItem("loggedInUser", JSON.stringify({ username: email, user_id: parsedId, userIndex: newUserIndex }));
     setMsg("Account created!");
     onRegister({ username: email });
   };
@@ -58,35 +70,44 @@ function RegisterPage({ onRegister }) {
         {/* Right side form */}
         <div className="p-8 border-l">
           <h3 className="text-xl font-semibold mb-6">Create Account</h3>
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="Your name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="text"
-              placeholder="050-0000000"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full border rounded px-3 py-2"
-            />
+          
+            <div className="space-y-4 flex flex-col">
+                <input
+                    type="number"
+                    placeholder="User ID (must be unique)"
+                    value={userId}
+                    onChange={e => setUserId(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                />
+                <input
+                    type="text"
+                    placeholder="Your name"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                />
+                <input
+                    type="email"
+                    placeholder="you@example.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                />
+                <input
+                    type="text"
+                    placeholder="050-0000000"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="w-full border rounded px-3 py-2"
+                />
+            
             <button
               onClick={handleRegister}
               className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
