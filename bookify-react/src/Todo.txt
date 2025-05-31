@@ -1,0 +1,10 @@
+1. fix myBook Page V
+2. add wish listV V
+3. trending books
+    3.1 add option to rate book after returning. V
+
+4. notification page
+5. bookPage
+    5.1 edit book card with all the data from firebase
+    5.2 add option of "notify me" bottom instad borrow in case the book un avilable.
+6. profile page
