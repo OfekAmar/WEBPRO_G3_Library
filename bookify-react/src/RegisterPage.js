@@ -11,10 +11,15 @@ function RegisterPage({ onRegister }) {
   const [msg, setMsg] = useState('');
 
   const handleRegister = async () => {
-    if (!email || !password || !name || !phone) {
-      setMsg("Please fill in all fields");
-      return;
-    }
+  if (!email || !password || !name || !phone) {
+    setMsg("Please fill in all fields");
+    return;
+  }
+
+  if (!/^05\d{8}$/.test(phone)) {
+  setMsg("Phone number must start with 05 and be 10 digits long");
+  return;
+  } 
     
     const mgmtSnap = await get(ref(db, 'managment/users_index'));
     const newUserIndex = mgmtSnap.val() + 1;
@@ -61,7 +66,7 @@ function RegisterPage({ onRegister }) {
       <div className="max-w-4xl w-full bg-white shadow-xl rounded-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
         {/* Left side message */}
         <div className="bg-white p-8">
-          <h2 className="text-2xl font-bold mb-2">📝 Register</h2>
+          <h2 className="text-2xl font-bold mb-2">Register📝</h2>
           <p className="text-gray-600">
             Create a free account to start borrowing books, build your reading list, and enjoy all the features of Bookify Library.
           </p>
@@ -73,11 +78,14 @@ function RegisterPage({ onRegister }) {
           
             <div className="space-y-4 flex flex-col">
                 <input
-                    type="number"
-                    placeholder="User ID (must be unique)"
-                    value={userId}
-                    onChange={e => setUserId(e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                      type="text"
+                      placeholder="User ID (9 digits)"
+                      value={userId}
+                      onChange={e => {
+                        const value = e.target.value;
+                        if (/^\d{0,9}$/.test(value)) setUserId(value);
+                      }}
+                      className="w-full border rounded px-3 py-2"
                 />
                 <input
                     type="text"
@@ -94,18 +102,29 @@ function RegisterPage({ onRegister }) {
                     className="w-full border rounded px-3 py-2"
                 />
                 <input
-                    type="text"
-                    placeholder="050-0000000"
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                      type="text"
+                      placeholder="05*-*******"
+                      value={phone}
+                      onChange={e => {
+                        const value = e.target.value;
+                        if (/^0?$|^05\d{0,8}$/.test(value)) {
+                          setPhone(value);
+                        }
+                      }}
+                      className="w-full border rounded px-3 py-2"
+
                 />
                 <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                      type="password"
+                      placeholder="Password (max 20 chars)"
+                      value={password}
+                      onChange={e => {
+                        const value = e.target.value;
+                        if (value.length <= 20) {
+                          setPassword(value);
+                        }
+                      }}
+                      className="w-full border rounded px-3 py-2"
                 />
             
             <button

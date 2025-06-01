@@ -6,11 +6,13 @@ function BookPage() {
   const [book, setBook] = useState(null);
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState("");
-  const [inWishlist, setInWishlist] = useState(false);
+  const [inNotifyList, setInNotifyList] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [averageRating, setAverageRating] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
+  const [inWishlist, setInWishlist] = useState(false);
+  
 
   useEffect(() => {
     const stored = sessionStorage.getItem("selectedBook");
@@ -22,13 +24,21 @@ function BookPage() {
   }, []);
 
   useEffect(() => {
+  const checkNotifyList = async () => {
+    if (!user || !book) return;
+    const snap = await get(ref(db, 'users/' + user.userIndex + '/notify_list'));
+    const list = snap.val() || [];
+    setInNotifyList(list.includes(book.book_id));
+  };
+
   const checkWishlist = async () => {
     if (!user || !book) return;
-    const snap = await get(ref(db, 'users/' + user.userIndex + '/wish_list'));
+    const snap = await get(ref(db, 'users/' + user.userIndex + '/wishlist'));
     const list = snap.val() || [];
     setInWishlist(list.includes(book.book_id));
   };
 
+  checkNotifyList();
   checkWishlist();
 }, [user, book]);
 useEffect(() => {
@@ -48,10 +58,28 @@ useEffect(() => {
   checkBookExtras();
 }, [book, user]);
 
-const toggleWishlist = async () => {
-    const userRef = ref(db, 'users/' + user.userIndex + '/wish_list');
+const toggleNotifyList  = async () => {
+    const userRef = ref(db, 'users/' + user.userIndex + '/notify_list');
     const snap = await get(userRef);
     const list = snap.val() || [];
+
+  let updatedList;
+  if (list.includes(book.book_id)) {
+    updatedList = list.filter(id => id !== book.book_id);
+    setInNotifyList(false);
+  } else {
+    updatedList = [...list, book.book_id];
+    setInNotifyList(true);
+  }
+
+  await update(ref(db, 'users/' + user.userIndex), {
+    notify_list: updatedList
+  });
+};
+const toggleWishlist = async () => {
+  const userRef = ref(db, 'users/' + user.userIndex + '/wishlist');
+  const snap = await get(userRef);
+  const list = snap.val() || [];
 
   let updatedList;
   if (list.includes(book.book_id)) {
@@ -63,7 +91,7 @@ const toggleWishlist = async () => {
   }
 
   await update(ref(db, 'users/' + user.userIndex), {
-    wish_list: updatedList
+    wishlist: updatedList
   });
 };
 const handleRating = async (rating) => {
@@ -157,7 +185,7 @@ const handleAddComment = async () => {
 
     // Check if user already borrowed this book and it's still active
     const borrowsSnapshot = await get(ref(db, 'borrows'));
-    const allBorrows = borrowsSnapshot.val() || [];
+    const allBorrows = Object.values(borrowsSnapshot.val() || {});
     const alreadyBorrowed = allBorrows.some(
       b => b.book_id === bookId && b.user_id === userId && b.status === 'borrow'
     );
@@ -190,8 +218,10 @@ const handleAddComment = async () => {
     await update(ref(db, `books/${bookId}`), {
       available_copies: available - 1
     });
+    alert(`The book "${book.name}" was successfully borrowed✅. \nThe return date is ${returnDate.toISOString().split('T')[0]}. Any delay will result in a late fee.`);
 
-    setMessage("Book borrowed successfully!");
+    const formattedDate = returnDate.toLocaleDateString('en-GB');
+    setMessage(`✅ The book "${book.name}" was successfully borrowed. The return date is ${formattedDate}. Any delay will result in a late fee.`);
   };
 
   if (!book) return <p className="p-4 text-red-500">No book selected</p>;
@@ -202,27 +232,42 @@ const handleAddComment = async () => {
       <img src={book.photo} alt={book.name} className="w-52 h-72 mb-4 rounded shadow" />
       <p className="mb-2"><strong>Author:</strong> {book.author}</p>
       <p className="mb-4"><strong>Description:</strong> {book.description}</p>
+      <p className="text-sm text-gray-600"> Location on shelf📍: {book.location}</p>
+
 
       {user ? (
-        <>
-          <button onClick={borrowBook} className="bg-green-500 text-white px-4 py-2 rounded">
-            Borrow This Book
-          </button>
-          {message && <p className="mt-4 text-green-600">{message}</p>}
-          <button
-            onClick={toggleWishlist}
-            className="mt-4 bg-purple-500 text-white px-4 py-2 rounded"
-            >
-            {inWishlist ? '💔 Remove from Wishlist' : '💖 Add to Wishlist'}
-            </button>
-        </>
-        
-      ) : (
-        <p className="text-red-500 font-semibold">Login to borrow</p>
-      )}
+  <>
+    {book.available_copies > 0 ? (
+      <button
+        onClick={borrowBook}
+        className="bg-green-500 text-white px-4 py-2 rounded"
+      >
+        Borrow This Book
+      </button>
+    ) : (
+      <button
+        onClick={toggleNotifyList}
+        className="bg-purple-500 text-white px-4 py-2 rounded"
+      >
+        {inNotifyList ? 'Remove from Notify List 🔕' : 'Add to Notify List 🔔'}
+      </button>
+    )}
+    <button
+      onClick={toggleWishlist}
+      className="mt-2 bg-pink-500 text-white px-4 py-2 rounded"
+    >
+      {inWishlist ? '💔 Remove from Wishlist' : '💖 Add to Wishlist'}
+    </button>
+
+    {message && <p className="mt-4 text-green-600">{message}</p>}
+  </>
+) : (
+  <p className="text-red-500 font-semibold">Login to borrow</p>
+)}
+
       <div className="mt-6">
 <h3 className="text-lg font-semibold">
-  ⭐ Rating: {averageRating !== null ? `${averageRating}/5` : 'No rating yet'}
+  Rating⭐: {averageRating !== null ? `${averageRating}/5` : 'No rating yet'}
 </h3>
 
 <div className="flex gap-2 mt-2">
