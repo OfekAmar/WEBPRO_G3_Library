@@ -63,9 +63,9 @@ function HomePage({ onSelectBook }) {
       </header>
 
       <main className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">📖 Welcome to Bookify</h2>
-        {renderSection("🔥 Trending", books.trending)}
-        {renderSection("🆕 Newly Added", books.new)}
+        <h2 className="text-xl font-semibold mb-4">Welcome to Bookify📖</h2>
+        {renderSection("Trending🔥", books.trending)}
+        {renderSection("Newly Added🆕 ", books.new)}
       </main>
     </div>
   );

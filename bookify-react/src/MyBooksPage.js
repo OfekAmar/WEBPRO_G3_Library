@@ -64,7 +64,21 @@ function MyBooksPage() {
       available_copies: bookData.available_copies + 1
     });
 
-    // 🔔 Send notifications to wishers
+    const today = new Date();
+    const dueDate = new Date(borrow.ret_date);
+    const isLate = today > dueDate;
+    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+
+    if (isLate) {
+      alert(
+        `The book "${borrow.bookName}" was returned.✅\n⚠️ You are ${lateDays} day(s) late.\nYou will be fined by the college via the Student Information Station.`
+      );
+    } else {
+      alert(`The book "${borrow.bookName}" was returned on time✅. \nThank you!`);
+    }
+
+
+    // 🔔 Send notifications to NotifyList
     const usersSnap = await get(ref(db, 'users'));
     const allUsers = usersSnap.val() || [];
 
@@ -76,15 +90,15 @@ function MyBooksPage() {
 
     for (let i = 1; i < allUsers.length; i++) {
       const user = allUsers[i];
-      if (!user || !user.wish_list) continue;
+      if (!user || !user.notify_list) continue;
 
-      if (user.wish_list.includes(borrow.book_id)) {
+      if (user.notify_list.includes(borrow.book_id)) {
         await set(ref(db, `notifications/${notiId}`), {
           noti_id: notiId,
           user_index: i,
           user_id: user.user_id,
           type: "System",
-          content: `Good news! '${bookName}' from your wishlist is now available.`,
+          content: `Good news! '${bookName}' from your notify list  is now available.`,
           time: now
         });
         notiId++;
@@ -103,14 +117,15 @@ function MyBooksPage() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">📚 My Borrowed Books</h2>
+      <h2 className="text-2xl font-bold mb-4">My Borrowed Books📚 </h2>
 
       {borrowedBooks.length === 0 ? (
         <p className="text-gray-600">You haven’t borrowed any books yet.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-10">
+        <div className="flex overflow-x-auto space-x-4 mb-10 pb-2 whitespace-nowrap">
           {borrowedBooks.map((book, i) => (
-            <div key={i} className="border p-2 rounded shadow">
+            <div key={i} className="inline-block min-w-[200px] border p-2 rounded shadow">
+
               <img src={book.photo} alt={book.bookName} className="w-full h-48 object-cover rounded mb-2" />
               <p className="font-semibold">{book.bookName}</p>
               <p className="text-sm text-gray-600">Return by: {book.ret_date}</p>
@@ -125,13 +140,14 @@ function MyBooksPage() {
         </div>
       )}
 
-      <h3 className="text-xl font-semibold mb-4">📖 History of Returned Books</h3>
+      <h3 className="text-xl font-semibold mb-4">History of Returned Books📖</h3>
       {returnedBooks.length === 0 ? (
         <p className="text-gray-600">No books returned yet.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="flex overflow-x-auto space-x-4 mb-10 pb-2 whitespace-nowrap">
           {returnedBooks.map((book, i) => (
-            <div key={i} className="border p-2 rounded shadow bg-gray-100">
+            <div key={i} className="inline-block min-w-[200px] border p-2 rounded shadow">
+
               <img src={book.photo} alt={book.bookName} className="w-full h-48 object-cover rounded mb-2" />
               <p className="font-semibold">{book.bookName}</p>
               <p className="text-sm text-gray-500">Returned</p>
