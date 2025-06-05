@@ -8,6 +8,7 @@ const Button = ({ label, onClick, variant = "primary", icon: Icon, disabled = fa
     danger: "bg-red-600 text-white hover:bg-red-700",
     outline: "border border-gray-500 text-gray-700 hover:bg-gray-100",
     disabled: "bg-gray-300 text-gray-500 cursor-not-allowed",
+    teal: "bg-teal-700 text-white hover:bg-teal-800",
   };
 
   const style = `${base} ${disabled ? variants.disabled : variants[variant]}`;
