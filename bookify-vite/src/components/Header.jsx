@@ -1,43 +1,93 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, Search } from 'lucide-react';
 
 const Header = ({ user, onLogout, onLoginClick }) => {
-  const tabClass =
-    "px-3 py-1 rounded-md hover:bg-gray-700 transition-colors whitespace-nowrap";
+  const [search, setSearch] = React.useState('');
+  const [subject, setSubject] = React.useState('');
+  const navigate = useNavigate();
+
+  const subjects = [
+    'Fiction', 'Science', 'Technology', 'History', 'Biography'
+  ];
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const query = new URLSearchParams();
+    if (search.trim()) query.set("q", search.trim());
+    if (subject) query.set("subject", subject);
+    navigate(`/search?${query.toString()}`);
+  };
 
   return (
-    <header className="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
-      {/* Left side: Logo + Tabs */}
-      <div className="flex items-center gap-4 whitespace-nowrap">
-        <Link to="/" className="text-3xl font-bold whitespace-nowrap border-white/30">
-          BOOKIFY 📚
-        </Link>
-        <nav className="flex gap-2 items-center">
-          {user && (
-            <>
-              <Link to="/profile" className="px-3 border-r border-white/30">👤 Profile</Link>
-              <Link to="/myBooks" className="px-3 border-r border-white/30">📚 My Books</Link>
-              <Link to="/wishlist" className="px-3 border-r border-white/30">💖 Wishlist</Link>
-              <Link to="/notifylist" className="px-3 border-r border-white/30">🔔 Notify</Link>
-              <Link to="/notifications" className="px-3">📩 Notifications</Link>
-            </>
-          )}
-        </nav>
-      </div>
+    <header className="fixed top-0 left-0 w-full z-[9999] bg-white shadow-md px-8 py-4 flex items-center justify-between">
 
-      {/* Right side: Login/Logout */}
-      <div className="ml-auto">
+      {/* Logo */}
+      <Link to="/" className="flex items-center">
+        <img src="logos\bookify_logo_bi.png" alt="Bookify logo" className="h-9" />
+      </Link>
+
+      {/* Search + Category filter */}
+      <form
+        onSubmit={handleSearch}
+        className="absolute left-1/2 -translate-x-1/2 flex max-w-3xl w-full items-center gap-2"
+      >
+        {/* Subject select */}
+        <select
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          className="h-full px-3 py-2 border border-gray-300 rounded text-sm"
+        >
+          <option value="">All</option>
+          {subjects.map((s, idx) => (
+            <option key={idx} value={s}>{s}</option>
+          ))}
+        </select>
+
+        {/* Search input */}
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search for books..."
+          className="flex-1 px-4 py-2 border border-gray-300 rounded text-sm"
+        />
+
+        {/* Submit button */}
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          <Search size={18} />
+        </button>
+      </form>
+
+      {/* Right actions */}
+      <div className="flex items-center gap-4">
+        {user && (
+          <nav className="hidden md:flex gap-4 text-sm font-medium">
+            <Link to="/profile" className="hover:text-blue-500">👤 Profile</Link>
+            <Link to="/myBooks" className="hover:text-blue-500">📚 My Books</Link>
+            <Link to="/wishlist" className="hover:text-blue-500">💖 Wishlist</Link>
+            <Link to="/notifylist" className="hover:text-blue-500">🔔 Notify</Link>
+          </nav>
+        )}
+        {user && (
+          <Link to="/notifications" className="text-gray-600 hover:text-blue-500 transition">
+            <Bell size={20} />
+          </Link>)}
+
         {user ? (
           <button
             onClick={onLogout}
-            className="px-3 py-1 rounded-md bg-red-600 hover:bg-red-700 transition"
+            className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-4 py-1.5 rounded-md shadow-md transition"
           >
             Logout
           </button>
         ) : (
           <button
             onClick={onLoginClick}
-            className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-700 transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition"
           >
             Login / Register
           </button>
