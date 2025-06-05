@@ -4,7 +4,7 @@ const BorrowButton = ({ isBorrowed, onToggle }) => {
   return (
     <Button
       label={isBorrowed ? 'Return' : 'Borrow'}
-      variant="primary"
+      variant="teal"
       onClick={onToggle}
     />
   );
