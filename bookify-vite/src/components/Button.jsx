@@ -17,7 +17,7 @@ const Button = ({
     danger: "bg-red-600 text-white hover:bg-red-700",
     outline: "border border-gray-500 text-gray-700 hover:bg-gray-100",
     disabled: "bg-gray-300 text-gray-500 cursor-not-allowed",
-    carousel: "bg-white !important text-gray-800 shadow p-2 rounded-full hover:bg-gray-100"
+    carousel: "bg-white !important text-gray-800 shadow p-2 rounded-full hover:bg-gray-100",
     teal: "bg-teal-700 text-white hover:bg-teal-800",
   };
 
