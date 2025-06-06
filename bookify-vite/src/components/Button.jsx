@@ -19,6 +19,7 @@ const Button = ({
     disabled: "bg-gray-300 text-gray-500 cursor-not-allowed",
     carousel: "bg-white !important text-gray-800 shadow p-2 rounded-full hover:bg-gray-100",
     teal: "w-22 h-10 rounded-full bg-yellow-700 text-white hover:bg-yellow-800",
+    pill: "flex items-center border border-teal-700 rounded-full text-teal-800 font-semibold text-sm overflow-hidden transition hover:bg-teal-50",
   };
 
   const style = `${base} ${disabled ? variants.disabled : variants[variant]} ${className}`;
