@@ -55,14 +55,6 @@ useEffect(() => {
       <div className="p-6">
         <h2 className="text-xl font-bold mb-4">Search Books 🔎</h2>
 
-        <SearchBar
-          value={search}
-            onSearch={(value) => {
-              setSearch(value);
-              setHasSearched(true);
-            }}
-        />
-
         <label className="block mb-2 font-medium">Filter by subject:</label>
         <select
           value={selectedSubject}

@@ -50,15 +50,15 @@ const Header = ({ user, onLogout, onLoginClick }) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search for books..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded text-sm"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded md text-sm"
         />
 
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          className="bg-[rgb(207,230,238)] border-gray-800 hover:bg-blue-700 text-white px-4 py-2 rounded"
         >
-          <Search size={18} />
+          <Search size={18} className="text-indigo-950" />
         </button>
       </form>
 
@@ -87,7 +87,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         ) : (
           <button
             onClick={onLoginClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition"
+            className="bg-[rgb(207,230,238)] border-gray-800 hover:bg-blue-700 text-indigo-950 px-4 py-1.5 rounded-md transition"
           >
             Login / Register
           </button>
