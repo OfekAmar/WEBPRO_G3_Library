@@ -13,21 +13,21 @@ const WishlistButton = ({ isWished, onToggle }) => {
 export default WishlistButton;
 */}
 
-
 const WishlistButton = ({ isWished, onToggle }) => {
   return (
-    <sapn
+    <span
       onClick={onToggle}
-      className={`
-        w-10 h-10 rounded-full flex items-center justify-center
-        border border-gray-300 text-gray-600 hover:bg-gray-100 transition
-        ${isWished ? 'text-red-500' : ''}
-      `}
-      aria-label="Toggle Wishlist"
       type="button"
+      title={isWished ? 'Remove from Wishlist' : 'Add to Wishlist'}
+      className={`
+    w-10 h-10 rounded-full flex items-center justify-center
+    border border-gray-300 text-gray-600 hover:bg-gray-100
+    transition duration-200 cursor-pointer
+    ${isWished ? 'text-red-500' : ''}
+  `}
     >
       <i className="fa-solid fa-heart"></i>
-    </sapn>
+    </span>
   );
 };
 
