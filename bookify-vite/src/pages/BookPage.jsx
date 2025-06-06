@@ -198,6 +198,17 @@ function BookPage({ user }) {
 
           <div>
             <h2 className="text-3xl font-bold mb-4">{book.name}</h2>
+            {book.available_copies > 0 ? (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="text-green-600 font-semibold">Stock Availability.</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="text-red-600 font-semibold">Out of Stock</span>
+              </div>
+            )}
             <Rating
               average={averageRating}
               userRating={userRating}
@@ -208,7 +219,7 @@ function BookPage({ user }) {
                 setTimeout(() => {
                   const el = document.getElementById('reviews-section');
                   el?.scrollIntoView({ behavior: 'smooth' });
-                }, 100); // כדי לא לגלול לפני שזה נטען
+                }, 100); 
               }}
             />
             <p className="mb-2"><strong>Author:</strong> {book.author}</p>
@@ -218,7 +229,7 @@ function BookPage({ user }) {
             {user ? (
               <div className="space-y-3">
 
-                {/* שורת כפתורי Borrow + Wishlist */}
+                
                 <div className="flex items-center gap-4">
                   {book.available_copies > 0 ? (
                     alreadyBorrowed ? (
@@ -235,14 +246,12 @@ function BookPage({ user }) {
                     />
                   )}
 
-                  {/* כפתור הלב (wishlist) תמיד יוצג ליד הכפתור הראשי */}
                   <WishlistButton
                     isWished={inWishlist}
                     onToggle={toggleWishlist}
                   />
                 </div>
 
-                {/* הודעה על הצלחה */}
                 {message && <p className="mt-2 text-green-600">{message}</p>}
               </div>
             ) : (
