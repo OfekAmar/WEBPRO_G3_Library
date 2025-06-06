@@ -1,12 +1,48 @@
+import React from 'react';
+import { Phone, Mail, Clock, MapPin } from 'lucide-react';
+
 const Footer = () => {
   return (
-    <footer className="w-full bg-gray-100 text-gray-600 text-sm py-4 mt-10 border-t">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center">
-        <p>&copy; {new Date().getFullYear()} Bookify. All rights reserved.</p>
-        <div className="flex space-x-4 mt-2 sm:mt-0">
-          <a href="/privacy" className="hover:underline">Privacy</a>
-          <a href="/terms" className="hover:underline">Terms</a>
-          <a href="/contact" className="hover:underline">Contact</a>
+    <footer className="w-full mt-12">
+      {/* MAP */}
+      <div className="w-full bg-[#d8eef5]">
+        <iframe
+          title="Bookify Map"
+          width="100%"
+          height="400"
+          className="block"
+          style={{ border: 0 }}
+          loading="lazy"
+          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=סנונית+51+כרמיאל+2161002&output=embed"
+        />
+      </div>
+
+      {/* CONTACT */}
+      <div className="w-full bg-[rgb(207,230,238)] text-indigo-950 py-8 px-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start">
+            <Phone className="mb-2" />
+            <span className="text-indigo-950">Call Us 24/7</span>
+            <span className="font-bold">04-644-3204</span>
+          </div>
+          <div className="flex flex-col items-center md:items-start">
+            <Mail className="mb-2" />
+            <span className="text-indigo-950">Make a Quote</span>
+            <span className="font-bold">Library@e.braude.ac.il</span>
+          </div>
+          <div className="flex flex-col items-center md:items-start">
+            <Clock className="mb-2" />
+            <span className="text-indigo-950">Opening Hours</span>
+            <span className="font-bold">Sunday - Friday</span>
+            <span className="font-bold">8:30 - 14:00</span>
+          </div>
+          <div className="flex flex-col items-center md:items-start">
+            <MapPin className="mb-2" />
+            <span className="text-indigo-950">Location</span>
+            <span className="font-bold">Snunit Street 51, Karmiel</span>
+          </div>
         </div>
       </div>
     </footer>
