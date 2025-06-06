@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '../components/Button';
 import LibraryMap from '../components/LibraryMap';
 import ContactBar from '../components/ContactBar';
+import Footer from '../components/Footer';
 
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
@@ -96,8 +97,7 @@ function HomePage() {
         {renderCarousel('🆕 Newly Added Books', books.new, newRef)}
       </section>
 
-      <LibraryMap />
-      <ContactBar />
+      <Footer />
     </>
   );
 }
