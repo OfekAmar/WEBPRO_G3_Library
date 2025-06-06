@@ -61,7 +61,14 @@ function HomePage() {
         style={{ scrollbarWidth: 'none' }}
       >
         {booksArray.map(book => (
-          <BookCard key={book.id} book={book} />
+          <BookCard
+            key={book.id}
+            book={book}
+            onClick={() => {
+              sessionStorage.setItem('selectedBook', JSON.stringify(book));
+              navigate('/book');
+            }}
+          />
         ))}
       </div>
 

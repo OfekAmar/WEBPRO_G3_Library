@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { ref, set, get, update } from 'firebase/database';
@@ -9,9 +8,11 @@ import BorrowButton from '../components/BorrowButton';
 import WishlistButton from '../components/WishlistButton';
 import Button from '../components/Button';
 import NotifyButton from '../components/NotificationBell';
+import { resolveBookCover } from '../utils/fetchGoogleBookCover';
 
 function BookPage({ user }) {
   const [book, setBook] = useState(null);
+  const [cover, setCover] = useState(null);
   const [message, setMessage] = useState("");
   const [inNotifyList, setInNotifyList] = useState(false);
   const [userRating, setUserRating] = useState(0);
@@ -21,11 +22,20 @@ function BookPage({ user }) {
   const [alreadyBorrowed, setAlreadyBorrowed] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
 
-
   useEffect(() => {
     const stored = sessionStorage.getItem("selectedBook");
     if (stored) setBook(JSON.parse(stored));
   }, []);
+
+  useEffect(() => {
+    const loadCover = async () => {
+      if (book) {
+        const image = await resolveBookCover(book);
+        setCover(image);
+      }
+    };
+    loadCover();
+  }, [book]);
 
   useEffect(() => {
     const checkNotifyList = async () => {
@@ -193,7 +203,11 @@ function BookPage({ user }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
           <div className="flex justify-center">
-            <img src={book.photo} alt={book.name} className="w-full max-w-xs rounded-lg shadow" />
+            {cover ? (
+              <img src={cover} alt={book.name} className="w-full max-w-xs rounded-lg shadow" />
+            ) : (
+              <div className="w-48 h-64 bg-gray-200 animate-pulse rounded-lg shadow" />
+            )}
           </div>
 
           <div>
@@ -229,7 +243,6 @@ function BookPage({ user }) {
             {user ? (
               <div className="space-y-3">
 
-                
                 <div className="flex items-center gap-4">
                   {book.available_copies > 0 ? (
                     alreadyBorrowed ? (
