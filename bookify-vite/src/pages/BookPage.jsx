@@ -229,11 +229,16 @@ function BookPage({ user }) {
               reviewCount={comments.length}
               onRate={handleRating}
               onOpenReviews={() => {
-                setShowReviews(true);
-                setTimeout(() => {
-                  const el = document.getElementById('reviews-section');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }, 100); 
+                setShowReviews(prev => {
+                  const newValue = !prev;
+                  if (newValue) {
+                    setTimeout(() => {
+                      const el = document.getElementById('reviews-section');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }
+                  return newValue;
+                });
               }}
             />
             <p className="mb-2"><strong>Author:</strong> {book.author}</p>

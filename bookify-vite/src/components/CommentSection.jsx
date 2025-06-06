@@ -130,9 +130,9 @@ const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
     required
   />
 
-  <button type="submit" className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 transition">
+  <span type="submit" className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 cursor-pointer transition-all">
     Submit Now
-  </button>
+  </span>
 </form>
     </div>
   );
