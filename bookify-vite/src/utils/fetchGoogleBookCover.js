@@ -17,11 +17,25 @@ const fetchGoogleBookCover = async (titleOrIsbn) => {
         return imageLink;
       }
     }
-    return null;
   } catch (err) {
-    console.error("Error fetching from Google Books API:", err);
-    return null;
+    console.error("Google Books API failed, trying Open Library...", err);
   }
+
+  // Try OpenLibrary fallback
+  try {
+    const olQuery = encodeURIComponent(titleOrIsbn);
+    const olUrl = `https://openlibrary.org/search.json?title=${olQuery}`;
+    const olRes = await fetch(olUrl);
+    const olData = await olRes.json();
+
+    if (olData.docs && olData.docs.length > 0 && olData.docs[0].cover_i) {
+      return `https://covers.openlibrary.org/b/id/${olData.docs[0].cover_i}-L.jpg`;
+    }
+  } catch (err) {
+    console.error("Open Library API also failed:", err);
+  }
+
+  return null;
 };
 
 export const resolveBookCover = async (book) => {
