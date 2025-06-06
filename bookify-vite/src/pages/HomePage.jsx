@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import LibraryMap from '../components/LibraryMap';
 import ContactBar from '../components/ContactBar';
 import Footer from '../components/Footer';
+import FeaturedAuthors from '../components/FeaturedAuthors';
 
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
@@ -47,7 +48,7 @@ function HomePage() {
 
   const renderCarousel = (title, booksArray, refName) => (
     <div className="relative mb-12">
-      <h3 className="text-xl font-bold mb-4">{title}</h3>
+      <h3 className="text-3xl font-bold text-gray-800 mb-2 text-center">{title}</h3>
       <Button
         variant="carousel"
         onClick={() => scrollCarousel(refName, 'left')}
@@ -93,8 +94,11 @@ function HomePage() {
         />
       </div>
       <section className="p-6 max-w-6xl mx-auto">
-        {renderCarousel('📈 Trending Books', books.trending, trendingRef)}
-        {renderCarousel('🆕 Newly Added Books', books.new, newRef)}
+        {renderCarousel(' Trending Books', books.trending, trendingRef)}
+      </section>
+      <FeaturedAuthors />
+      <section className="p-6 max-w-6xl mx-auto">
+        {renderCarousel(' Newly Added Books', books.new, newRef)}
       </section>
 
       <Footer />
