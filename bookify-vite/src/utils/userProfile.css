@@ -1,0 +1,317 @@
+:root {
+  --content-padding: 22px;
+  --gap-padding: 22px;
+  --accent-color: #03a9f4;
+  --subtitle-color: #777;
+  --info-color: #3498db;
+}
+
+/* Layout */
+.view-host {
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+  padding: 0;
+}
+
+.view-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--content-padding);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Toolbar */
+.dx-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.dx-toolbar .dx-button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: #f7f7f7;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.save-button {
+  background-color: var(--accent-color);
+  color: white;
+  font-weight: 500;
+  border: none;
+}
+
+/* Grid Cards */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.card {
+  flex: 1 1 100%;
+  background: white;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 0 0 1px #eee;
+  min-width: 320px;
+}
+
+/* Profile Header */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.form-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #e0e0e0;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-id {
+  font-size: 14px;
+  color: var(--subtitle-color);
+}
+
+/* Change Password Button */
+.change-password-button {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.change-password-button svg {
+  color: #555;
+}
+
+/* Grid Fields */
+.form-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.dx-input {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  border-radius: 0;
+  background-color: #f9f9f9;
+  padding: 10px 4px;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  box-shadow: none;
+  transition: border-bottom 0.2s ease;
+}
+
+.dx-input:focus {
+  border-bottom: 2px solid #03a9f4;
+  background-color: #fff;
+}
+
+select.dx-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #f9f9f9;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 30px 10px 4px; /* השאר מקום לחץ */
+  font-size: 14px;
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+select.dx-input:focus {
+  border-bottom: 2px solid var(--accent-color);
+  background-color: #fff;
+}
+
+/* Status */
+.status-text {
+  color: var(--accent-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.status-text::before {
+  content: "●";
+  color: var(--accent-color);
+  font-size: 16px;
+  margin-right: 6px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-window {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-form label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+
+.modal-form input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.modal-cancel {
+  background: white;
+  border: 1px solid #999;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.modal-save {
+  background: #ddd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #999;
+}
+
+.dx-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #eee;
+  color: #aaa;
+  border: 1px solid #ddd;
+}
+
+.form-fields-grid.two-cols {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.form-fields-grid.four-cols {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select.dx-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #f9f9f9;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 30px 10px 4px;
+  font-size: 14px;
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* ▼ */
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 16px;
+  transition: background-image 0.2s ease;
+}
+
+.select-wrapper.open select.dx-input {
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 14l5-5 5 5z'/%3E%3C/svg%3E"); /* ▲ */
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon .dx-input {
+  padding-right: 36px; /* מקום לאייקון */
+}
+
+.input-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+}
