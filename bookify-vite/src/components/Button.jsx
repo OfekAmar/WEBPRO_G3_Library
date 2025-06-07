@@ -6,9 +6,9 @@ const Button = ({
   icon: Icon,
   disabled = false,
   children,
-  className = "", 
+  className = "",
 }) => {
-  const base = "appearance-none bg-transparent border-none px-4 py-2 rounded text-sm font-medium transition";
+  const base = "appearance-none bg-transparent px-4 py-2 rounded text-sm font-medium transition";
 
 
   const variants = {
@@ -20,16 +20,19 @@ const Button = ({
     carousel: "bg-white !important text-gray-800 shadow p-2 rounded-full hover:bg-gray-100",
     teal: "w-22 h-10 rounded-full bg-yellow-700 text-white hover:bg-yellow-800",
     pill: "flex items-center border border-teal-700 rounded-full text-teal-800 font-semibold text-sm overflow-hidden transition hover:bg-teal-50",
+    borrow: "!border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 cursor-pointer transition-all",
+    trash: "border border-red-600 text-red-600 font-semibold px-6 py-2 rounded-full hover:bg-red-50 cursor-pointer transition-all"
   };
 
   const style = `${base} ${disabled ? variants.disabled : variants[variant]} ${className}`;
 
   return (
     <button onClick={onClick} className={style} disabled={disabled}>
-      {Icon && <Icon className="inline-block w-4 h-4 mr-2" />}
+      {Icon && <Icon className={`w-5 h-5 ${!label && !children ? 'mx-auto' : 'inline-block mr-2'}`} />}
       {label}
       {children}
     </button>
+
   );
 };
 

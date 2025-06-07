@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, Search, Menu } from 'lucide-react';
-
+import { Bell, Search, Menu, User, BookOpen, Heart, LogOut } from 'lucide-react';
 
 const Header = ({ user, onLogout, onLoginClick }) => {
   const [search, setSearch] = React.useState('');
@@ -41,7 +40,6 @@ const Header = ({ user, onLogout, onLoginClick }) => {
       <form
         onSubmit={handleSearch}
         className="w-full max-w-[clamp(240px,60%,640px)]"
-
       >
         <div className="flex flex-col sm:flex-row items-stretch bg-white border border-gray-300 rounded-full overflow-hidden shadow-sm">
           {/* Category */}
@@ -76,54 +74,59 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         </div>
       </form>
 
-
-
       {/* Right actions */}
       <div className="flex items-center gap-4 relative">
-
-        {user && (
-          <Link to="/notifications" className="text-gray-600 hover:text-blue-500 transition">
-            <Bell size={20} />
-          </Link>
-        )}
-
         {user && (
           <>
-            <button onClick={() => setShowMenu(!showMenu)} className="text-gray-700">
-              <Menu size={24} />
-            </button>
-
-            {showMenu && (
-              <div
-                ref={menuRef}
-                className="absolute right-10 top-full mt-2 bg-white shadow-xl rounded-lg p-4 w-60 z-50"
+            <Link to="/profile" className="text-indigo-950 hover:text-indigo-950 transition">
+              <User size={20} className='text-indigo-950'/>
+            </Link>
+            <Link to="/notifications" className="text-gray-600 hover:text-blue-500 transition">
+              <Bell size={20} className='text-indigo-950' />
+            </Link>
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="text-gray-700 bg-[rgb(207,230,238)] hover:bg-gray-200 p-2 rounded-full transition"
               >
-                <Link to="/profile" className="block py-2 hover:text-blue-500">👤 Profile</Link>
-                <Link to="/myBooks" className="block py-2 hover:text-blue-500">📚 My Books</Link>
-                <Link to="/wishlist" className="block py-2 hover:text-blue-500">💖 Wishlist</Link>
-                <Link to="/notifylist" className="block py-2 hover:text-blue-500">🔔 Notify</Link>
-              </div>
-            )}
+                <Menu size={24} className='text-indigo-950' />
+              </button>
+              {showMenu && (
+                <div
+                  ref={menuRef}
+                  className="absolute right-0 top-full mt-2 bg-white shadow-xl rounded-lg p-4 w-60 z-50"
+                >
+                  <div className="flex flex-col gap-1">
+                    <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-blue-900 w-full">
+                      <BookOpen size={18} className='text-indigo-950'/> <span className="text-indigo-950 w-full">My Books</span>
+                    </Link>
+                    <Link to="/wishlist" className="flex items-center gap-2 py-2  hover:text-blue-900 w-full">
+                      <Heart size={18} className='text-indigo-950'/> <span className="text-indigo-950 w-full">Wish List</span>
+                    </Link>
+                    <hr className="my-2 border-t border-gray-200" />
+                    <button
+                      onClick={onLogout}
+                      className="flex items-center gap-2 py-2 text-red-600 hover:text-red-800 w-full"
+                    >
+                      <LogOut size={18} /> <span className="w-full text-start">Log Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         )}
 
-        {user ? (
-          <button
-            onClick={onLogout}
-            className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white px-4 py-1.5 rounded-md shadow-md transition"
-          >
-            Logout
-          </button>
-        ) : (
+        {!user && (
           <button
             onClick={onLoginClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition"
+            className="bg-indigo-950 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition"
           >
             Login / Register
           </button>
         )}
       </div>
-    </header >
+    </header>
   );
 };
 

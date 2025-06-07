@@ -23,7 +23,8 @@ const BookCard = ({ book, onClick }) => {
         <img
           src={cover}
           alt={book.name}
-          className="w-50 h-58 object-cover rounded mb-2"
+          className="w-[200px] h-[232px] object-cover rounded mb-2"
+
         />
       )}
       <p className="font-semibold text-md text-center">{book.name}</p>
