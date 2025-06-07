@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { db } from '../firebase';
 import { ref, get, set, update } from 'firebase/database';
 import Layout from '../Layout/Layout';
 import Button from '../components/Button';
-import BorrowedBookCard from '../components/BorrowedBookCard';
+import BookCard from '../components/BookCard';
 import { checkDueNotifications } from '../utils/notifications';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Footer from '../components/Footer';
 
 function MyBooksPage({ user }) {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [returnedBooks, setReturnedBooks] = useState([]);
+  const borrowedRef = useRef();
+  const returnedRef = useRef();
 
   useEffect(() => {
     if (!user) return;
@@ -35,13 +39,13 @@ function MyBooksPage({ user }) {
         if (!book) continue;
 
         const entry = {
-          id: key,
-          bookName: book.name,
-          photo: book.photo,
+          ...book,
+          id: book.book_id,
           ret_date: b.ret_date,
           status: b.status,
-          book_id: b.book_id
+          borrow_id: key,
         };
+
 
         if (b.status === 'borrow') active.push(entry);
         else history.push(entry);
@@ -68,18 +72,15 @@ function MyBooksPage({ user }) {
     const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
 
     if (isLate) {
-      alert(`✅ Returned "${borrow.bookName}". ⚠️ You are ${lateDays} day(s) late.`);
+      alert(`✅ Returned "${borrow.name}". ⚠️ You are ${lateDays} day(s) late.`);
     } else {
-      alert(`✅ Returned "${borrow.bookName}" on time. Thank you!`);
+      alert(`✅ Returned "${borrow.name}" on time. Thank you!`);
     }
 
-    // Send notifications
     const usersSnap = await get(ref(db, 'users'));
     const allUsers = usersSnap.val() || [];
-
     const bookName = bookData.name || 'a book';
     const now = new Date().toISOString();
-
     const notifSnap = await get(ref(db, 'managment/noti_index'));
     let notiId = notifSnap.val() + 1;
 
@@ -106,38 +107,86 @@ function MyBooksPage({ user }) {
     setReturnedBooks(prev => [...prev, { ...borrow, status: 'returned' }]);
   };
 
+  const scrollCarousel = (ref, direction = 'left') => {
+    if (ref.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  const renderCarousel = (title, booksArray, refName, showReturn = false) => (
+    <div className="relative mb-12">
+      <h3 className="text-2xl font-bold mb-4 text-center">{title}</h3>
+
+      <div className="relative mx-auto" style={{ maxWidth: '1000px' }}>
+        <Button
+          variant="carousel"
+          onClick={() => scrollCarousel(refName, 'left')}
+          className="absolute -left-6 top-1/2 -translate-y-1/2 z-10"
+        >
+          <ChevronLeft size={24} />
+        </Button>
+
+        <div
+          ref={refName}
+          className="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {booksArray.map((book, i) => (
+            <div key={i} className="relative">
+              <BookCard book={book} onClick={() => { }} />
+              {!returnedBooks.includes(book) && showReturn && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+                  <Button
+                    label="Return"
+                    variant="primary"
+                    onClick={() => returnBook(book)}
+                    className="text-sm"
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <Button
+          variant="carousel"
+          onClick={() => scrollCarousel(refName, 'right')}
+          className="absolute -right-6 top-1/2 -translate-y-1/2 z-10"
+        >
+          <ChevronRight size={24} />
+        </Button>
+      </div>
+    </div>
+  );
+
   if (!user) {
     return <p className="text-red-500 p-4">You must be logged in to view your borrowed books.</p>;
   }
 
   return (
-
+    <>
       <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4">My Borrowed Books 📚</h2>
-
+        <h2 className="text-2xl font-bold mb-6 text-center">My Borrowed Books</h2>
         {borrowedBooks.length === 0 ? (
-          <p className="text-gray-600">You haven’t borrowed any books yet.</p>
-        ) : (
-          <div className="flex overflow-x-auto space-x-4 mb-10 pb-2 whitespace-nowrap">
-            {borrowedBooks.map((book, i) => (
-              <BorrowedBookCard key={i} book={book} onReturn={() => returnBook(book)} />
-            ))}
+          <div className="mb-20">
+            <p className="text-gray-600 text-center">You haven’t borrowed any books yet. Maybe it's a good time to start reading :)</p>
           </div>
+        ) : (
+          renderCarousel('Borrowed Books', borrowedBooks, borrowedRef, true)
         )}
 
-        <h3 className="text-xl font-semibold mb-4">History of Returned Books 📖</h3>
-
+        <h3 className="text-xl font-semibold mb-6 text-center"></h3>
         {returnedBooks.length === 0 ? (
-          <p className="text-gray-600">No books returned yet.</p>
-        ) : (
-          <div className="flex overflow-x-auto space-x-4 mb-10 pb-2 whitespace-nowrap">
-            {returnedBooks.map((book, i) => (
-              <BorrowedBookCard key={i} book={book} returned />
-            ))}
+          <div className="mb-20">
+            <p className="text-gray-600 text-center">No books returned yet.</p>
           </div>
+        ) : (
+          renderCarousel('Returned Books History', returnedBooks, returnedRef)
         )}
       </div>
-
+      <Footer />
+    </>
   );
 }
 
