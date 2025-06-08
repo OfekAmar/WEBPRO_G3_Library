@@ -104,7 +104,7 @@ function MyWishlistPage({ user }) {
                       variant='trash'
                       onClick={() => handleRemove(book.book_id)}
                       className="text-red-500 hover:text-red-700"
-                      icon = {Trash2}
+                      icon = {<Trash2 size={23} />}
                     />
                   </div>
                 </div>

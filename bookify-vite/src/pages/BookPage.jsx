@@ -141,7 +141,7 @@ function BookPage({ user }) {
       setAverageRating(parseFloat(avgRating));
     } catch (err) {
       console.error("Failed to update rating:", err);
-      setMessage("❌ Error saving rating.");
+      setMessage("Error saving rating.");
     }
   };
 
@@ -155,7 +155,7 @@ function BookPage({ user }) {
       });
     } catch (err) {
       console.error("Failed to add comment:", err);
-      setMessage("❌ Error saving comment.");
+      setMessage("Error saving comment.");
     }
   };
 
@@ -169,7 +169,7 @@ function BookPage({ user }) {
 
     const today = new Date();
     const returnDate = new Date();
-    returnDate.setDate(today.getDate() + 7);
+    returnDate.setDate(today.getDate() + 14);
 
     const newBorrow = {
       borrow_id: newIndex,
@@ -188,7 +188,7 @@ function BookPage({ user }) {
 
     await update(mgmtRef, { borrows_index: newIndex });
 
-    setMessage("Book borrowed successfully!");
+    setMessage(`Book borrowed successfully! Return by ${returnDate.toLocaleDateString()}`);
     setBook(prev => ({
       ...prev,
       available_copies: (prev.available_copies || 1) - 1

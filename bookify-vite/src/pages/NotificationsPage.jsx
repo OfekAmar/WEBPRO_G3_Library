@@ -67,20 +67,20 @@ function NotificationsPage({ user }) {
     <>
       <div className="p-6 max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold flex items-center gap-2">
-            <Bell className="text-blue-600" size={28} /> Notifications
+          <h2 className="text-indigo-950 text-3xl font-bold flex items-center gap-2">
+            Notifications
           </h2>
           <div className="flex gap-4">
             <button
               onClick={toggleView}
-              className="text-sm text-blue-600 hover:text-blue-800 underline"
+              className="text-sm text-indigo-700 hover:text-indigo-950 underline"
             >
               {showAll ? 'Show Unread Only' : 'See All'}
             </button>
             {notifications.length > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-sm text-red-600 hover:text-red-800 underline"
+                className="text-sm text-indigo-700 hover:text-indigo-950 underline"
               >
                 Read All
               </button>
@@ -107,7 +107,7 @@ function NotificationsPage({ user }) {
                   </p>
                   <p className="text-xs text-gray-500">{formatTime(notification.time)}</p>
                 </div>
-                <Button icon={Check} variant="read" onClick={() => markAsRead(notification._key)} />
+                <Button icon={<Check size={16} />} iconSize={16} variant="read" onClick={() => markAsRead(notification._key)} />
               </div>
             ))}
           </div>
