@@ -175,7 +175,7 @@ function BookPage({ user }) {
       borrow_id: newIndex,
       user_id: user.user_id,
       book_id: book.book_id,
-      status: 'borrow',
+      status: 'borrowed',
       b_date: today.toISOString().split('T')[0],
       ret_date: returnDate.toISOString().split('T')[0]
     };
@@ -194,6 +194,75 @@ function BookPage({ user }) {
       available_copies: (prev.available_copies || 1) - 1
     }));
   };
+
+  const handleReturn = async () => {
+    const borrowsSnap = await get(ref(db, 'borrows'));
+    const borrows = borrowsSnap.val() || {};
+
+    const entry = Object.entries(borrows).find(
+      ([, b]) =>
+        b.book_id === book.book_id &&
+        b.user_id === user.user_id &&
+        b.status === 'borrowed'
+    );
+
+    if (!entry) return;
+
+    const [borrowId, borrow] = entry;
+
+    await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
+
+    const bookRef = ref(db, `books/${borrow.book_id}`);
+    const bookSnapshot = await get(bookRef);
+    const bookData = bookSnapshot.val();
+    await update(bookRef, {
+      available_copies: (bookData.available_copies || 0) + 1
+    });
+
+    const today = new Date();
+    const dueDate = new Date(borrow.ret_date);
+    const isLate = today > dueDate;
+    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+
+    if (isLate) {
+      alert(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+    } else {
+      alert(`Returned "${bookData.name}" on time. Thank you!`);
+    }
+
+    const usersSnap = await get(ref(db, 'users'));
+    const allUsers = usersSnap.val() || [];
+    const now = new Date().toISOString();
+    const notifSnap = await get(ref(db, 'managment/noti_index'));
+    let notiId = notifSnap.val() + 1;
+
+    for (let i = 1; i < allUsers.length; i++) {
+      const u = allUsers[i];
+      if (!u || !u.notify_list) continue;
+
+      if (u.notify_list.includes(borrow.book_id)) {
+        await set(ref(db, `notifications/${notiId}`), {
+          noti_id: notiId,
+          user_index: i,
+          user_id: u.user_id,
+          type: "System",
+          content: `Good news! '${bookData.name}' from your notify list is now available.`,
+          time: now
+        });
+        notiId++;
+      }
+    }
+
+    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
+
+    setAlreadyBorrowed(false);
+    setBook(prev => ({
+      ...prev,
+      available_copies: (prev.available_copies || 0) + 1
+    }));
+    setMessage("Book returned successfully");
+  };
+
 
   if (!book) return <p className="p-4 text-red-500">No book selected</p>;
 
@@ -215,7 +284,9 @@ function BookPage({ user }) {
             {book.available_copies > 0 ? (
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                <span className="text-green-600 font-semibold">Stock Availability.</span>
+                <span className="text-green-600 font-semibold">
+                  {book.available_copies} more copie{book.available_copies > 1 ? 's' : ''} available to borrow
+                </span>
               </div>
             ) : (
               <div className="flex items-center gap-2 mb-4">
@@ -251,9 +322,7 @@ function BookPage({ user }) {
                 <div className="flex items-center gap-4">
                   {book.available_copies > 0 ? (
                     alreadyBorrowed ? (
-                      <p className="text-green-600 font-semibold">
-                        📚 You already borrowed this book
-                      </p>
+                      <Button variant='borrow' label="Return Book" onClick={handleReturn} />
                     ) : (
                       <BorrowButton isBorrowed={false} onToggle={handleBorrow} />
                     )
