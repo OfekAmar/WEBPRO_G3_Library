@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+{/*
 const Rating = ({ value = 0, onRate, readOnly = false }) => {
   const [hovered, setHovered] = useState(null);
 
@@ -24,6 +25,31 @@ const Rating = ({ value = 0, onRate, readOnly = false }) => {
           ★
         </button>
       ))}
+    </div>
+  );
+};
+
+export default Rating;
+*/}
+
+const Rating = ({ average = 0, userRating = 0, reviewCount = 0, onOpenReviews }) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    stars.push(i <= average ? '★' : '☆');
+  }
+
+  return (
+    <div className="flex items-center gap-2 mb-4 text-sm">
+      {stars.map((s, i) => (
+        <span key={i} className="text-orange-400 text-lg">{s}</span>
+      ))}
+      <button
+        onClick={onOpenReviews}
+        className="text-blue-600 hover:underline ml-2"
+        type="button"
+      >
+        ({reviewCount} Customer Review{reviewCount !== 1 ? 's' : ''})
+      </button>
     </div>
   );
 };

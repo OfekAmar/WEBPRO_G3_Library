@@ -10,10 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@tailwindcss/vite": "^4.1.8",
+    "date-fns": "^4.1.0",
     "firebase": "^11.8.1",
+    "lucide-react": "^0.513.0",
     "react": "^19.1.0",
+    "react-datepicker": "^8.4.0",
     "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
     "react-router-dom": "^7.6.1"
   },
   "devDependencies": {
@@ -27,6 +34,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "postcss": "^8.5.4",
+    "sass-embedded": "^1.89.1",
     "tailwindcss": "^4.1.8",
     "vite": "^6.3.5"
   }

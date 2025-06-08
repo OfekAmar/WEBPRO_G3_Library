@@ -1,15 +1,21 @@
-// src/pages/HomePage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { db } from '../firebase';
 import { ref, get } from 'firebase/database';
 import BookCard from '../components/BookCard';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Button from '../components/Button';
+import LibraryMap from '../components/LibraryMap';
+import ContactBar from '../components/ContactBar';
+import Footer from '../components/Footer';
+import FeaturedAuthors from '../components/FeaturedAuthors';
 
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
-  const [user, setUser] = useState(null);
-  const [searchText, setSearchText] = useState('');
   const navigate = useNavigate();
+
+  const trendingRef = useRef();
+  const newRef = useRef();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -17,10 +23,7 @@ function HomePage() {
       const data = snapshot.val();
       const allBooks = Object.entries(data || {})
         .filter(([_, book]) => book !== null)
-        .map(([_, book]) => ({
-          ...book,
-          id: book.book_id,
-        }));
+        .map(([_, book]) => ({ ...book, id: book.book_id }));
 
       const ratedBooks = allBooks
         .filter(book => typeof book.rate === 'number')
@@ -34,53 +37,72 @@ function HomePage() {
     };
 
     fetchBooks();
-    const saved = localStorage.getItem("loggedInUser");
-    if (saved) {
-      setUser(JSON.parse(saved));
-    }
   }, []);
 
-  const handleSearch = () => {
-    if (searchText.trim()) {
-      sessionStorage.setItem('searchQuery', searchText);
-      navigate('/search');
+  const scrollCarousel = (ref, direction = 'left') => {
+    if (ref.current) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
-  const renderSection = (title, bookSlice) => (
-    <section className="mt-8">
-      <h2 className="text-lg font-bold mb-2">{title}</h2>
-      <div className="grid gap-4 px-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',maxWidth: '70%', }}>
+  const renderCarousel = (title, booksArray, refName) => (
+    <div className="relative mb-12">
+      <h3 className="text-3xl font-bold text-gray-800 mb-2 text-center">{title}</h3>
+      <Button
+        variant="carousel"
+        onClick={() => scrollCarousel(refName, 'left')}
+        className="absolute left-2 top-1/2 -translate-y-1/2 z-10"
+      >
+        <ChevronLeft size={24} />
+      </Button>
 
-        {bookSlice.map(book => (
-          <BookCard key={book.id} book={book} />
+      <div
+        ref={refName}
+        className="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6"
+        style={{ scrollbarWidth: 'none' }}
+      >
+        {booksArray.map(book => (
+          <BookCard
+            key={book.id}
+            book={book}
+            onClick={() => {
+              sessionStorage.setItem('selectedBook', JSON.stringify(book));
+              navigate('/book');
+            }}
+          />
         ))}
       </div>
-    </section>
+
+      <Button
+        variant="carousel"
+        onClick={() => scrollCarousel(refName, 'right')}
+        className="absolute right-2 top-1/2 -translate-y-1/2 z-10"
+      >
+        <ChevronRight size={24} />
+      </Button>
+    </div>
   );
 
   return (
-    <div>
-      <div className="flex flex-row items-center gap-2 max-w-2xl w-full">
-      <input
-        type="text"
-        placeholder="Search by book's name or author..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        className="flex-1 border p-2 rounded"
-      />
-      <button
-        onClick={handleSearch}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Search
-      </button>
-    </div>
+    <>
+      <div className="w-full bg-[#d8eef5]">
+        <img
+          src="logos\final.png"
+          alt="Welcome to Bookify"
+          className="w-full max-w-none"
+        />
+      </div>
+      <section className="p-6 max-w-6xl mx-auto">
+        {renderCarousel(' Trending Books', books.trending, trendingRef)}
+      </section>
+      <FeaturedAuthors />
+      <section className="p-6 max-w-6xl mx-auto">
+        {renderCarousel(' Newly Added Books', books.new, newRef)}
+      </section>
 
-      <h2 className="text-3xl font-semibold mb-4">Welcome to Bookify 📖</h2>
-      {renderSection("Trending 🔥", books.trending)}
-      {renderSection("Newly Added 🆕", books.new)}
-    </div>
+      <Footer />
+    </>
   );
 }
 

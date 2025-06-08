@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Eye, X } from 'lucide-react';
 import { db } from '../firebase';
 import { ref, get } from 'firebase/database';
 
 function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
+  const popupRef = useRef();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        onClose?.();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
 
   const handleLogin = async () => {
     const usersRef = ref(db, 'users');
@@ -13,7 +26,6 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
     const allUsers = snapshot.val();
 
     let matchedUser = null;
-
     for (let i = 1; i < allUsers.length; i++) {
       const user = allUsers[i];
       if (!user) continue;
@@ -35,53 +47,67 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
       };
       localStorage.setItem("loggedInUser", JSON.stringify(userData));
       setMsg("Login successful!");
-      onLoginSuccess?.(userData); // Notify parent
+      onLoginSuccess?.(userData);
       onClose?.();
     }
   };
 
   return (
-    <div className="absolute top-18 right-4 z-50">
-      <div className="bg-gray-100 p-6 rounded-lg shadow-md w-full max-w-md relative">
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl"
-        >
-          ✖
+    <div
+      ref={popupRef}
+      className="fixed top-16 right-6 bg-white shadow-xl rounded-lg p-4 w-80 z-50"
+    >
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-lg font-bold">Log in / Register</h2>
+        <button onClick={onClose} className="text-gray-500 text-xl">
+          <X size={20} />
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-center">🔐 Login</h2>
+      </div>
+
+      <label className="block text-sm font-semibold mb-1">Email</label>
+      <input
+        type="text"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        className="w-full p-2 rounded bg-blue-100 mb-3"
+        placeholder="example@mail.com"
+      />
+
+      <label className="block text-sm font-semibold mb-1">Password</label>
+      <div className="relative mb-3">
         <input
-          type="text"
-          placeholder="Email"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          className="bg-white w-full mb-3 p-2 border rounded"
-        />
-        <input
-          type="password"
-          placeholder="Password"
+          type={showPassword ? "text" : "password"}
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="bg-white w-full mb-4 p-2 border rounded"
+          className="w-full p-2 rounded bg-red-100 pr-10"
+          placeholder="Enter password"
         />
-        <button
-          onClick={handleLogin}
-          className="text-white py-2 rounded hover:bg-blue-700"
-        >
-          Log In
-        </button>
-        {msg && <p className="mt-2 text-sm text-red-500 text-center">{msg}</p>}
-
-        <p className="text-sm mt-4 text-center">
-          Don't have an account?{" "}
-          <button
-            onClick={onSwitchToRegister}
-            className="text-black hover:underline"
-          >
-            Sign up
-          </button>
-        </p>
+        <Eye
+          size={18}
+          className="absolute right-2 top-2.5 text-gray-500 cursor-pointer"
+          onClick={() => setShowPassword(prev => !prev)}
+        />
       </div>
+
+      <label className="flex items-center text-sm mb-3">
+        <input type="checkbox" className="mr-2" /> Stay logged in
+      </label>
+
+      <button
+        onClick={handleLogin}
+        className="bg-green-500 hover:bg-green-600 text-white w-full py-2 rounded mb-3"
+      >
+        Login
+      </button>
+
+      {msg && <p className="text-sm text-red-500 text-center">{msg}</p>}
+
+      <p className="text-xs text-center text-gray-600 mt-2">
+        Don't have an account?{' '}
+        <button onClick={onSwitchToRegister} className="text-blue-600 underline">
+          Sign up now.
+        </button>
+      </p>
     </div>
   );
 }

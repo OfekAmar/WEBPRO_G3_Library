@@ -7,22 +7,35 @@ import CommentSection from '../components/CommentSection';
 import BorrowButton from '../components/BorrowButton';
 import WishlistButton from '../components/WishlistButton';
 import Button from '../components/Button';
+import NotifyButton from '../components/NotificationBell';
+import { resolveBookCover } from '../utils/fetchGoogleBookCover';
 
 function BookPage({ user }) {
   const [book, setBook] = useState(null);
+  const [cover, setCover] = useState(null);
   const [message, setMessage] = useState("");
   const [inNotifyList, setInNotifyList] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [averageRating, setAverageRating] = useState(null);
-  const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
   const [inWishlist, setInWishlist] = useState(false);
   const [alreadyBorrowed, setAlreadyBorrowed] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem("selectedBook");
     if (stored) setBook(JSON.parse(stored));
   }, []);
+
+  useEffect(() => {
+    const loadCover = async () => {
+      if (book) {
+        const image = await resolveBookCover(book);
+        setCover(image);
+      }
+    };
+    loadCover();
+  }, [book]);
 
   useEffect(() => {
     const checkNotifyList = async () => {
@@ -42,25 +55,26 @@ function BookPage({ user }) {
     checkNotifyList();
     checkWishlist();
   }, [user, book]);
+
   useEffect(() => {
-  const checkIfBorrowed = async () => {
-    if (!user || !book) return;
+    const checkIfBorrowed = async () => {
+      if (!user || !book) return;
 
-    const borrowsSnap = await get(ref(db, 'borrows'));
-    const borrows = borrowsSnap.val() || {};
+      const borrowsSnap = await get(ref(db, 'borrows'));
+      const borrows = borrowsSnap.val() || {};
 
-    const userBorrowed = Object.values(borrows).some(
-      (b) =>
-        b.book_id === book.book_id &&
-        b.user_id === user.user_id &&
-        b.status === 'borrowed'
-    );
+      const userBorrowed = Object.values(borrows).some(
+        (b) =>
+          b.book_id === book.book_id &&
+          b.user_id === user.user_id &&
+          b.status === 'borrowed'
+      );
 
-        setAlreadyBorrowed(userBorrowed);
-      };
+      setAlreadyBorrowed(userBorrowed);
+    };
 
-      checkIfBorrowed();
-    }, [user, book]);
+    checkIfBorrowed();
+  }, [user, book]);
 
   useEffect(() => {
     const checkBookExtras = async () => {
@@ -104,135 +118,176 @@ function BookPage({ user }) {
     setInWishlist(updatedList.includes(book.book_id));
   };
 
-const handleRating = async (rating) => {
-  if (!user || !book) return;
+  const handleRating = async (rating) => {
+    if (!user || !book) return;
 
-  try {
-    const bookRef = ref(db, `books/${book.book_id}`);
-    const snap = await get(bookRef);
-    const data = snap.val();
+    try {
+      const bookRef = ref(db, `books/${book.book_id}`);
+      const snap = await get(bookRef);
+      const data = snap.val();
 
-    const raters = data.raters || {};
-    raters[user.userIndex] = rating;
+      const raters = data.raters || {};
+      raters[user.userIndex] = rating;
 
-    const ratings = Object.values(raters);
-    const avgRating = (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1);
+      const ratings = Object.values(raters);
+      const avgRating = (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1);
 
-    await update(bookRef, {
-      raters,
-      rate: parseFloat(avgRating)
-    });
+      await update(bookRef, {
+        raters,
+        rate: parseFloat(avgRating)
+      });
 
-    setUserRating(rating);
-    setAverageRating(parseFloat(avgRating));
-  } catch (err) {
-    console.error("Failed to update rating:", err);
-    setMessage("❌ Error saving rating.");
-  }
-};
-
-const handleAddComment = async (comment) => {
-  try {
-    const updated = [...comments, comment];
-    setComments(updated);
-
-    await update(ref(db, 'books/' + book.book_id), {
-      comments: updated
-    });
-  } catch (err) {
-    console.error("Failed to add comment:", err);
-    setMessage("❌ Error saving comment.");
-  }
-};
- const handleBorrow = async () => {
-  if (!user || !book) return;
-
-  // 1. Get management index
-  const mgmtRef = ref(db, 'managment');
-  const mgmtSnap = await get(mgmtRef);
-  const currentIndex = mgmtSnap.val()?.borrows_index || 0;
-  const newIndex = currentIndex + 1;
-
-  const today = new Date();
-  const returnDate = new Date();
-  returnDate.setDate(today.getDate() + 7); // 7 days borrow
-
-  const newBorrow = {
-    borrow_id: newIndex,
-    user_id: user.user_id,
-    book_id: book.book_id,
-    status: 'borrow',
-    b_date: today.toISOString().split('T')[0],
-    ret_date: returnDate.toISOString().split('T')[0]
+      setUserRating(rating);
+      setAverageRating(parseFloat(avgRating));
+    } catch (err) {
+      console.error("Failed to update rating:", err);
+      setMessage("❌ Error saving rating.");
+    }
   };
 
-  // 2. Save borrow record
-  await set(ref(db, `borrows/${newIndex}`), newBorrow);
+  const handleAddComment = async (comment) => {
+    try {
+      const updated = [...comments, comment];
+      setComments(updated);
 
-  // 3. Update available copies
-  await update(ref(db, `books/${book.book_id}`), {
-    available_copies: (book.available_copies || 1) - 1
-  });
+      await update(ref(db, 'books/' + book.book_id), {
+        comments: updated
+      });
+    } catch (err) {
+      console.error("Failed to add comment:", err);
+      setMessage("❌ Error saving comment.");
+    }
+  };
 
-  // 4. Update borrows_index
-  await update(mgmtRef, { borrows_index: newIndex });
+  const handleBorrow = async () => {
+    if (!user || !book) return;
 
-  // 5. Update local state
-  setMessage("Book borrowed successfully!");
-  setBook(prev => ({
-    ...prev,
-    available_copies: (prev.available_copies || 1) - 1
-  }));
-};
+    const mgmtRef = ref(db, 'managment');
+    const mgmtSnap = await get(mgmtRef);
+    const currentIndex = mgmtSnap.val()?.borrows_index || 0;
+    const newIndex = currentIndex + 1;
+
+    const today = new Date();
+    const returnDate = new Date();
+    returnDate.setDate(today.getDate() + 7);
+
+    const newBorrow = {
+      borrow_id: newIndex,
+      user_id: user.user_id,
+      book_id: book.book_id,
+      status: 'borrow',
+      b_date: today.toISOString().split('T')[0],
+      ret_date: returnDate.toISOString().split('T')[0]
+    };
+
+    await set(ref(db, `borrows/${newIndex}`), newBorrow);
+
+    await update(ref(db, `books/${book.book_id}`), {
+      available_copies: (book.available_copies || 1) - 1
+    });
+
+    await update(mgmtRef, { borrows_index: newIndex });
+
+    setMessage("Book borrowed successfully!");
+    setBook(prev => ({
+      ...prev,
+      available_copies: (prev.available_copies || 1) - 1
+    }));
+  };
 
   if (!book) return <p className="p-4 text-red-500">No book selected</p>;
 
   return (
-    
-      <div className="max-w-3xl mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-4">{book.name}</h2>
-        <img src={book.photo} alt={book.name} className="w-52 h-72 mb-4 rounded shadow" />
-        <p className="mb-2"><strong>Author:</strong> {book.author}</p>
-        <p className="mb-4"><strong>Description:</strong> {book.description}</p>
-        <p className="text-sm text-gray-600">Location on shelf 📍: {book.location}</p>
+    <div className="bg-gray-100 min-h-screen py-10 px-4">
+      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-        {user ? (
-          <div className="mt-4 space-y-3">
-            {book.available_copies > 0 ? (
-              alreadyBorrowed ? (
-                <p className="text-green-600 font-semibold">📚 You already borrowed this book</p>
-              ) : (
-                <BorrowButton isBorrowed={false} onToggle={handleBorrow} />
-              )
+          <div className="flex justify-center">
+            {cover ? (
+              <img src={cover} alt={book.name} className="w-full max-w-xs rounded-lg shadow" />
             ) : (
-              <Button
-                label={inNotifyList ? 'Remove from Notify List 🔕' : 'Add to Notify List 🔔'}
-                onClick={toggleNotifyList}
-                variant="secondary"
+              <div className="w-48 h-64 bg-gray-200 animate-pulse rounded-lg shadow" />
+            )}
+          </div>
+
+          <div>
+            <h2 className="text-3xl font-bold mb-4">{book.name}</h2>
+            {book.available_copies > 0 ? (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="text-green-600 font-semibold">Stock Availability.</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="text-red-600 font-semibold">Out of Stock</span>
+              </div>
+            )}
+            <Rating
+              average={averageRating}
+              userRating={userRating}
+              reviewCount={comments.length}
+              onRate={handleRating}
+              onOpenReviews={() => {
+                setShowReviews(prev => {
+                  const newValue = !prev;
+                  if (newValue) {
+                    setTimeout(() => {
+                      const el = document.getElementById('reviews-section');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  }
+                  return newValue;
+                });
+              }}
+            />
+            <p className="mb-2"><strong>Author:</strong> {book.author}</p>
+            <p className="mb-4"><strong>Description:</strong> {book.description}</p>
+            <p className="text-sm text-gray-600 mb-4"><strong>Location: </strong>{book.location}</p>
+
+            {user ? (
+              <div className="space-y-3">
+
+                <div className="flex items-center gap-4">
+                  {book.available_copies > 0 ? (
+                    alreadyBorrowed ? (
+                      <p className="text-green-600 font-semibold">
+                        📚 You already borrowed this book
+                      </p>
+                    ) : (
+                      <BorrowButton isBorrowed={false} onToggle={handleBorrow} />
+                    )
+                  ) : (
+                    <NotifyButton
+                      isInNotifyList={inNotifyList}
+                      onToggle={toggleNotifyList}
+                    />
+                  )}
+
+                  <WishlistButton
+                    isWished={inWishlist}
+                    onToggle={toggleWishlist}
+                  />
+                </div>
+
+                {message && <p className="mt-2 text-green-600">{message}</p>}
+              </div>
+            ) : (
+              <p className="text-red-500 font-semibold mt-4">
+                Login to borrow
+              </p>
+            )}
+            {showReviews && (
+              <CommentSection
+                comments={comments}
+                userName={user?.name || user?.username}
+                onPostComment={handleAddComment}
               />
             )}
-
-            <WishlistButton isWished={inWishlist} onToggle={toggleWishlist} />
-
-            {message && <p className="mt-2 text-green-600">{message}</p>}
           </div>
-        ) : (
-          <p className="text-red-500 font-semibold mt-4">Login to borrow</p>
-        )}
-
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold">Rating ⭐: {averageRating !== null ? `${averageRating}/5` : 'No rating yet'}</h3>
-          <Rating value={userRating} onRate={handleRating} />
-          {userRating !== 0 && <p className="text-sm text-gray-600 mt-1">Your rate: {userRating}</p>}
         </div>
-
-        <CommentSection
-          comments={comments}
-          userName={user?.name || user?.username}
-          onPostComment={handleAddComment}
-        />
       </div>
-    
+    </div>
   );
 }
 
