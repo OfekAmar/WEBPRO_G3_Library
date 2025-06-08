@@ -113,7 +113,6 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                     >
                       <LogOut size={18} /> <span className="w-full text-start">Log Out</span>
                     </button>
-
                   </div>
                 </div>
               )}

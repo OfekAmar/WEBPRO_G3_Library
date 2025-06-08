@@ -21,6 +21,8 @@
   padding: var(--content-padding);
   width: 100%;
   box-sizing: border-box;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 /* Toolbar */
@@ -51,16 +53,28 @@
   border: none;
 }
 
+.save-button:disabled {
+  background-color: #eee !important;
+  color: #aaa !important;
+  cursor: not-allowed;
+  border: 1px solid #ccc !important;
+  opacity: 1; /* הסר את שקיפות אם ברצונך לשמור על גובה אחיד */
+}
+
+.cancel-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Grid Cards */
 .cards-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 24px;
   margin-top: 20px;
 }
 
 .card {
-  flex: 1 1 100%;
   background: white;
   border-radius: 10px;
   padding: 24px;
@@ -143,7 +157,7 @@ label {
   border: none;
   border-bottom: 1px solid #ccc;
   border-radius: 0;
-  background-color: #f9f9f9;
+  background-color: rgb(225, 225, 230);
   padding: 10px 4px;
   font-size: 14px;
   width: 100%;
@@ -160,10 +174,10 @@ label {
 select.dx-input {
   appearance: none;
   -webkit-appearance: none;
-  background-color: #f9f9f9;
+  background-color: rgb(225, 225, 230);
   border: none;
   border-bottom: 1px solid #ccc;
-  padding: 10px 30px 10px 4px; /* השאר מקום לחץ */
+  padding: 10px 30px 10px 4px;
   font-size: 14px;
   width: 100%;
   background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
@@ -175,10 +189,9 @@ select.dx-input {
 
 select.dx-input:focus {
   border-bottom: 2px solid var(--accent-color);
-  background-color: #fff;
+  background-color: rgb(225, 225, 230);
 }
 
-/* Status */
 .status-text {
   color: var(--accent-color);
   font-weight: 500;
@@ -194,7 +207,6 @@ select.dx-input:focus {
   margin-right: 6px;
 }
 
-/* Modal */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -240,31 +252,55 @@ select.dx-input:focus {
 
 .modal-actions {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  gap: 10px;
+  flex-direction: row;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-cancel,
+.modal-save {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  text-align: center;
+  height: 38px;
 }
 
 .modal-cancel {
   background: white;
   border: 1px solid #999;
-  padding: 6px 12px;
-  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-cancel:hover {
+  background-color: #f3f3f3;
 }
 
 .modal-save {
-  background: #ddd;
-  padding: 6px 12px;
-  border-radius: 4px;
-  color: #999;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease;
 }
 
-.dx-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.modal-save:hover {
+  background-color: #0288d1;
+}
+
+.modal-save:disabled {
   background-color: #eee;
   color: #aaa;
-  border: 1px solid #ddd;
+  cursor: not-allowed;
 }
 
 .form-fields-grid.two-cols {
@@ -274,6 +310,7 @@ select.dx-input:focus {
 .form-fields-grid.four-cols {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
+
 .select-wrapper {
   position: relative;
 }
@@ -281,13 +318,13 @@ select.dx-input:focus {
 .select-wrapper select.dx-input {
   appearance: none;
   -webkit-appearance: none;
-  background-color: #f9f9f9;
+  background-color: rgb(225, 225, 230);
   border: none;
   border-bottom: 1px solid #ccc;
   padding: 10px 30px 10px 4px;
   font-size: 14px;
   width: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* ▼ */
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 6px center;
   background-size: 16px;
@@ -295,17 +332,18 @@ select.dx-input:focus {
 }
 
 .select-wrapper.open select.dx-input {
-  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 14l5-5 5 5z'/%3E%3C/svg%3E"); /* ▲ */
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 14l5-5 5 5z'/%3E%3C/svg%3E");
 }
 
 .input-with-icon {
   position: relative;
   display: flex;
   align-items: center;
+  right: 10px;
 }
 
 .input-with-icon .dx-input {
-  padding-right: 36px; /* מקום לאייקון */
+  padding-right: 36px;
 }
 
 .input-icon {
@@ -314,4 +352,69 @@ select.dx-input:focus {
   font-size: 18px;
   color: #555;
   cursor: pointer;
+}
+
+.two-cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.two-cards-row .card {
+  flex: 1 1 48%;
+}
+
+.icon-with-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-with-text .icon {
+  font-size: 16px;
+}
+
+.save-toast {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50; 
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px 4px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  animation: slide-up 0.3s ease-out;
+  z-index: 1000;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+
+.date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 2;
+  opacity: 1;
+  background-color:#000000;
+}
+
+/* השדה צריך להיות position: relative כדי שה־icon ימוקם בו */
+.date-input {
+  position: relative;
+  padding-right: 36px; /* שומר מקום לסמל */
 }
