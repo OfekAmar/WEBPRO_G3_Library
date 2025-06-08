@@ -47,7 +47,7 @@ function MyBooksPage({ user }) {
         };
 
 
-        if (b.status === 'borrow') active.push(entry);
+        if (b.status === 'borrowed') active.push(entry);
         else history.push(entry);
       }
     }
@@ -72,9 +72,9 @@ function MyBooksPage({ user }) {
     const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
 
     if (isLate) {
-      alert(`✅ Returned "${borrow.name}". ⚠️ You are ${lateDays} day(s) late.`);
+      alert(`Returned "${borrow.name}". ⚠️ You are ${lateDays} day(s) late.`);
     } else {
-      alert(`✅ Returned "${borrow.name}" on time. Thank you!`);
+      alert(`Returned "${borrow.name}" on time. Thank you!`);
     }
 
     const usersSnap = await get(ref(db, 'users'));
@@ -133,19 +133,29 @@ function MyBooksPage({ user }) {
           style={{ scrollbarWidth: 'none' }}
         >
           {booksArray.map((book, i) => (
-            <div key={i} className="relative">
-              <BookCard book={book} onClick={() => { }} />
+            <div key={i} className="relative group">
+              <BookCard
+                book={book}
+                onClick={() => {
+                  if (!showReturn) {
+                    sessionStorage.setItem("selectedBook", JSON.stringify(book));
+                    window.location.href = "/book";
+                  }
+                }}
+              />
+
               {!returnedBooks.includes(book) && showReturn && (
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg backdrop-blur-sm">
                   <Button
                     label="Return"
-                    variant="primary"
+                    variant="return"
                     onClick={() => returnBook(book)}
                     className="text-sm"
                   />
                 </div>
               )}
             </div>
+
           ))}
         </div>
 
@@ -167,7 +177,7 @@ function MyBooksPage({ user }) {
   return (
     <>
       <div className="p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center">My Borrowed Books</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center"></h2>
         {borrowedBooks.length === 0 ? (
           <div className="mb-20">
             <p className="text-gray-600 text-center">You haven’t borrowed any books yet. Maybe it's a good time to start reading :)</p>

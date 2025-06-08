@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ref, get, update } from 'firebase/database';
 import { db } from '../firebase';
 import Button from '../components/Button';
-import { Trash2, Bell, BellOff } from 'lucide-react';
+import { Trash2, Bell, BellOff , Check} from 'lucide-react';
 import Footer from '../components/Footer';
 
 function NotificationsPage({ user }) {
@@ -107,7 +107,7 @@ function NotificationsPage({ user }) {
                   </p>
                   <p className="text-xs text-gray-500">{formatTime(notification.time)}</p>
                 </div>
-                <Button icon={Trash2} variant="trash" onClick={() => markAsRead(notification._key)} />
+                <Button icon={Check} variant="read" onClick={() => markAsRead(notification._key)} />
               </div>
             ))}
           </div>
