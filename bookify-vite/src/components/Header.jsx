@@ -79,7 +79,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         {user && (
           <>
             <Link to="/profile" className="text-indigo-950 hover:text-indigo-950 transition">
-              <User size={20} className='text-indigo-950'/>
+              <User size={20} className='text-indigo-950' />
             </Link>
             <Link to="/notifications" className="text-gray-600 hover:text-blue-500 transition">
               <Bell size={20} className='text-indigo-950' />
@@ -98,14 +98,17 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                 >
                   <div className="flex flex-col gap-1">
                     <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-blue-900 w-full">
-                      <BookOpen size={18} className='text-indigo-950'/> <span className="text-indigo-950 w-full">My Books</span>
+                      <BookOpen size={18} className='text-indigo-950' /> <span className="text-indigo-950 w-full">My Books</span>
                     </Link>
                     <Link to="/wishlist" className="flex items-center gap-2 py-2  hover:text-blue-900 w-full">
-                      <Heart size={18} className='text-indigo-950'/> <span className="text-indigo-950 w-full">Wish List</span>
+                      <Heart size={18} className='text-indigo-950' /> <span className="text-indigo-950 w-full">Wish List</span>
                     </Link>
                     <hr className="my-2 border-t border-gray-200" />
                     <button
-                      onClick={onLogout}
+                      onClick={() => {
+                        onLogout();
+                        navigate('/');
+                      }}
                       className="flex items-center gap-2 py-2 text-red-600 hover:text-red-800 w-full"
                     >
                       <LogOut size={18} /> <span className="w-full text-start">Log Out</span>
