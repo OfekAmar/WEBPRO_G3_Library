@@ -97,7 +97,7 @@ function HomePage() {
     <>
       <div className="w-full bg-[#d8eef5]">
         <img
-          src="logos\final.png"
+          src="/images/final.png"
           alt="Welcome to Bookify"
           className="w-full max-w-none"
         />

@@ -33,7 +33,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
 
       {/* Logo */}
       <Link to="/" className="flex items-center">
-        <img src="logos\bookify_logo_bi.png" alt="Bookify logo" className="h-9" />
+        <img src="/images/bookify_logo_bi.png" alt="Bookify logo" className="h-9" />
       </Link>
 
       {/* Search + Category filter */}
