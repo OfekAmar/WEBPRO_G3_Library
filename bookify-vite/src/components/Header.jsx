@@ -29,7 +29,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[9999] bg-white shadow-md px-8 py-4 flex items-center justify-between">
+    <header className="fixed top-0 left-0 w-full z-40 bg-white shadow-md px-8 py-4 flex items-center justify-between">
 
       {/* Logo */}
       <Link to="/" className="flex items-center">
@@ -125,7 +125,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
             onClick={onLoginClick}
             className="bg-indigo-950 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition"
           >
-            Login / Register
+            Login
           </button>
         )}
       </div>

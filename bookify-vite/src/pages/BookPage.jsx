@@ -65,8 +65,8 @@ function BookPage({ user }) {
 
       const userBorrowed = Object.values(borrows).some(
         (b) =>
-          b.book_id === book.book_id &&
-          b.user_id === user.user_id &&
+          String(b.book_id) === String(book.book_id) &&
+          String(b.user_id) === String(user.user_id) &&
           b.status === 'borrowed'
       );
 
@@ -160,108 +160,126 @@ function BookPage({ user }) {
   };
 
   const handleBorrow = async () => {
-    if (!user || !book) return;
+  if (!user || !book) return;
 
-    const mgmtRef = ref(db, 'managment');
-    const mgmtSnap = await get(mgmtRef);
-    const currentIndex = mgmtSnap.val()?.borrows_index || 0;
-    const newIndex = currentIndex + 1;
+  const mgmtRef = ref(db, 'managment');
+  const mgmtSnap = await get(mgmtRef);
+  const currentIndex = mgmtSnap.val()?.borrows_index || 0;
+  const newIndex = currentIndex + 1;
 
-    const today = new Date();
-    const returnDate = new Date();
-    returnDate.setDate(today.getDate() + 14);
+  const today = new Date();
+  const returnDate = new Date();
+  returnDate.setDate(today.getDate() + 14);
 
-    const newBorrow = {
-      borrow_id: newIndex,
-      user_id: user.user_id,
-      book_id: book.book_id,
-      status: 'borrowed',
-      b_date: today.toISOString().split('T')[0],
-      ret_date: returnDate.toISOString().split('T')[0]
-    };
-
-    await set(ref(db, `borrows/${newIndex}`), newBorrow);
-
-    await update(ref(db, `books/${book.book_id}`), {
-      available_copies: (book.available_copies || 1) - 1
-    });
-
-    await update(mgmtRef, { borrows_index: newIndex });
-
-    setMessage(`Book borrowed successfully! Return by ${returnDate.toLocaleDateString()}`);
-    setBook(prev => ({
-      ...prev,
-      available_copies: (prev.available_copies || 1) - 1
-    }));
+  const newBorrow = {
+    borrow_id: newIndex,
+    user_id: user.user_id,
+    book_id: book.book_id,
+    status: 'borrowed',
+    b_date: today.toISOString().split('T')[0],
+    ret_date: returnDate.toISOString().split('T')[0]
   };
+
+  await set(ref(db, `borrows/${newIndex}`), newBorrow);
+
+  const bookRef = ref(db, `books/${book.book_id}`);
+  const bookSnap = await get(bookRef);
+  const bookData = bookSnap.val();
+
+  if (!bookData) {
+    console.error("Book not found in DB");
+    return;
+  }
+
+  const newAvailable = (bookData.available_copies || 1) - 1;
+  await update(bookRef, { available_copies: newAvailable });
+
+  await update(mgmtRef, { borrows_index: newIndex });
+
+  setMessage(`Book borrowed successfully! Return by ${returnDate.toLocaleDateString()}`);
+  setBook(prev => ({
+    ...prev,
+    available_copies: newAvailable
+  }));
+  setAlreadyBorrowed(true);
+};
+
 
   const handleReturn = async () => {
-    const borrowsSnap = await get(ref(db, 'borrows'));
-    const borrows = borrowsSnap.val() || {};
+  if (!user || !book) return;
 
-    const entry = Object.entries(borrows).find(
-      ([, b]) =>
-        b.book_id === book.book_id &&
-        b.user_id === user.user_id &&
-        b.status === 'borrowed'
-    );
+  const borrowsSnap = await get(ref(db, 'borrows'));
+  const borrows = borrowsSnap.val() || {};
 
-    if (!entry) return;
+  const entry = Object.entries(borrows).find(
+    ([, b]) =>
+      String(b.book_id) === String(book.book_id) &&
+      String(b.user_id) === String(user.user_id) &&
+      b.status === 'borrowed'
+  );
 
-    const [borrowId, borrow] = entry;
+  if (!entry) return;
 
-    await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
+  const [borrowId, borrow] = entry;
 
-    const bookRef = ref(db, `books/${borrow.book_id}`);
-    const bookSnapshot = await get(bookRef);
-    const bookData = bookSnapshot.val();
-    await update(bookRef, {
-      available_copies: (bookData.available_copies || 0) + 1
-    });
+  await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
 
-    const today = new Date();
-    const dueDate = new Date(borrow.ret_date);
-    const isLate = today > dueDate;
-    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+  const bookRef = ref(db, `books/${book.book_id}`);
+  const bookSnap = await get(bookRef);
+  const bookData = bookSnap.val();
 
-    if (isLate) {
-      alert(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
-    } else {
-      alert(`Returned "${bookData.name}" on time. Thank you!`);
+  if (!bookData) {
+    console.error("Book not found in DB");
+    return;
+  }
+
+  const updatedAvailable = (bookData.available_copies || 0) + 1;
+  await update(bookRef, { available_copies: updatedAvailable });
+
+  const today = new Date();
+  const dueDate = new Date(borrow.ret_date);
+  const isLate = today > dueDate;
+  const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+
+  if (isLate) {
+    setMessage(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+  } else {
+    setMessage(`Returned "${bookData.name}" on time. Thank you!`);
+  }
+
+  const usersSnap = await get(ref(db, 'users'));
+  const allUsers = usersSnap.val() || [];
+
+  const notifSnap = await get(ref(db, 'managment/noti_index'));
+  let notiId = notifSnap.val() + 1;
+  const now = new Date().toISOString();
+
+  for (let i = 1; i < allUsers.length; i++) {
+    const u = allUsers[i];
+    if (!u || !u.notify_list) continue;
+
+    if (u.notify_list.includes(book.book_id)) {
+      await set(ref(db, `notifications/${notiId}`), {
+        noti_id: notiId,
+        user_index: i,
+        user_id: u.user_id,
+        type: "System",
+        content: `Good news! '${bookData.name}' from your notify list is now available.`,
+        time: now
+      });
+      notiId++;
     }
+  }
 
-    const usersSnap = await get(ref(db, 'users'));
-    const allUsers = usersSnap.val() || [];
-    const now = new Date().toISOString();
-    const notifSnap = await get(ref(db, 'managment/noti_index'));
-    let notiId = notifSnap.val() + 1;
+  await update(ref(db, 'managment'), { noti_index: notiId - 1 });
 
-    for (let i = 1; i < allUsers.length; i++) {
-      const u = allUsers[i];
-      if (!u || !u.notify_list) continue;
-
-      if (u.notify_list.includes(borrow.book_id)) {
-        await set(ref(db, `notifications/${notiId}`), {
-          noti_id: notiId,
-          user_index: i,
-          user_id: u.user_id,
-          type: "System",
-          content: `Good news! '${bookData.name}' from your notify list is now available.`,
-          time: now
-        });
-        notiId++;
-      }
-    }
-
-    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
-
-    setAlreadyBorrowed(false);
-    setBook(prev => ({
-      ...prev,
-      available_copies: (prev.available_copies || 0) + 1
-    }));
-    setMessage("Book returned successfully");
-  };
+  setAlreadyBorrowed(false);
+  setBook(prev => ({
+    ...prev,
+    available_copies: updatedAvailable
+  }));
+ 
+};
 
 
   if (!book) return <p className="p-4 text-red-500">No book selected</p>;
