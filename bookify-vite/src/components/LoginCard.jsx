@@ -9,6 +9,8 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const isFormValid = username.trim() && password.trim();
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -26,15 +28,14 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
     const allUsers = snapshot.val();
 
     let matchedUser = null;
-    for (let i = 1; i < allUsers.length; i++) {
-      const user = allUsers[i];
-      if (!user) continue;
+    for (const key in allUsers) {
+      const user = allUsers[key];
       if (user.email === username && user.password === password) {
-        matchedUser = user;
-        matchedUser.index = i;
+        matchedUser = { ...user, index: key };
         break;
       }
     }
+
 
     if (!matchedUser) {
       setMsg("Incorrect email or password");
@@ -43,7 +44,8 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
         username: matchedUser.email,
         user_id: matchedUser.user_id,
         userIndex: matchedUser.index,
-        name: matchedUser.name
+        name: matchedUser.first_name + ' ' + matchedUser.last_name
+
       };
       localStorage.setItem("loggedInUser", JSON.stringify(userData));
       setMsg("Login successful!");
@@ -58,7 +60,7 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
       className="fixed top-16 right-6 bg-white shadow-xl rounded-lg p-4 w-80 z-50"
     >
       <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-bold">Log in / Register</h2>
+        <h2 className="text-lg font-bold">Login</h2>
         <button onClick={onClose} className="text-gray-500 text-xl">
           <X size={20} />
         </button>
@@ -69,7 +71,7 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
         type="text"
         value={username}
         onChange={e => setUsername(e.target.value)}
-        className="w-full p-2 rounded bg-blue-100 mb-3"
+        className="w-full p-2 rounded bg-gray-200 mb-3"
         placeholder="example@mail.com"
       />
 
@@ -79,7 +81,7 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={e => setPassword(e.target.value)}
-          className="w-full p-2 rounded bg-red-100 pr-10"
+          className="w-full p-2 rounded bg-gray-200 mb-3"
           placeholder="Enter password"
         />
         <Eye
@@ -95,10 +97,13 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
 
       <button
         onClick={handleLogin}
-        className="bg-green-500 hover:bg-green-600 text-white w-full py-2 rounded mb-3"
+        disabled={!isFormValid}
+        className={`w-full py-2 rounded mt-2 font-semibold text-white transition 
+    ${isFormValid ? 'bg-gray-800 hover:bg-gray-900' : 'bg-gray-400 cursor-not-allowed'}`}
       >
         Login
       </button>
+
 
       {msg && <p className="text-sm text-red-500 text-center">{msg}</p>}
 
