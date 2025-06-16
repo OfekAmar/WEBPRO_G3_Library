@@ -413,8 +413,7 @@ select.dx-input:focus {
   background-color:#000000;
 }
 
-/* השדה צריך להיות position: relative כדי שה־icon ימוקם בו */
 .date-input {
   position: relative;
-  padding-right: 36px; /* שומר מקום לסמל */
+  padding-right: 36px; 
 }

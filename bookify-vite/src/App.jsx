@@ -18,11 +18,21 @@ function App() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [theme, setTheme] = useState('light');
+
 
   useEffect(() => {
     const saved = localStorage.getItem("loggedInUser");
     if (saved) setUser(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") || "light";
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(saved);
+    setTheme(saved);
+  }, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
@@ -31,11 +41,13 @@ function App() {
 
   return (
     <>
-    
+
       <Layout
-          user={user}
+        user={user}
         onLogout={handleLogout}
         onLoginClick={() => setShowLogin(true)}
+        theme={theme}
+        setTheme={setTheme}
       >
         {/* Login Card */}
         {showLogin && (
@@ -79,7 +91,7 @@ function App() {
         </Routes>
       </Layout>
 
-     
+
     </>
   );
 }

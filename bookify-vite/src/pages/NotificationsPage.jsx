@@ -51,7 +51,6 @@ function NotificationsPage({ user }) {
     const updated = allNotifications.map(n => ({ ...n, read: true }));
     setAllNotifications(updated);
     setNotifications(showAll ? updated : updated.filter(n => !n.read));
-
   };
 
   const formatTime = (timeStr) => {
@@ -65,22 +64,22 @@ function NotificationsPage({ user }) {
 
   return (
     <>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="p-6 max-w-4xl mx-auto text-copy-primary">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-indigo-950 text-3xl font-bold flex items-center gap-2">
+          <h2 className="text-3xl font-bold flex items-center gap-2">
             Notifications
           </h2>
           <div className="flex gap-4">
             <button
               onClick={toggleView}
-              className="text-sm text-indigo-700 hover:text-indigo-950 underline"
+              className="text-sm text-cta hover:text-cta-active underline"
             >
               {showAll ? 'Show Unread Only' : 'See All'}
             </button>
             {notifications.length > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-sm text-indigo-700 hover:text-indigo-950 underline"
+                className="text-sm text-cta hover:text-cta-active underline"
               >
                 Read All
               </button>
@@ -89,7 +88,7 @@ function NotificationsPage({ user }) {
         </div>
 
         {notifications.length === 0 ? (
-          <div className="text-center text-gray-600 mt-10">
+          <div className="text-center text-copy-secondary mt-10">
             <BellOff className="mx-auto mb-2" size={40} />
             No notifications to show.
           </div>
@@ -99,21 +98,20 @@ function NotificationsPage({ user }) {
               <div
                 key={notification._key}
                 onClick={() => markAsRead(notification._key)}
-                className={`p-4 rounded-md shadow flex justify-between items-center cursor-pointer transition-opacity ${!notification.read ? 'bg-blue-50' : 'bg-gray-50'}`}
+                className={`p-4 rounded-md shadow flex justify-between items-center cursor-pointer transition-opacity 
+                  ${!notification.read ? 'bg-[rgba(191,219,254,0.2)]' : 'bg-card border border-border'}`}
               >
                 <div>
-                  <p className={`text-sm ${!notification.read ? 'font-semibold text-blue-800' : 'text-gray-800'}`}>
+                  <p className={`text-sm ${!notification.read ? 'font-semibold text-cta' : 'text-copy-primary'}`}>
                     {notification.content}
                   </p>
-                  <p className="text-xs text-gray-500">{formatTime(notification.time)}</p>
+                  <p className="text-xs text-copy-secondary">{formatTime(notification.time)}</p>
                 </div>
                 <Button icon={<Check size={16} />} iconSize={16} variant="read" onClick={() => markAsRead(notification._key)} />
               </div>
             ))}
           </div>
         )}
-
-
       </div>
       <Footer />
     </>

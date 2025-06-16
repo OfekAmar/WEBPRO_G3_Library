@@ -15,10 +15,10 @@ const BookCard = ({ book, onClick }) => {
   return (
     <div
       onClick={() => onClick?.(book)}
-      className="bg-gray-100 rounded-lg shadow p-3 w-44 h-72 flex flex-col items-center m-2 cursor-pointer"
+      className="bg-[rgba(var(--bookcard),1)] hover:bg-[rgba(var(--bookcard),0.85)] text-copy-primary rounded-lg shadow p-3 w-44 h-72 flex flex-col items-center m-2 cursor-pointer transition-colors"
     >
       {!cover ? (
-        <div className="w-40 h-48 bg-gray-200 animate-pulse rounded mb-2" />
+        <div className="w-40 h-48 bg-border animate-pulse rounded mb-2" />
       ) : (
         <img
           src={cover}
@@ -27,7 +27,7 @@ const BookCard = ({ book, onClick }) => {
         />
       )}
       <p className="font-semibold text-md text-center">{book.name}</p>
-      <p className="text-xs text-gray-600 text-center">{book.author}</p>
+      <p className="text-xs text-copy-secondary text-center">{book.author}</p>
     </div>
   );
 };
