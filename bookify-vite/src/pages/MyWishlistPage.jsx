@@ -60,7 +60,6 @@ function MyWishlistPage({ user }) {
     navigate(`/book/${book.book_id}`);
   };
 
-
   if (!user) {
     return <p className="p-6 text-red-500">You must be logged in to view your wishlist.</p>;
   }
@@ -73,16 +72,16 @@ function MyWishlistPage({ user }) {
   return (
     <>
       <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">My Wishlist </h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-copy-primary">My Wishlist</h2>
 
         {wishlistBooks.length === 0 ? (
-          <p className="text-gray-600 text-center">Your wishlist is empty.</p>
+          <p className="text-copy-secondary text-center">Your wishlist is empty.</p>
         ) : (
           <div className="space-y-6">
             {currentBooks.map((book) => (
               <div
                 key={book.book_id}
-                className="flex flex-col md:flex-row items-start gap-6 bg-gray-50 rounded-lg shadow p-4"
+                className="flex flex-col md:flex-row items-start gap-6 bg-[rgba(var(--bookcard),1)] text-copy-primary rounded-lg shadow p-4"
               >
                 <img
                   src={covers[book.book_id]}
@@ -91,19 +90,18 @@ function MyWishlistPage({ user }) {
                 />
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold mb-2">{book.name}</h3>
-                  <p className="text-sm text-gray-700 mb-4">{book.description}</p>
+                  <p className="text-sm text-copy-secondary mb-4">{book.description}</p>
                   <div className="flex items-center gap-3">
                     <Button
                       label="Borrow"
                       onClick={() => handleNavigateToBook(book)}
                       variant="borrow"
-                      className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50"
-
+                      className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 dark:hover:bg-teal-800/20"
                     />
                     <Button
                       variant='trash'
                       onClick={() => handleRemove(book.book_id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 dark:hover:bg-red-800/20"
                       icon={<Trash2 size={23} />}
                     />
                   </div>
@@ -116,10 +114,9 @@ function MyWishlistPage({ user }) {
                 {Array.from({ length: totalPages }, (_, i) => (
                   <button
                     key={i + 1}
-                    className={`px-3 py-1 rounded ${currentPage === i + 1
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-800'
-                      }`}
+                    className={`px-3 py-1 rounded font-medium transition-colors ${currentPage === i + 1
+                      ? 'bg-[rgba(var(--bookcard),1)] text-cta-text'
+                      : 'bg-border text-copy-primary hover:bg-border/80'}`}
                     onClick={() => setCurrentPage(i + 1)}
                   >
                     {i + 1}
