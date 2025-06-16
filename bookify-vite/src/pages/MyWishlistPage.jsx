@@ -57,9 +57,9 @@ function MyWishlistPage({ user }) {
   };
 
   const handleNavigateToBook = (book) => {
-    sessionStorage.setItem("selectedBook", JSON.stringify(book));
-    navigate("/book");
+    navigate(`/book/${book.book_id}`);
   };
+
 
   if (!user) {
     return <p className="p-6 text-red-500">You must be logged in to view your wishlist.</p>;
@@ -104,7 +104,7 @@ function MyWishlistPage({ user }) {
                       variant='trash'
                       onClick={() => handleRemove(book.book_id)}
                       className="text-red-500 hover:text-red-700"
-                      icon = {<Trash2 size={23} />}
+                      icon={<Trash2 size={23} />}
                     />
                   </div>
                 </div>

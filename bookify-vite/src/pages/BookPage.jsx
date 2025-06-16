@@ -9,8 +9,11 @@ import WishlistButton from '../components/WishlistButton';
 import Button from '../components/Button';
 import NotifyButton from '../components/NotificationBell';
 import { resolveBookCover } from '../utils/fetchGoogleBookCover';
+import { useParams } from "react-router-dom";
+
 
 function BookPage({ user }) {
+  const { id } = useParams();
   const [book, setBook] = useState(null);
   const [cover, setCover] = useState(null);
   const [message, setMessage] = useState("");
@@ -23,9 +26,18 @@ function BookPage({ user }) {
   const [showReviews, setShowReviews] = useState(false);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("selectedBook");
-    if (stored) setBook(JSON.parse(stored));
-  }, []);
+  const fetchBook = async () => {
+    const snap = await get(ref(db, `books/${id}`));
+    const bookData = snap.val();
+    if (bookData) {
+      setBook(bookData);
+      const image = await resolveBookCover(bookData);
+      setCover(image);
+    }
+  };
+  if (id) fetchBook();
+}, [id]);
+
 
   useEffect(() => {
     const loadCover = async () => {

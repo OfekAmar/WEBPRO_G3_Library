@@ -13,7 +13,6 @@ import FeaturedAuthors from '../components/FeaturedAuthors';
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
   const navigate = useNavigate();
-
   const trendingRef = useRef();
   const newRef = useRef();
 
@@ -72,10 +71,7 @@ function HomePage() {
             <div key={book.id} className="relative group">
               <BookCard
                 book={book}
-                onClick={() => {
-                  sessionStorage.setItem('selectedBook', JSON.stringify(book));
-                  navigate('/book');
-                }}
+                onClick={() => navigate(`/book/${book.book_id}`)}
               />
             </div>
           ))}

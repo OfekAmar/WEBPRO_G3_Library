@@ -69,6 +69,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage user={user} onSelectBook={setSelectedBook} />} />
           <Route path="/book" element={<BookPage user={user} selectedBook={selectedBook} />} />
+          <Route path="/book/:id" element={<BookPage user={user} />} />
           <Route path="/mybooks" element={<MyBooksPage user={user} />} />
           <Route path="/wishlist" element={<MyWishlistPage user={user} />} />
           <Route path="/notifications" element={<NotificationsPage user={user} />} />

@@ -7,12 +7,14 @@ import BookCard from '../components/BookCard';
 import { checkDueNotifications } from '../utils/notifications';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 function MyBooksPage({ user }) {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [returnedBooks, setReturnedBooks] = useState([]);
   const borrowedRef = useRef();
   const returnedRef = useRef();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) return;
@@ -138,8 +140,7 @@ function MyBooksPage({ user }) {
                 book={book}
                 onClick={() => {
                   if (!showReturn) {
-                    sessionStorage.setItem("selectedBook", JSON.stringify(book));
-                    window.location.href = "/book";
+                    navigate(`/book/${book.book_id}`);
                   }
                 }}
               />
