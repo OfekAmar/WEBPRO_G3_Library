@@ -9,8 +9,10 @@ import WishlistButton from '../components/WishlistButton';
 import Button from '../components/Button';
 import NotifyButton from '../components/NotificationBell';
 import { resolveBookCover } from '../utils/fetchGoogleBookCover';
+import { useParams } from "react-router-dom";
 
 function BookPage({ user }) {
+  const { id } = useParams();
   const [book, setBook] = useState(null);
   const [cover, setCover] = useState(null);
   const [message, setMessage] = useState("");
@@ -23,9 +25,17 @@ function BookPage({ user }) {
   const [showReviews, setShowReviews] = useState(false);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("selectedBook");
-    if (stored) setBook(JSON.parse(stored));
-  }, []);
+    const fetchBook = async () => {
+      const snap = await get(ref(db, `books/${id}`));
+      const bookData = snap.val();
+      if (bookData) {
+        setBook(bookData);
+        const image = await resolveBookCover(bookData);
+        setCover(image);
+      }
+    };
+    if (id) fetchBook();
+  }, [id]);
 
   useEffect(() => {
     const loadCover = async () => {
@@ -65,8 +75,8 @@ function BookPage({ user }) {
 
       const userBorrowed = Object.values(borrows).some(
         (b) =>
-          b.book_id === book.book_id &&
-          b.user_id === user.user_id &&
+          String(b.book_id) === String(book.book_id) &&
+          String(b.user_id) === String(user.user_id) &&
           b.status === 'borrowed'
       );
 
@@ -141,7 +151,7 @@ function BookPage({ user }) {
       setAverageRating(parseFloat(avgRating));
     } catch (err) {
       console.error("Failed to update rating:", err);
-      setMessage("❌ Error saving rating.");
+      setMessage("Error saving rating.");
     }
   };
 
@@ -155,7 +165,7 @@ function BookPage({ user }) {
       });
     } catch (err) {
       console.error("Failed to add comment:", err);
-      setMessage("❌ Error saving comment.");
+      setMessage("Error saving comment.");
     }
   };
 
@@ -169,44 +179,128 @@ function BookPage({ user }) {
 
     const today = new Date();
     const returnDate = new Date();
-    returnDate.setDate(today.getDate() + 7);
+    returnDate.setDate(today.getDate() + 14);
 
     const newBorrow = {
       borrow_id: newIndex,
       user_id: user.user_id,
       book_id: book.book_id,
-      status: 'borrow',
+      status: 'borrowed',
       b_date: today.toISOString().split('T')[0],
       ret_date: returnDate.toISOString().split('T')[0]
     };
 
     await set(ref(db, `borrows/${newIndex}`), newBorrow);
 
-    await update(ref(db, `books/${book.book_id}`), {
-      available_copies: (book.available_copies || 1) - 1
-    });
+    const bookRef = ref(db, `books/${book.book_id}`);
+    const bookSnap = await get(bookRef);
+    const bookData = bookSnap.val();
+
+    if (!bookData) {
+      console.error("Book not found in DB");
+      return;
+    }
+
+    const newAvailable = (bookData.available_copies || 1) - 1;
+    await update(bookRef, { available_copies: newAvailable });
 
     await update(mgmtRef, { borrows_index: newIndex });
 
-    setMessage("Book borrowed successfully!");
+    setMessage(`Book borrowed successfully! Return by ${returnDate.toLocaleDateString()}`);
     setBook(prev => ({
       ...prev,
-      available_copies: (prev.available_copies || 1) - 1
+      available_copies: newAvailable
+    }));
+    setAlreadyBorrowed(true);
+  };
+
+  const handleReturn = async () => {
+    if (!user || !book) return;
+
+    const borrowsSnap = await get(ref(db, 'borrows'));
+    const borrows = borrowsSnap.val() || {};
+
+    const entry = Object.entries(borrows).find(
+      ([, b]) =>
+        String(b.book_id) === String(book.book_id) &&
+        String(b.user_id) === String(user.user_id) &&
+        b.status === 'borrowed'
+    );
+
+    if (!entry) return;
+
+    const [borrowId, borrow] = entry;
+
+    await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
+
+    const bookRef = ref(db, `books/${book.book_id}`);
+    const bookSnap = await get(bookRef);
+    const bookData = bookSnap.val();
+
+    if (!bookData) {
+      console.error("Book not found in DB");
+      return;
+    }
+
+    const updatedAvailable = (bookData.available_copies || 0) + 1;
+    await update(bookRef, { available_copies: updatedAvailable });
+
+    const today = new Date();
+    const dueDate = new Date(borrow.ret_date);
+    const isLate = today > dueDate;
+    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+
+    if (isLate) {
+      setMessage(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+    } else {
+      setMessage(`Returned "${bookData.name}" on time. Thank you!`);
+    }
+
+    const usersSnap = await get(ref(db, 'users'));
+    const allUsers = usersSnap.val() || [];
+
+    const notifSnap = await get(ref(db, 'managment/noti_index'));
+    let notiId = notifSnap.val() + 1;
+    const now = new Date().toISOString();
+
+    for (let i = 1; i < allUsers.length; i++) {
+      const u = allUsers[i];
+      if (!u || !u.notify_list) continue;
+
+      if (u.notify_list.includes(book.book_id)) {
+        await set(ref(db, `notifications/${notiId}`), {
+          noti_id: notiId,
+          user_index: i,
+          user_id: u.user_id,
+          type: "System",
+          content: `Good news! '${bookData.name}' from your notify list is now available.`,
+          time: now
+        });
+        notiId++;
+      }
+    }
+
+    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
+
+    setAlreadyBorrowed(false);
+    setBook(prev => ({
+      ...prev,
+      available_copies: updatedAvailable
     }));
   };
 
   if (!book) return <p className="p-4 text-red-500">No book selected</p>;
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10 px-4">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
+    <div className="bg-background min-h-screen py-10 px-4 text-copy-primary">
+      <div className="bg-[rgba(var(--bookcard),1)] max-w-6xl mx-auto bg-card rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
           <div className="flex justify-center">
             {cover ? (
               <img src={cover} alt={book.name} className="w-full max-w-xs rounded-lg shadow" />
             ) : (
-              <div className="w-48 h-64 bg-gray-200 animate-pulse rounded-lg shadow" />
+              <div className="w-48 h-64 bg-border animate-pulse rounded-lg shadow" />
             )}
           </div>
 
@@ -215,7 +309,9 @@ function BookPage({ user }) {
             {book.available_copies > 0 ? (
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-3 h-3 bg-green-500 rounded-full"></span>
-                <span className="text-green-600 font-semibold">Stock Availability.</span>
+                <span className="text-green-600 font-semibold">
+                  {book.available_copies} more copie{book.available_copies > 1 ? 's' : ''} available to borrow
+                </span>
               </div>
             ) : (
               <div className="flex items-center gap-2 mb-4">
@@ -243,7 +339,7 @@ function BookPage({ user }) {
             />
             <p className="mb-2"><strong>Author:</strong> {book.author}</p>
             <p className="mb-4"><strong>Description:</strong> {book.description}</p>
-            <p className="text-sm text-gray-600 mb-4"><strong>Location: </strong>{book.location}</p>
+            <p className="text-sm text-copy-secondary mb-4"><strong>Location: </strong>{book.location}</p>
 
             {user ? (
               <div className="space-y-3">
@@ -251,9 +347,7 @@ function BookPage({ user }) {
                 <div className="flex items-center gap-4">
                   {book.available_copies > 0 ? (
                     alreadyBorrowed ? (
-                      <p className="text-green-600 font-semibold">
-                        📚 You already borrowed this book
-                      </p>
+                      <Button variant='borrow' label="Return Book" onClick={handleReturn} className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 dark:hover:bg-teal-800/20"/>
                     ) : (
                       <BorrowButton isBorrowed={false} onToggle={handleBorrow} />
                     )
@@ -261,6 +355,7 @@ function BookPage({ user }) {
                     <NotifyButton
                       isInNotifyList={inNotifyList}
                       onToggle={toggleNotifyList}
+                      className="text-red-500 hover:text-red-700 dark:hover:bg-red-800/20"
                     />
                   )}
 

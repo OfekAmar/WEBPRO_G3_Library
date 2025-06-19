@@ -41,16 +41,18 @@ const FeaturedAuthors = () => {
   }, []);
 
   return (
-    <section className="py-12 bg-blue-100 text-center w-full">
-      <h2 className="text-3xl font-bold text-gray-800 mb-2">Featured Author</h2>
-      <p className="text-gray-600 mb-8">Click on them to see their available books</p>
+    <section className="py-12 text-center w-full bg-[rgba(var(--backgroundhomepage),1)] text-[rgba(var(--copy-primary),1)] transition-colors">
+      <h2 className="text-3xl font-bold mb-2">Featured Author</h2>
+      <p className="mb-8 text-[rgba(var(--copy-secondary),1)]">
+        Click on them to see their available books
+      </p>
 
       <div className="max-w-7xl mx-auto grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 px-4">
         {authors.map((author, idx) => (
           <div
             key={idx}
             onClick={() => navigate(`/search?q=${encodeURIComponent(author.name)}&by=author`)}
-            className="cursor-pointer bg-white p-4 rounded-xl shadow hover:shadow-lg transition"
+            className="cursor-pointer rounded-xl p-4 shadow bg-[rgba(var(--bookcard),1)] hover:bg-[rgba(var(--bookcard),0.85)] transition-all"
           >
             <div className="flex justify-center mb-3 relative">
               <img
@@ -59,14 +61,15 @@ const FeaturedAuthors = () => {
                 alt={author.name}
               />
             </div>
-            <p className="font-semibold text-indigo-800">{author.name}</p>
-            <p className="text-sm text-gray-500">
+            <p className="font-semibold text-cta">{author.name}</p>
+            <p className="text-sm text-[rgba(var(--copy-secondary),1)]">
               {String(author.books).padStart(2, '0')} Published Books
             </p>
           </div>
         ))}
       </div>
     </section>
+
   );
 };
 

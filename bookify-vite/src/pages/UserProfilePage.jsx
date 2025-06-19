@@ -1,136 +1,3 @@
-{/*}
-import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
-import { ref, get, update } from 'firebase/database';
-
-function UserProfilePage({ user }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    phone: '',
-  });
-  const [message, setMessage] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [originalData, setOriginalData] = useState({});
-
-  useEffect(() => {
-    if (!user) return;
-    const fetchData = async () => {
-      const snap = await get(ref(db, 'users/' + user.userIndex));
-      const data = snap.val();
-      if (data) {
-        setFormData({
-          name: data.name || '',
-          email: data.email || '',
-          password: data.password || '',
-          phone: data.phone || '',
-        });
-        setOriginalData(data); // store original in case of cancel
-      }
-    };
-    fetchData();
-  }, [user]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === 'phone') {
-      if (!/^\d*$/.test(value)) return;
-      if (value.length > 10) return;
-      if (value.length >= 1 && !value.startsWith('05')) return;
-    }
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSave = async () => {
-    if (!user) return;
-
-    await update(ref(db, 'users/' + user.userIndex), formData);
-    setMessage('✅ Profile updated successfully!');
-    setIsEditing(false);
-    setTimeout(() => setMessage(''), 3000);
-  };
-
-  const handleCancel = () => {
-    setFormData(originalData);
-    setIsEditing(false);
-  };
-
-  if (!user) return <p className="text-red-500">You must be logged in to view your profile.</p>;
-
-  if (!formData.name && !formData.email && !formData.password && !formData.phone) {
-    return <p className="text-gray-600">Loading user profile...</p>;
-  }
-
-  return (
-    <div className="p-6 max-w-xl mx-auto">
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-bold mb-6">User Profile </h2>
-        {message && <p className="text-green-600 mb-4">{message}</p>}
-
-        <div className="space-y-4">
-          <ProfileRow label="Full Name" value={formData.name} editable={isEditing} onChange={handleChange} name="name" />
-          <ProfileRow label="Email" value={formData.email} editable={isEditing} onChange={handleChange} name="email" />
-          <ProfileRow label="Password" value={formData.password} editable={isEditing} onChange={handleChange} name="password" type="password" />
-          <ProfileRow label="Phone" value={formData.phone} editable={isEditing} onChange={handleChange} name="phone" />
-
-          {!isEditing ? (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-[rgb(207,230,238)] text-white px-4 py-2 rounded"
-            >
-              Edit Details
-            </button>
-          ) : (
-            <div className="flex gap-4">
-              <button
-                onClick={handleSave}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              >
-                💾 Save
-              </button>
-              <button
-                onClick={handleCancel}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-              >
-                ❌ Cancel
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Reusable row component
-const ProfileRow = ({ label, value, editable, onChange, name, type = "text" }) => (
-  <div>
-    <label className="block font-medium mb-1">{label}:</label>
-    {editable ? (
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="w-full border px-3 py-2 rounded"
-      />
-    ) : (
-      <p className="bg-gray-100 px-3 py-2 rounded text-gray-700">{value || '—'}</p>
-    )}
-  </div>
-);
-
-export default UserProfilePage;
-*/}
-
-
-
 import React, { useEffect, useState } from "react";
 import "/src/utils/userProfile.css";
 import avatarImage from "/src/utils/user.png";
@@ -139,88 +6,167 @@ import { IoSaveSharp } from "react-icons/io5";
 import { BiCalendarEvent } from "react-icons/bi";
 import Footer from "../components/Footer";
 import { db } from "../firebase";
-import { ref, get } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 
 const UserProfile = ({ user }) => {
+  const [userData, setUserData] = useState(null);
+  const [formData, setFormData] = useState(null);
+  const [originalData, setOriginalData] = useState(null);
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-  const [userData, setUserData] = useState(null);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [passwordForm, setPasswordForm] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !user.userIndex) return;
     const fetchData = async () => {
       const snap = await get(ref(db, "users/" + user.userIndex));
       const data = snap.val();
       if (data) {
         setUserData(data);
+        setFormData(data);
+        setOriginalData(data);
       }
     };
     fetchData();
   }, [user]);
 
+  useEffect(() => {
+    if (!formData || !originalData) return;
+    const isChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
+    setIsDirty(isChanged);
+  }, [formData, originalData]);
+
+  useEffect(() => {
+    const { oldPassword, newPassword, confirmNewPassword } = passwordForm;
+    const isComplete = oldPassword && newPassword && confirmNewPassword;
+    const matches = newPassword === confirmNewPassword;
+    const correctOld = oldPassword === formData?.password;
+
+    if (!isComplete) {
+      setPasswordError("");
+      setIsPasswordValid(false);
+      return;
+    }
+
+    if (!matches) {
+      setPasswordError("Passwords do not match");
+      setIsPasswordValid(false);
+      return;
+    }
+
+    if (!correctOld) {
+      setPasswordError("Old password is incorrect");
+      setIsPasswordValid(false);
+      return;
+    }
+
+    setPasswordError("");
+    setIsPasswordValid(true);
+  }, [passwordForm, formData]);
+
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = async () => {
+    if (!user || !formData) return;
+    await update(ref(db, "users/" + user.userIndex), formData);
+    setOriginalData(formData);
+    setIsDirty(false);
+    setSaveMessage("Profile updated successfully!");
+    setTimeout(() => setSaveMessage(""), 3000);
+  };
+
+  const handleCancel = () => {
+    setFormData(originalData);
+    setIsDirty(false);
+  };
+
+  const handlePasswordChange = (field, value) => {
+    setPasswordForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePasswordSave = async () => {
+    const updated = { ...formData, password: passwordForm.newPassword };
+    await update(ref(db, "users/" + user.userIndex), updated);
+    setFormData(updated);
+    setOriginalData(updated);
+    setPasswordModalOpen(false);
+    setSaveMessage("Password updated successfully!");
+    setTimeout(() => setSaveMessage(""), 3000);
+    setPasswordForm({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
+  };
+
   if (!user) return <p className="text-red-500">You must be logged in to view your profile.</p>;
-  if (!userData) return <p className="text-gray-600">Loading user profile...</p>;
+  if (!formData) return <p>Loading...</p>;
 
   return (
     <>
       <div className="view-host user-profile">
         <div className="view-wrapper">
           <div className="dx-toolbar">
-            <button className="dx-button cancel-button" disabled={!isDirty}>Cancel</button>
-            <button className="dx-button save-button dx-button-success" disabled={!isDirty}><IoSaveSharp />Save</button>
+            <button className="dx-button cancel-button" disabled={!isDirty} onClick={handleCancel}>Cancel</button>
+            <button className="dx-button save-button dx-button-success" disabled={!isDirty} onClick={handleSave}>
+              <span className="icon-with-text">
+                <IoSaveSharp className="icon" />
+                Save
+              </span>
+            </button>
           </div>
 
-          <div className="cards-container">
+          <div className="cards-container ">
             <div className="basic-info-card card">
               <div className="basic-info-top-item d-flex">
-                <div>
-                  <div className="profile-card">
-                    <img src={avatarImage} alt="User" className="form-photo" />
-                    <div className="profile-info">
-                      <span className="profile-name">{userData.first_name} {userData.last_name}</span>
-                      <div className="name-line">
-                        <span className="profile-id">ID: {user.userIndex}</span>
-                      </div>
-                      <div>
-                        <button
-                          className="dx-button change-password-button"
-                          onClick={() => setPasswordModalOpen(true)}
-                        >
-                          <TbLockFilled /> Change Password
-                        </button>
-                      </div>
+                <div className="profile-card">
+                  <img src={avatarImage} alt="User" className="form-photo" />
+                  <div className="profile-info">
+                    <span className="profile-name">{formData.first_name} {formData.last_name}</span>
+                    <div className="name-line">
+                      <span className="profile-id">ID: {user.userIndex}</span>
+                    </div>
+                    <div>
+                      <button className="dx-button change-password-button" onClick={() => setPasswordModalOpen(true)}>
+                        <TbLockFilled /> Change Password
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="form-fields-grid two-cols">
-                <Field label="First Name" value={userData.first_name} onChange={() => setIsDirty(true)} />
-                <Field label="Last Name" value={userData.last_name} onChange={() => setIsDirty(true)} />
+                <Field label="First Name" value={formData.first_name} onChange={(e) => handleChange("first_name", e.target.value)} />
+                <Field label="Last Name" value={formData.last_name} onChange={(e) => handleChange("last_name", e.target.value)} />
               </div>
 
               <div className="form-fields-grid four-cols">
-                <Field label="Department" value={userData.Department} type="select" options={["Applied Mathematics", "Biotechnology Engineering", "Civil Engineering", "Electrical Engineering", "Industrial and Managment Engineering", "Mechanical Engineering", "Software Engineering"]} onChange={() => setIsDirty(true)} />
-                <Field label="Position" value={userData.Position} type="select" options={["Student", "Lecturer"]} onChange={() => setIsDirty(true)} />
+                <Field label="Department" value={formData.Department} type="select" options={["Applied Mathematics", "Biotechnology Engineering", "Civil Engineering", "Electrical Engineering", "Industrial and Managment Engineering", "Mechanical Engineering", "Software Engineering"]} onChange={(e) => handleChange("Department", e.target.value)} />
+                <Field label="Position" value={formData.Position} type="select" options={["Student", "Lecturer"]} onChange={(e) => handleChange("Position", e.target.value)} />
                 <div className="input-with-icon">
-                  <Field label="Birth Date" value={userData.birthDate || "1980-01-01"} type="date" onChange={() => setIsDirty(true)} />
-                  <BiCalendarEvent className="date-icon" />
+                  <Field label="Birth Date" value={formData.birthDate || "01/01/1980"} type="date" onChange={(e) => handleChange("birthDate", e.target.value)} />
                 </div>
               </div>
+            </div>
 
+            <div className="two-cards-row">
               <div className="contacts-card card">
                 <h2>Contacts</h2>
                 <div className="form-fields-grid">
-                  <Field label="Phone" value={userData.phone} />
-                  <Field label="Email" value={userData.email} />
+                  <Field label="Phone" value={formData.phone} onChange={(e) => handleChange("phone", e.target.value)} />
+                  <Field label="Email" value={formData.email} onChange={(e) => handleChange("email", e.target.value)} />
                 </div>
               </div>
-
               <div className="address-card card">
                 <h2>Address</h2>
                 <div className="form-fields-grid">
-                  <Field label="City" value={userData.City} />
-                  <Field label="Address" value={userData.Address} />
+                  <Field label="City" value={formData.City} onChange={(e) => handleChange("City", e.target.value)} />
+                  <Field label="Address" value={formData.Address} onChange={(e) => handleChange("Address", e.target.value)} />
                 </div>
               </div>
             </div>
@@ -229,26 +175,48 @@ const UserProfile = ({ user }) => {
               <div className="modal-overlay">
                 <div className="modal-window">
                   <h3 className="modal-title">Change Password</h3>
-                  <form className="modal-form">
+                  <form className="modal-form" onSubmit={(e) => e.preventDefault()}>
                     <label>Old Password:</label>
-                    <input type="password" />
-
+                    <input
+                      type="password"
+                      value={passwordForm.oldPassword}
+                      onChange={(e) => handlePasswordChange("oldPassword", e.target.value)}
+                    />
                     <label>New Password:</label>
-                    <input type="password" />
-
+                    <input
+                      type="password"
+                      value={passwordForm.newPassword}
+                      onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
+                    />
                     <label>Confirm New Password:</label>
-                    <input type="password" />
-
+                    <input
+                      type="password"
+                      value={passwordForm.confirmNewPassword}
+                      onChange={(e) => handlePasswordChange("confirmNewPassword", e.target.value)}
+                    />
+                    {passwordError && <p className="text-red-500 text-sm mt-2">{passwordError}</p>}
                     <div className="modal-actions">
                       <button type="button" className="modal-cancel" onClick={() => setPasswordModalOpen(false)}>Cancel</button>
-                      <button type="submit" className="modal-save" disabled>Save</button>
+                      <button
+                        type="submit"
+                        className={`modal-save ${isPasswordValid ? 'enabled' : 'disabled'}`}
+                        disabled={!isPasswordValid}
+                        onClick={handlePasswordSave}
+                      >
+                        <IoSaveSharp className="icon" />
+                        Save
+                      </button>
+
+
                     </div>
                   </form>
                 </div>
               </div>
             )}
+
           </div>
         </div>
+        {saveMessage && <div className="save-toast">{saveMessage}</div>}
       </div>
       <Footer />
     </>
@@ -281,8 +249,8 @@ const Field = ({ label, value, type = "text", options = [], onChange, fullWidth 
       ) : (
         <input
           type={type}
-          defaultValue={value}
-          className="dx-input"
+          value={value}
+          className={`dx-input ${type === "date" ? "date-input" : ""}`}
           onChange={onChange}
         />
       )}

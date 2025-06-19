@@ -64,10 +64,7 @@ const SearchPage = ({ user, onSelectBook }) => {
                 <BookCard
                   key={book.id}
                   book={book}
-                  onClick={() => {
-                    sessionStorage.setItem('selectedBook', JSON.stringify(book));
-                    navigate('/book');
-                  }}
+                  onClick={() => navigate(`/book/${book.book_id}`)}
                 />
               ))}
             </div>

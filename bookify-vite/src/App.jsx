@@ -18,11 +18,21 @@ function App() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [theme, setTheme] = useState('light');
+
 
   useEffect(() => {
     const saved = localStorage.getItem("loggedInUser");
     if (saved) setUser(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme") || "light";
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(saved);
+    setTheme(saved);
+  }, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
@@ -31,11 +41,13 @@ function App() {
 
   return (
     <>
-    
+
       <Layout
-          user={user}
+        user={user}
         onLogout={handleLogout}
         onLoginClick={() => setShowLogin(true)}
+        theme={theme}
+        setTheme={setTheme}
       >
         {/* Login Card */}
         {showLogin && (
@@ -69,6 +81,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage user={user} onSelectBook={setSelectedBook} />} />
           <Route path="/book" element={<BookPage user={user} selectedBook={selectedBook} />} />
+          <Route path="/book/:id" element={<BookPage user={user} />} />
           <Route path="/mybooks" element={<MyBooksPage user={user} />} />
           <Route path="/wishlist" element={<MyWishlistPage user={user} />} />
           <Route path="/notifications" element={<NotificationsPage user={user} />} />
@@ -78,7 +91,7 @@ function App() {
         </Routes>
       </Layout>
 
-     
+
     </>
   );
 }
