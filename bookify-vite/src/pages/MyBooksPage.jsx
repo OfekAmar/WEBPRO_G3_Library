@@ -8,6 +8,8 @@ import { checkDueNotifications } from '../utils/notifications';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import BorrowedBookCard from '../components/BorrowedBookCard';
+
 
 function MyBooksPage({ user }) {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
@@ -32,82 +34,107 @@ function MyBooksPage({ user }) {
     const active = [];
     const history = [];
 
-    for (const key in borrows) {
-      const b = borrows[key];
-      if (!b || typeof b.user_id === 'undefined') continue;
+    const returnedBookIds = new Set();
 
-      if (b.user_id === userId) {
-        const book = books[b.book_id];
-        if (!book) continue;
+for (const key in borrows) {
+  const b = borrows[key];
+  if (!b || typeof b.user_id === 'undefined') continue;
 
-        const entry = {
-          ...book,
-          id: book.book_id,
-          ret_date: b.ret_date,
-          status: b.status,
-          borrow_id: key,
-        };
+  if (b.user_id === userId) {
+    const book = books[b.book_id];
+    if (!book) continue;
 
+    const entry = {
+      ...book,
+      id: book.book_id,
+      ret_date: b.ret_date,
+      status: b.status,
+      borrow_id: key,
+    };
 
-        if (b.status === 'borrowed') active.push(entry);
-        else history.push(entry);
-      }
+    if (b.status === 'borrowed') {
+      active.push(entry);
+    } else if (!returnedBookIds.has(b.book_id)) {
+      returnedBookIds.add(b.book_id);
+      history.push(entry);
     }
+  }
+}
+
 
     setBorrowedBooks(active);
     setReturnedBooks(history);
   };
 
-  const returnBook = async (borrow) => {
-    await update(ref(db, `borrows/${borrow.id}`), { status: 'returned' });
+  const returnBook = async (book) => {
+  if (!user || !book) return;
 
-    const bookRef = ref(db, `books/${borrow.book_id}`);
-    const bookSnapshot = await get(bookRef);
-    const bookData = bookSnapshot.val();
-    await update(bookRef, {
-      available_copies: bookData.available_copies + 1
-    });
+  const borrowsSnap = await get(ref(db, 'borrows'));
+  const borrows = borrowsSnap.val() || {};
 
-    const today = new Date();
-    const dueDate = new Date(borrow.ret_date);
-    const isLate = today > dueDate;
-    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+  const entry = Object.entries(borrows).find(
+    ([, b]) =>
+      String(b.book_id) === String(book.book_id) &&
+      String(b.user_id) === String(user.user_id) &&
+      b.status === 'borrowed'
+  );
 
-    if (isLate) {
-      alert(`Returned "${borrow.name}". ⚠️ You are ${lateDays} day(s) late.`);
-    } else {
-      alert(`Returned "${borrow.name}" on time. Thank you!`);
+  if (!entry) return;
+
+  const [borrowId, borrow] = entry;
+
+  await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
+
+  const bookRef = ref(db, `books/${book.book_id}`);
+  const bookSnap = await get(bookRef);
+  const bookData = bookSnap.val();
+
+  if (!bookData) return;
+
+  const updatedAvailable = (bookData.available_copies || 0) + 1;
+  await update(bookRef, { available_copies: updatedAvailable });
+
+  const today = new Date();
+  const dueDate = new Date(borrow.ret_date);
+  const isLate = today > dueDate;
+  const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+
+  if (isLate) {
+    alert(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+  } else {
+    alert(`Returned "${bookData.name}" on time. Thank you!`);
+  }
+
+  const usersSnap = await get(ref(db, 'users'));
+  const allUsers = usersSnap.val() || [];
+
+  const notifSnap = await get(ref(db, 'managment/noti_index'));
+  let notiId = notifSnap.val() + 1;
+  const now = new Date().toISOString();
+
+  for (let i = 1; i < allUsers.length; i++) {
+    const u = allUsers[i];
+    if (!u || !u.notify_list) continue;
+
+    if (u.notify_list.includes(book.book_id)) {
+      await set(ref(db, `notifications/${notiId}`), {
+        noti_id: notiId,
+        user_index: i,
+        user_id: u.user_id,
+        type: "System",
+        content: `Good news! '${bookData.name}' from your notify list is now available.`,
+        time: now
+      });
+      notiId++;
     }
+  }
 
-    const usersSnap = await get(ref(db, 'users'));
-    const allUsers = usersSnap.val() || [];
-    const bookName = bookData.name || 'a book';
-    const now = new Date().toISOString();
-    const notifSnap = await get(ref(db, 'managment/noti_index'));
-    let notiId = notifSnap.val() + 1;
+  await update(ref(db, 'managment'), { noti_index: notiId - 1 });
 
-    for (let i = 1; i < allUsers.length; i++) {
-      const u = allUsers[i];
-      if (!u || !u.notify_list) continue;
-
-      if (u.notify_list.includes(borrow.book_id)) {
-        await set(ref(db, `notifications/${notiId}`), {
-          noti_id: notiId,
-          user_index: i,
-          user_id: u.user_id,
-          type: "System",
-          content: `Good news! '${bookName}' from your notify list is now available.`,
-          time: now
-        });
-        notiId++;
-      }
-    }
-
-    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
-
-    setBorrowedBooks(prev => prev.filter(b => b.id !== borrow.id));
-    setReturnedBooks(prev => [...prev, { ...borrow, status: 'returned' }]);
-  };
+  // update UI
+  setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
+  setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
+};
 
   const scrollCarousel = (ref, direction = 'left') => {
     if (ref.current) {
@@ -135,28 +162,11 @@ function MyBooksPage({ user }) {
           style={{ scrollbarWidth: 'none' }}
         >
           {booksArray.map((book, i) => (
-            <div key={i} className="relative group">
-              <BookCard
-                book={book}
-                onClick={() => {
-                  if (!showReturn) {
-                    navigate(`/book/${book.book_id}`);
-                  }
-                }}
-              />
-
-              {!returnedBooks.includes(book) && showReturn && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg backdrop-blur-sm">
-                  <Button
-                    label="Return"
-                    variant="return"
-                    onClick={() => returnBook(book)}
-                    className="text-sm"
-                  />
-                </div>
-              )}
-            </div>
-
+            showReturn ? (
+              <BorrowedBookCard key={i} book={book} onReturn={returnBook} />
+            ) : (
+              <BookCard key={i} book={book} onClick={() => navigate(`/book/${book.book_id}`)} />
+            )
           ))}
         </div>
 

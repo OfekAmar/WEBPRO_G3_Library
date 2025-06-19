@@ -1,56 +1,11 @@
 import { useState } from 'react';
 
+import UserRating from './UserRating';
 
-{/*
-const CommentSection = ({ comments = [], onPostComment, userName }) => {
-  const [text, setText] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!text.trim()) return;
-    onPostComment?.({ name: userName, text: text.trim() });
-    setText('');
-  };
+const CommentSection = ({ comments = [], onPostComment, userName = '', userRating = 0, onRate }) => {
+  const [rating, setRating] = useState(userRating);
 
-  return (
-    <div className="mt-8">
-      <h3 className="text-lg font-semibold mb-4">Comments</h3>
-
-      <ul className="space-y-3 mb-6">
-        {comments.length === 0 && (
-          <li className="text-gray-500">No comments yet.</li>
-        )}
-        {comments.map((c, idx) => (
-          <li key={idx} className="bg-gray-100 p-3 rounded">
-            <p className="font-medium">{c.name}</p>
-            <p className="text-sm text-gray-700">{c.text}</p>
-          </li>
-        ))}
-      </ul>
-
-      {userName ? (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Write a comment..."
-            className="p-2 border border-gray-300 rounded resize-none"
-            rows={3}
-          />
-          <Button label="Post Comment" variant="primary" />
-        </form>
-      ) : (
-        <p className="text-sm text-gray-500">Login to post a comment.</p>
-      )}
-    </div>
-  );
-};
-
-export default CommentSection;
-*/}
-
-const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
-  const [rating, setRating] = useState(0);
 
   return (
     <div id="reviews-section" className="mt-12">
@@ -63,20 +18,7 @@ const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
           <div key={i} className="border-b pb-4 mb-4">
             <div className="flex items-center justify-between mb-2">
               <div className="font-semibold">{c.name}</div>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
-                    key={star}
-                    className={`w-4 h-4 ${
-                      c.rating >= star ? 'text-orange-400' : 'text-gray-300'
-                    }`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 15l-5.878 3.09L5.5 12.09 1 8.27l6.09-.88L10 2l2.91 5.39L19 8.27l-4.5 3.82 1.378 5.999z" />
-                  </svg>
-                ))}
-              </div>
+              
             </div>
             <p className="text-gray-700 text-sm">{c.text}</p>
           </div>
@@ -90,13 +32,14 @@ const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
     const form = e.target;
     const text = form.message.value;
 
-    if (!text || rating === 0) return;
+    if (!text) return;
 
     const newComment = {
       name: userName,
       text,
       rating,
     };
+
 
     onPostComment?.(newComment);
     form.reset();
@@ -107,20 +50,13 @@ const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
 <h4 className="text-lg font-semibold">{userName}'s Rating</h4>
 
 
-  <div className="flex gap-2">
-    {[1, 2, 3, 4, 5].map((star) => (
-      <span
-        type="button"
-        key={star}
-        onClick={() => setRating(star)}
-        className={`text-2xl ${
-          rating >= star ? 'text-orange-400' : 'text-gray-400'
-        }`}
-      >
-        ★
-      </span>
-    ))}
-  </div>
+  <UserRating
+  userRating={rating}
+  onRate={(r) => {
+    setRating(r);
+    onRate?.(r); // update DB immediately if desired
+  }}
+/>
 
   <textarea
     name="message"
@@ -130,12 +66,16 @@ const CommentSection = ({ comments = [], onPostComment, userName = '' }) => {
     required
   />
 
-  <span type="submit" className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 cursor-pointer transition-all">
-    Submit Now
-  </span>
+ <button
+  type="submit"
+  className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 cursor-pointer transition-all"
+>
+  Submit Now
+</button>
 </form>
     </div>
   );
 };
 
 export default CommentSection;
+
