@@ -321,9 +321,7 @@ function BookPage({ user }) {
             )}
             <Rating
               average={averageRating}
-              userRating={userRating}
               reviewCount={comments.length}
-              onRate={handleRating}
               onOpenReviews={() => {
                 setShowReviews(prev => {
                   const newValue = !prev;
@@ -376,6 +374,8 @@ function BookPage({ user }) {
               <CommentSection
                 comments={comments}
                 userName={user?.name || user?.username}
+                userRating={userRating}
+                onRate={handleRating}
                 onPostComment={handleAddComment}
               />
             )}

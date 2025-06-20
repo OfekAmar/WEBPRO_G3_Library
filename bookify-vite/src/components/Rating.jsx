@@ -1,55 +1,25 @@
 import { useState } from 'react';
 
-{/*
-const Rating = ({ value = 0, onRate, readOnly = false }) => {
-  const [hovered, setHovered] = useState(null);
-
-  const handleClick = (rating) => {
-    if (!readOnly) onRate?.(rating);
-  };
-
+const Rating = ({ average = 0, reviewCount = 0, onOpenReviews }) => {
   return (
-    <div className="flex gap-1 text-yellow-500 text-xl">
-      {[1, 2, 3, 4, 5].map((star) => (
+    <div className="flex flex-col gap-1 mb-4">
+      <div className="flex gap-1 text-orange-400 text-xl">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span key={star} className={average >= star ? '' : 'text-gray-300'}>
+            ★
+          </span>
+        ))}
+      </div>
+      <div className="flex items-center gap-2 text-sm">
+        <span className="text-orange-500">Avg: {average ?? 'N/A'}</span>
         <button
-          key={star}
+          onClick={onOpenReviews}
+          className="text-blue-600 hover:underline ml-2"
           type="button"
-          disabled={readOnly}
-          onClick={() => handleClick(star)}
-          onMouseEnter={() => setHovered(star)}
-          onMouseLeave={() => setHovered(null)}
-          className={`focus:outline-none ${
-            (hovered ?? value) >= star ? '' : 'text-gray-300'
-          }`}
         >
-          ★
+          ({reviewCount} Review{reviewCount !== 1 ? 's' : ''})
         </button>
-      ))}
-    </div>
-  );
-};
-
-export default Rating;
-*/}
-
-const Rating = ({ average = 0, userRating = 0, reviewCount = 0, onOpenReviews }) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    stars.push(i <= average ? '★' : '☆');
-  }
-
-  return (
-    <div className="flex items-center gap-2 mb-4 text-sm">
-      {stars.map((s, i) => (
-        <span key={i} className="text-orange-400 text-lg">{s}</span>
-      ))}
-      <button
-        onClick={onOpenReviews}
-        className="text-blue-600 hover:underline ml-2"
-        type="button"
-      >
-        ({reviewCount} Customer Review{reviewCount !== 1 ? 's' : ''})
-      </button>
+      </div>
     </div>
   );
 };
