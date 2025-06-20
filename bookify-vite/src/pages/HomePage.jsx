@@ -9,6 +9,7 @@ import LibraryMap from '../components/LibraryMap';
 import ContactBar from '../components/ContactBar';
 import Footer from '../components/Footer';
 import FeaturedAuthors from '../components/FeaturedAuthors';
+import RecommendationChatBot from "../components/RecommendationChatBot";
 
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
@@ -104,7 +105,7 @@ function HomePage() {
     <>
       <div className="w-full bg-background relative">
         <img
-          key={theme} 
+          key={theme}
           src={theme === "dark" ? "/images/homepage_dark.png" : "/images/homepage_light.png"}
           alt="Welcome to Bookify"
           className="w-full max-w-none transition-all duration-500"
@@ -117,7 +118,9 @@ function HomePage() {
       <section className="p-6 max-w-6xl mx-auto">
         {renderCarousel(' Newly Added Books', books.new, newRef)}
       </section>
-
+      <section className="p-6 max-w-6xl mx-auto">
+        <RecommendationChatBot />
+      </section>
       <Footer />
     </>
   );
