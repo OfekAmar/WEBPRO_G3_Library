@@ -92,12 +92,8 @@ function MyWishlistPage({ user }) {
                   <h3 className="text-xl font-semibold mb-2">{book.name}</h3>
                   <p className="text-sm text-copy-secondary mb-4">{book.description}</p>
                   <div className="flex items-center gap-3">
-                    <Button
-                      label="Borrow"
-                      onClick={() => handleNavigateToBook(book)}
-                      variant="borrow"
-                      className="border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 dark:hover:bg-teal-800/20"
-                    />
+                    <BorrowButton redirectToBookPage={true} bookId={book.book_id} />
+
                     <Button
                       variant='trash'
                       onClick={() => handleRemove(book.book_id)}

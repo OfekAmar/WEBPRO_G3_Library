@@ -9,11 +9,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import BorrowedBookCard from '../components/BorrowedBookCard';
+import SuccessfulMessage from '../components/SuccessfulMessage';
+import LateReturnMessage from '../components/LateReturnMessage';
 
 
 function MyBooksPage({ user }) {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [returnedBooks, setReturnedBooks] = useState([]);
+  const [message, setMessage] = useState('');
+  const [pendingReturnBook, setPendingReturnBook] = useState(null);
+  const [isLateMessage, setIsLateMessage] = useState(false);
+
+
+
   const borrowedRef = useRef();
   const returnedRef = useRef();
   const navigate = useNavigate();
@@ -60,7 +68,7 @@ function MyBooksPage({ user }) {
         }
       }
     }
-    
+
 
     setBorrowedBooks(active);
     setReturnedBooks(history);
@@ -89,7 +97,10 @@ function MyBooksPage({ user }) {
     const bookSnap = await get(bookRef);
     const bookData = bookSnap.val();
 
-    if (!bookData) return;
+    if (!bookData) {
+      console.error("Book not found in DB");
+      return;
+    }
 
     const updatedAvailable = (bookData.available_copies || 0) + 1;
     await update(bookRef, { available_copies: updatedAvailable });
@@ -98,13 +109,19 @@ function MyBooksPage({ user }) {
     const dueDate = new Date(borrow.ret_date);
     const isLate = today > dueDate;
     const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
-  
+
 
     if (isLate) {
-      setMessage(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+      setMessage(`Returned "${bookData.name}".\nYou are ${lateDays} day(s) late.`);
+      setIsLateMessage(true);
     } else {
-      setMessage(`Returned "${bookData.name}" on time. Thank you!`);
+      setMessage(`Returned "${bookData.name}" on time.\nThank you!`);
+      setIsLateMessage(false);
     }
+    setPendingReturnBook({ ...book, status: 'returned' });
+
+
+
 
     const usersSnap = await get(ref(db, 'users'));
     const allUsers = usersSnap.val() || [];
@@ -133,8 +150,8 @@ function MyBooksPage({ user }) {
     await update(ref(db, 'managment'), { noti_index: notiId - 1 });
 
     // update UI
-    setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
-    setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
+    //setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
+    //setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
   };
 
   const scrollCarousel = (ref, direction = 'left') => {
@@ -188,11 +205,41 @@ function MyBooksPage({ user }) {
 
   return (
     <>
+      {message && pendingReturnBook && (
+        isLateMessage ? (
+          <LateReturnMessage
+            message={message}
+            onConfirm={() => {
+              setMessage('');
+              setBorrowedBooks(prev =>
+                prev.filter(b => b.book_id !== pendingReturnBook.book_id)
+              );
+              setReturnedBooks(prev => [...prev, pendingReturnBook]);
+              setPendingReturnBook(null);
+              setIsLateMessage(false);
+            }}
+          />
+        ) : (
+          <SuccessfulMessage
+            message={message}
+            onConfirm={() => {
+              setMessage('');
+              setBorrowedBooks(prev =>
+                prev.filter(b => b.book_id !== pendingReturnBook.book_id)
+              );
+              setReturnedBooks(prev => [...prev, pendingReturnBook]);
+              setPendingReturnBook(null);
+            }}
+          />
+        )
+      )}
+
+
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-6 text-center"></h2>
         {borrowedBooks.length === 0 ? (
           <div className="mb-20">
-            <p className="text-gray-600 text-center">You haven’t borrowed any books yet. Maybe it's a good time to start reading :)</p>
+            <p className="text-gray-600 text-center">You haven’t borrowed any books yet. Maybe it's a good time to start reading</p>
           </div>
         ) : (
           renderCarousel('Borrowed Books', borrowedBooks, borrowedRef, true)
