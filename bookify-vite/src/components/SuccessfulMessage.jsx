@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
+import Buttonn from './Buttonn';
 
 const SuccessfulMessage = ({ message, onConfirm }) => {
     return (
@@ -20,12 +21,12 @@ const SuccessfulMessage = ({ message, onConfirm }) => {
                 <p className="text-gray-700 whitespace-pre-line">{message}</p>
 
 
-                <button
-                    onClick={onConfirm}
-                    className="bg-green-500 text-white px-6 py-2 rounded font-medium hover:bg-green-600 transition"
+                <Buttonn
+                    variant="okMes"
+                    onToggle={onConfirm}
                 >
                     OK
-                </button>
+                </Buttonn>
             </div>
         </div>
     );
