@@ -59,9 +59,9 @@ const Header = ({ user, onLogout, onLoginClick }) => {
       {/* Logo */}
       <Link to="/" className="flex items-center">
         <img
-          src={theme === 'dark' ? '/images/bookify_logo_d.png' : '/images/bookify_logo.png'}
+          src={theme === 'dark' ? '/images/LOGOBOOKIFY2.png' : '/images/LOGOBOOKIFY1.png'}
           alt="Bookify logo"
-          className="h-full max-h-12 transition-all"
+          className="h-full max-h-16 transition-all"
         />
 
       </Link>

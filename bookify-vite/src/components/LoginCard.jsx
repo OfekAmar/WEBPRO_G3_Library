@@ -44,7 +44,7 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
         userIndex: matchedUser.index,
         name: matchedUser.first_name + ' ' + matchedUser.last_name
       };
-      localStorage.setItem("loggedInUser", JSON.stringify(userData));
+      sessionStorage.setItem("loggedInUser", JSON.stringify(userData));
       setMsg("Login successful!");
       onLoginSuccess?.(userData);
       onClose?.();
