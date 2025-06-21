@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Bell, Search, Menu, User, BookOpen, Heart, LogOut, Sun, Moon } from 'lucide-react';
 import Button from '../components/Button';
 
@@ -11,6 +11,8 @@ const Header = ({ user, onLogout, onLoginClick }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [theme, setTheme] = useState('light');
   const menuRef = useRef(null);
+  const location = useLocation();
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -44,6 +46,11 @@ const Header = ({ user, onLogout, onLoginClick }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    setSearch('');
+  }, [location.pathname]);
+
 
   return (
     <header className="fixed top-0 left-0 w-full z-40 bg-[rgba(var(--card),1)] text-copy-primary shadow-md px-8 py-4 flex items-center justify-between transition-colors">
