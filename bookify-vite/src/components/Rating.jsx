@@ -11,7 +11,7 @@ const Rating = ({ average = 0, reviewCount = 0, onOpenReviews }) => {
         ))}
       </div>
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-orange-500">Avg: {average ?? 'N/A'}</span>
+  
         <button
           onClick={onOpenReviews}
           className="text-blue-600 hover:underline ml-2"

@@ -10,28 +10,17 @@ const FeaturedAuthors = () => {
 
   useEffect(() => {
     const fetchAuthors = async () => {
-      const snapshot = await get(ref(db, 'books'));
+      const snapshot = await get(ref(db, 'authors'));
       const data = snapshot.val();
       if (!data) return;
 
-      const bookList = Object.values(data);
-      const authorMap = {};
+      const authorList = Object.entries(data).map(([_, author]) => ({
+        name: author.name,
+        books: author.books || 0,
+        image: author.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(author.name)}&background=random&color=fff`
+      }));
 
-      bookList.forEach(book => {
-        const name = book.author;
-        if (!name) return;
-        if (!authorMap[name]) {
-          authorMap[name] = {
-            name,
-            books: 0,
-            image: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&bold=true`
-          };
-        }
-        authorMap[name].books += 1;
-      });
-
-      const uniqueAuthors = Object.values(authorMap);
-      const shuffled = uniqueAuthors.sort(() => Math.random() - 0.5);
+      const shuffled = authorList.sort(() => Math.random() - 0.5);
       const selected = shuffled.slice(0, 6);
 
       setAuthors(selected);
@@ -39,6 +28,7 @@ const FeaturedAuthors = () => {
 
     fetchAuthors();
   }, []);
+
 
   return (
     <section className="py-12 text-center w-full bg-[rgba(var(--backgroundhomepage),1)] text-[rgba(var(--copy-primary),1)] transition-colors">
@@ -52,17 +42,25 @@ const FeaturedAuthors = () => {
           <div
             key={idx}
             onClick={() => navigate(`/search?q=${encodeURIComponent(author.name)}&by=author`)}
-            className="cursor-pointer rounded-xl p-4 shadow bg-[rgba(var(--bookcard),1)] hover:bg-[rgba(var(--bookcard),0.85)] transition-all"
+            className="cursor-pointer rounded-xl p-4 bg-white hover:shadow-lg transition-all flex flex-col items-center text-center"
           >
-            <div className="flex justify-center mb-3 relative">
-              <img
-                src={author.image}
-                className="w-24 h-24 object-cover rounded-full border-4 border-white shadow-md mx-auto z-10"
-                alt={author.name}
-              />
+            <div className="relative w-24 h-24 mb-3">
+              {/* אלמנט עיגול מסתובב */}
+              <div className="circle-shape absolute inset-0 animate-rotate-circle">
+                <div className="w-full h-full rounded-full border-2 border-dashed border-[rgb(3,90,117)] animate-cir36" />
+              </div>
+
+              {/* תמונת הסופר */}
+              <div className="absolute inset-2 flex items-center justify-center">
+                <img
+                  src={author.image}
+                  alt={author.name}
+                  className="w-full h-full object-cover rounded-full border-4 border-white z-10"
+                />
+              </div>
             </div>
-            <p className="font-semibold text-cta">{author.name}</p>
-            <p className="text-sm text-[rgba(var(--copy-secondary),1)]">
+            <p className="font-semibold text-[rgb(15,44,66)]">{author.name}</p>
+            <p className="text-sm text-gray-500">
               {String(author.books).padStart(2, '0')} Published Books
             </p>
           </div>

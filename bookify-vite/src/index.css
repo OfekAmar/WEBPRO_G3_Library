@@ -101,7 +101,7 @@ body {
   --copy-primary: 0, 0, 0;
   --copy-secondary: 115, 115, 115;
   --card: 245, 245, 245;
-  --bookcard: 229, 229, 229;
+  --bookcard: 248, 246, 246;
   --border: 212, 212, 212;
   --cta: 0, 102, 204;
   --cta-text: 255, 255, 255;
@@ -123,8 +123,4 @@ body {
   background: rgba(var(--background));
   color: rgba(var(--copy-primary));
   transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-body.light {
-  background-color: rgb(27, 63, 88);
 }

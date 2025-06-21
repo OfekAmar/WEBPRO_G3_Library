@@ -4,14 +4,23 @@ import React from "react";
 const Button = ({
   label,
   onClick,
-  variant = "primary",
+  variant = "bot",
   icon,
   iconSize = 20,
   disabled = false,
   children,
   className = "",
+  fullWidth = false,
+  size = "md",
 }) => {
-  const base = "appearance-none rounded text-sm font-medium transition";
+  const base = "inline-flex items-center justify-center rounded font-medium transition duration-200 focus:outline-none";
+
+  const sizes = {
+    sm: "text-sm px-3 py-1.5",
+    md: "text-base px-4 py-2",
+    lg: "text-lg px-5 py-3",
+  };
+  ;
 
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700 px-4 py-2",
@@ -21,19 +30,29 @@ const Button = ({
     disabled: "bg-gray-300 text-gray-500 cursor-not-allowed px-4 py-2",
     carousel: "bg-[rgba(var(--bookcard),1)] text-copy-primary shadow p-2 rounded-full hover:bg-gray-100",
     teal: "w-22 h-10 rounded-full bg-yellow-700 text-white hover:bg-yellow-800",
-    pill: "flex items-center border border-teal-700 rounded-full text-teal-800 font-semibold text-sm overflow-hidden transition hover:bg-teal-50 px-4 py-2",
+    pill: "inline-flex items-center justify-center px-6 py-2 text-white text-sm font-semibold rounded-full bg-[rgb(3,90,117)] hover:bg-[rgb(22,50,70)] transition-all shadow",
     borrow: "border border-teal-700 text-teal-700 font-semibold px-6 py-2 rounded-full hover:bg-teal-50 cursor-pointer transition-all",
     trash: "border border-red-600 text-red-600 font-semibold px-6 py-2 rounded-full hover:bg-red-50 cursor-pointer transition-all",
     read: "w-8 h-8 border border-indigo-700 text-indigo-700 font-semibold rounded-full hover:bg-red-50 cursor-pointer transition-all flex items-center justify-center",
-    return: "bg-green-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-700 cursor-pointer transition-all border border-green-700"
+    return: "bg-green-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-700 cursor-pointer transition-all border border-green-700",
+    bot: "inline-flex items-center justify-center px-6 py-2 bg-[rgb(3,90,117)] text-white text-sm font-semibold rounded-full hover:bg-[rgb(22,50,70)] transition-all shadow"
+
+
   };
 
-  const style = `${base} ${disabled ? variants.disabled : variants[variant]} ${className}`;
+  const style = `
+    ${base}
+    ${variant !== "pill" ? sizes[size] : ""}
+
+    ${disabled ? variants.disabled : variants[variant] || variants.primary}
+    ${fullWidth ? "w-full" : ""}
+    ${className}
+  `;
 
   const renderIcon = () => {
     if (!icon) return null;
 
-    // JSX: e.g. icon={<Trash2 size={16} />}
+
     if (React.isValidElement(icon)) {
       return (
         <span className={`${!label && !children ? "mx-auto" : "inline-block mr-2"}`}>
@@ -42,7 +61,6 @@ const Button = ({
       );
     }
 
-    // Functional Component: e.g. icon={Trash2}
     if (typeof icon === "function") {
       const IconComponent = icon;
       return (
