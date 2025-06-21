@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
+import Buttonn from './Buttonn';
 
 const LateReturnMessage = ({ message, onConfirm }) => {
   return (
@@ -14,17 +15,17 @@ const LateReturnMessage = ({ message, onConfirm }) => {
         </div>
         <h2 className="text-2xl font-semibold text-gray-800 mb-2">Returned Late</h2>
 
-
         <h2 className="text-2xl font-semibold mb-2">Success</h2>
         <p className="whitespace-pre-line">{message}</p>
 
 
-        <button
-          onClick={onConfirm}
-          className="mt-6 bg-yellow-500 text-white px-6 py-2 rounded font-medium hover:bg-yellow-600 transition"
+  
+        <Buttonn
+          variant='lateMes'
+          onToggle={onConfirm}
         >
           OK
-        </button>
+        </Buttonn>
       </div>
     </div>
   );
