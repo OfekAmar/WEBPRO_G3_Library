@@ -92,8 +92,9 @@ const Header = ({ user, onLogout, onLoginClick }) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
-              className="flex-1 px-4 py-2 text-sm bg-[rgba(var(--bookcard),1)] text-copy-primary focus:outline-none"
+              className="flex-1 px-4 py-2 text-sm bg-[rgba(var(--bookcard),1)] text-copy-primary focus:outline-none focus:ring-2 focus:ring-[rgba(var(--search-outline),1)] transition"
             />
+
             <button
               type="submit"
               className="px-4 py-2 text-cta border-none outline-none focus:outline-none focus:ring-0 focus:border-none active:outline-none active:border-none"
@@ -107,13 +108,13 @@ const Header = ({ user, onLogout, onLoginClick }) => {
       {/* Right actions */}
       <div className="flex items-center gap-4 relative">
         {user?.name && (
-          <span className="text-sm font-medium text-[rgb(15,44,66)] hidden sm:inline">
+          <span className="text-sm font-medium text-[rgba(var(--icon-color),1)] hidden sm:inline">
             Hello {user.name}
           </span>
         )}
         <button
           onClick={toggleTheme}
-          className="text-[rgb(15,44,66)] hover:text-cta transition "
+          className="text-[rgba(var(--icon-color),1)] hover:text-cta transition "
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
@@ -121,17 +122,17 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         {user && (
           <>
             <Link to="/profile" className="hover:text-cta transition">
-              <User size={20} className='text-[rgb(15,44,66)]' />
+              <User size={20} className='text-[rgba(var(--icon-color),1)]' />
             </Link>
             <Link to="/notifications" className="hover:text-cta transition">
-              <Bell size={20} className='text-[rgb(15,44,66)]' />
+              <Bell size={20} className='text-[rgba(var(--icon-color),1)]' />
             </Link>
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setShowMenu((prev) => !prev)}
-                className="text-[rgb(15,44,66)] bg-border hover:bg-border/80 p-2 rounded-full transition"
+                className="text-[rgba(var(--icon-color),1)] bg-border hover:bg-border/80 p-2 rounded-full transition"
               >
-                <Menu size={24} />
+                <Menu size={24} className='text-[rgba(var(--icon-color),1)]' />
               </button>
               {showMenu && (
                 <div
@@ -140,12 +141,12 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                 >
                   <div className="flex flex-col gap-1 text-sm">
                     <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <BookOpen size={18} className="text-[rgb(15,44,66)]" />
-                      <span className="text-[rgb(15,44,66)]">My Books</span>
+                      <BookOpen size={18} className='text-[rgba(var(--icon-color),1)]' />
+                      <span className='text-[rgba(var(--icon-color),1)]'>My Books</span>
                     </Link>
                     <Link to="/wishlist" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <Heart size={18} className="text-[rgb(15,44,66)]" />
-                      <span className="text-[rgb(15,44,66)]">Wish List</span>
+                      <Heart size={18} className='text-[rgba(var(--icon-color),1)]' />
+                      <span className='text-[rgba(var(--icon-color),1)]'>Wish List</span>
                     </Link>
                     <hr className="my-2 border-t border-border" />
                     <button
@@ -153,7 +154,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                         onLogout();
                         navigate('/');
                       }}
-                      className="flex items-center gap-2 py-2 text-[rgb(15,44,66)] hover:text-red-800 w-full"
+                      className="flex items-center gap-2 py-2 text-[rgba(var(--icon-color),1)] hover:text-red-800 w-full"
                     >
                       <LogOut size={18} />
                       <span className="w-full text-start">Log Out</span>
@@ -169,9 +170,9 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         {!user && (
           <button
             onClick={onLoginClick}
-            className="flex items-center gap-2 text-[rgb(15,44,66)] text-xs  hover:text-cta transition"
+            className="flex items-center gap-2 ttext-[rgba(var(--icon-color),1)] text-xs  hover:text-cta transition"
           >
-            <User size={18} className="text-[rgb(15,44,66)]" />
+            <User size={18} className='text-[rgba(var(--icon-color),1)]' />
             Login
           </button>
 

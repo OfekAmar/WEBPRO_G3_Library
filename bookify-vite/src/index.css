@@ -105,6 +105,9 @@ body {
   --border: 212, 212, 212;
   --cta: 0, 102, 204;
   --cta-text: 255, 255, 255;
+  --icon-color: 15, 44, 66;
+  --search-outline: 58, 140, 192;
+
 }
 
 .dark {
@@ -117,6 +120,8 @@ body {
   --border: 64, 64, 64;
   --cta: 99, 102, 241;
   --cta-text: 255, 255, 255;
+  --icon-color: 255, 255, 255;
+  --search-outline: 255, 255, 255;
 }
 
 body {

@@ -58,9 +58,9 @@ function RecommendationChatBot() {
                 );
 
                 if (filtered.length === 0) {
-                    setBook(null);   
+                    setBook(null);
                     setCover(null);
-                    setStep(3);  
+                    setStep(3);
                     return;
                 }
 
@@ -84,7 +84,8 @@ function RecommendationChatBot() {
                 className="fixed bottom-6 right-6 z-50 shadow-lg"
             />
             {isOpen && (
-                <div className="fixed bottom-20 right-6 bg-[rgb(18,51,77)] dark:bg-[rgb(251,251,251)] rounded-xl shadow-lg w-96 max-w-full p-6 z-50 transition-all">
+                <div className="fixed bottom-20 right-6 bg-[rgba(var(--bookcard),1)] rounded-xl shadow-lg w-96 max-w-full p-6 z-50 transition-colors">
+
                     {step === 0 && (
                         <div>
                             <h2 className="text-xl font-bold mb-4 text-center">Book Recommendation</h2>
@@ -125,9 +126,10 @@ function RecommendationChatBot() {
                         <div className="relative flex flex-col items-center gap-4 text-center">
                             {book ? (
                                 <>
-                                    <h2 className="text-lg font-semibold text-gray-800">Here's my recommendation:</h2>
-                                    <h3 className="text-2xl font-bold text-[rgb(31,65,89)]">{book.name}</h3>
-                                    <p className="text-base text-gray-600 italic">{book.author}</p>
+                                    <h2 className="text-lg font-semibold">Here's my recommendation:</h2>
+                                    <h3 className="text-2xl font-bold">{book.name}</h3>
+                                    <p className="text-base italic">{book.author}</p>
+
 
                                     <div className="relative">
                                         {cover ? (
