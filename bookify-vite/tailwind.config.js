@@ -27,12 +27,18 @@ module.exports = {
           "0%": { transform: "rotate(0deg)" },
           "100%": { transform: "rotate(360deg)" },
         },
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         "spinslow": "spinslow 8s linear infinite",
         "rotate-circle": "rotate-circle 12s linear infinite",
+        'fade-in': 'fade-in 0.3s ease-out',
       },
     },
     plugins: [],
   }
 }
+

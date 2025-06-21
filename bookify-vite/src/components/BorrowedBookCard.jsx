@@ -1,6 +1,6 @@
 // src/components/BorrowedBookCard.jsx
 import BookCard from './BookCard';
-import Button from './Button';
+import Buttonn from './Buttonn';
 
 const BorrowedBookCard = ({ book, onReturn }) => {
   return (
@@ -12,11 +12,10 @@ const BorrowedBookCard = ({ book, onReturn }) => {
       <p className="text-sm text-gray-600 mt-1">Return by: {book.ret_date}</p>
 
       {/* Return button */}
-      <Button
-        label="Return Book"
-        variant="return"
-        onClick={() => onReturn(book)}
-        className="text-sm"
+      <Buttonn
+        isBorrowed={true}
+        onToggle={() => onReturn(book)}
+        className='text-sm'
       />
     </div>
   );
