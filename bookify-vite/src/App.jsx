@@ -22,7 +22,7 @@ function App() {
 
 
   useEffect(() => {
-    const saved = localStorage.getItem("loggedInUser");
+    const saved = sessionStorage.getItem("loggedInUser");
     if (saved) setUser(JSON.parse(saved));
   }, []);
 
@@ -35,7 +35,7 @@ function App() {
 
 
   const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
+    sessionStorage.removeItem("loggedInUser");
     setUser(null);
   };
 
