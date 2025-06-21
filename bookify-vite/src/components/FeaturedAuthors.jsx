@@ -42,15 +42,12 @@ const FeaturedAuthors = () => {
           <div
             key={idx}
             onClick={() => navigate(`/search?q=${encodeURIComponent(author.name)}&by=author`)}
-            className="cursor-pointer rounded-xl p-4 bg-white hover:shadow-lg transition-all flex flex-col items-center text-center"
+            className="cursor-pointer rounded-xl p-4 bg-[rgba(var(--card),1)] hover:shadow-lg transition-all flex flex-col items-center text-center text-[rgba(var(--copy-primary),1)]"
           >
             <div className="relative w-24 h-24 mb-3">
-              {/* אלמנט עיגול מסתובב */}
               <div className="circle-shape absolute inset-0 animate-rotate-circle">
                 <div className="w-full h-full rounded-full border-2 border-dashed border-[rgb(3,90,117)] animate-cir36" />
               </div>
-
-              {/* תמונת הסופר */}
               <div className="absolute inset-2 flex items-center justify-center">
                 <img
                   src={author.image}
@@ -59,11 +56,12 @@ const FeaturedAuthors = () => {
                 />
               </div>
             </div>
-            <p className="font-semibold text-[rgb(15,44,66)]">{author.name}</p>
-            <p className="text-sm text-gray-500">
+            <p className="font-semibold">{author.name}</p>
+            <p className="text-sm text-[rgba(var(--copy-secondary),1)]">
               {String(author.books).padStart(2, '0')} Published Books
             </p>
           </div>
+
         ))}
       </div>
     </section>

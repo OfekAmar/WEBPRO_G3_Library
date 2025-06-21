@@ -400,6 +400,7 @@ import NotifyButton from '../components/NotificationBell';
 import { resolveBookCover } from '../utils/fetchGoogleBookCover';
 import { useParams } from "react-router-dom";
 import SuccessfulMessage from '../components/SuccessfulMessage';
+import LateReturnMessage from '../components/LateReturnMessage';
 
 function BookPage({ user }) {
   const { id } = useParams();
@@ -415,6 +416,9 @@ function BookPage({ user }) {
   const [showReviews, setShowReviews] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showLatePopup, setShowLatePopup] = useState(false);
+  const [lateMessage, setLateMessage] = useState('');
+
 
 
   useEffect(() => {
@@ -597,7 +601,7 @@ function BookPage({ user }) {
     await update(bookRef, { available_copies: newAvailable });
     await update(mgmtRef, { borrows_index: newIndex });
 
-    // במקום setMessage:
+   
     setSuccessMessage(`Book borrowed successfully!\nReturn by ${returnDate.toLocaleDateString()}`);
     setShowSuccessPopup(true);
 
@@ -605,7 +609,7 @@ function BookPage({ user }) {
       ...prev,
       available_copies: newAvailable
     }));
-    setAlreadyBorrowed(true);
+
   };
 
 
@@ -647,10 +651,13 @@ function BookPage({ user }) {
     const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
 
     if (isLate) {
-      setMessage(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+      setLateMessage(`Returned "${bookData.name}".You are ${lateDays} day(s) late.`);
+      setShowLatePopup(true);
     } else {
-      setMessage(`Returned "${bookData.name}" on time. Thank you!`);
+      setSuccessMessage(`Returned "${bookData.name}" on time. Thank you!`);
+      setShowSuccessPopup(true);
     }
+
 
     const usersSnap = await get(ref(db, 'users'));
     const allUsers = usersSnap.val() || [];
@@ -692,9 +699,28 @@ function BookPage({ user }) {
       {showSuccessPopup && (
         <SuccessfulMessage
           message={successMessage}
-          onConfirm={() => setShowSuccessPopup(false)}
+          onConfirm={() => {
+            setShowSuccessPopup(false);
+            if (successMessage.startsWith("Returned")) {
+              setAlreadyBorrowed(false);  
+            } else {
+              setAlreadyBorrowed(true);   
+            }
+          }}
         />
       )}
+
+      {showLatePopup && (
+        <LateReturnMessage
+          message={lateMessage}
+          onConfirm={() => {
+            setShowLatePopup(false);
+            setAlreadyBorrowed(false); 
+          }}
+        />
+      )}
+
+
       <div className="bg-[rgba(var(--bookcard),1)] max-w-6xl mx-auto bg-card rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
@@ -747,7 +773,7 @@ function BookPage({ user }) {
                 <div className="flex items-center gap-4">
                   {book.available_copies > 0 ? (
                     alreadyBorrowed ? (
-                      <Buttonn isBorrowed={true} onToggle={handleReturn}/>
+                      <Buttonn isBorrowed={true} onToggle={handleReturn} />
                     ) : (
                       <Buttonn isBorrowed={false} onToggle={handleBorrow} />
                     )
