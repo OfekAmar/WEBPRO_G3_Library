@@ -9,8 +9,6 @@ const Rating = ({ average = 0, reviewCount = 0, onOpenReviews }) => {
             ★
           </span>
         ))}
-      </div>
-      <div className="flex items-center gap-2 text-sm">
         <button
           onClick={onOpenReviews}
           className="text-blue-600 text-xl hover:underline ml-2"

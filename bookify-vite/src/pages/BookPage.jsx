@@ -481,13 +481,12 @@ function BookPage({ user }) {
 
   useEffect(() => {
     const checkBookExtras = async () => {
-      if (!book || !user) return;
+      if (!book) return;
       const snap = await get(ref(db, 'books/' + book.book_id));
       const bookData = snap.val();
       if (!bookData) return;
 
       const raters = bookData.raters || {};
-      setUserRating(raters[user.userIndex] || 0);
       setAverageRating(bookData.rate || null);
       setComments(bookData.comments || []);
     };
