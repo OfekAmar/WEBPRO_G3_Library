@@ -1,5 +1,6 @@
 
-import Button from './Button';
+
+  import Button from './Button';
 
 const SearchBar = ({ value, onSearch }) => {
   const handleSubmit = (e) => {
@@ -22,3 +23,4 @@ const SearchBar = ({ value, onSearch }) => {
 };
 
 export default SearchBar;
+

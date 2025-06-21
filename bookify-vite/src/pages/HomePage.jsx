@@ -5,18 +5,17 @@ import BookCard from '../components/BookCard';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Button from '../components/Button';
-import LibraryMap from '../components/LibraryMap';
-import ContactBar from '../components/ContactBar';
-import Footer from '../components/Footer';
 import FeaturedAuthors from '../components/FeaturedAuthors';
 import RecommendationChatBot from "../components/RecommendationChatBot";
+import Footer from '../components/Footer';
 
 function HomePage() {
   const [books, setBooks] = useState({ trending: [], new: [] });
+  const [genres, setGenres] = useState([]);
+  const [theme, setTheme] = useState("light");
   const navigate = useNavigate();
   const trendingRef = useRef();
   const newRef = useRef();
-  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -37,7 +36,10 @@ function HomePage() {
         .sort((a, b) => b.book_id - a.book_id)
         .slice(0, 8);
 
+      const genreSet = new Set(allBooks.map(book => book.subject).filter(Boolean));
+
       setBooks({ trending: ratedBooks, new: newBooks });
+      setGenres([...genreSet].sort());
     };
 
     fetchBooks();
@@ -47,8 +49,7 @@ function HomePage() {
       setTheme(isDark ? "dark" : "light");
     };
 
-    updateTheme(); // Set initial theme
-
+    updateTheme();
     const observer = new MutationObserver(updateTheme);
     observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
 
@@ -65,14 +66,13 @@ function HomePage() {
   const renderCarousel = (title, booksArray, refName) => (
     <div className="relative mb-12">
       <h3 className="text-3xl font-bold text-copy-primary mb-2 text-center">{title}</h3>
-
-      <div className="relative mx-auto" style={{ maxWidth: '1000px' }}>
+      <div className="relative w-full px-6">
         <Button
           variant="carousel"
           onClick={() => scrollCarousel(refName, 'left')}
-          className="absolute -left-6 top-1/2 -translate-y-1/2 z-10 "
+          className="absolute -left-2 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-1 sm:p-2"
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={18} />
         </Button>
 
         <div
@@ -93,13 +93,66 @@ function HomePage() {
         <Button
           variant="carousel"
           onClick={() => scrollCarousel(refName, 'right')}
-          className="absolute -right-6 top-1/2 -translate-y-1/2 z-10"
+          className="absolute -right-2 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-1 sm:p-2"
         >
-          <ChevronRight size={24} />
+          <ChevronRight size={18} />
         </Button>
       </div>
     </div>
   );
+
+  const GenreCarousel = ({ genres, onSelect }) => {
+    const scrollRef = useRef();
+
+    const scroll = (dir) => {
+      if (scrollRef.current) {
+        const offset = dir === 'left' ? -300 : 300;
+        scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+    };
+
+    if (!genres.length) return null;
+
+    return (
+      <div className="my-8 text-center relative text-[rgb(15,44,66)]">
+        <div className="relative w-full px-6">
+          <h3 className="text-3xl font-bold mb-4">Explore Genres</h3>
+          <Button
+            onClick={() => scroll('left')}
+            variant="carousel"
+            className="absolute -left-2 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-1 sm:p-2"
+          >
+            <ChevronLeft size={16} />
+          </Button>
+
+          <div
+            ref={scrollRef}
+            className="flex gap-2 overflow-x-auto scroll-smooth px-4 py-1"
+            style={{ scrollbarWidth: 'none' }}
+          >
+            {genres.map((genre) => (
+              <button
+                key={genre}
+                onClick={() => onSelect ? onSelect(genre) : navigate(`/search?by=subject&q=${encodeURIComponent(genre)}`)}
+                className="px-3 py-1 rounded-full bg-[rgb(3,90,117)] text-white hover:bg-[rgb(22,50,70)]  transition text-xs whitespace-nowrap"
+              >
+                {genre}
+              </button>
+            ))}
+          </div>
+
+          <Button
+            onClick={() => scroll('right')}
+            variant="carousel"
+            className="absolute -right-2 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-1 sm:p-2"
+          >
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <>
@@ -111,16 +164,25 @@ function HomePage() {
           className="w-full max-w-none transition-all duration-500"
         />
       </div>
+
+      <section className="p-6 max-w-6xl mx-auto">
+        <GenreCarousel genres={genres} />
+      </section>
+
       <section className="p-6 max-w-6xl mx-auto">
         {renderCarousel(' Trending Books', books.trending, trendingRef)}
       </section>
+
       <FeaturedAuthors />
+
       <section className="p-6 max-w-6xl mx-auto">
         {renderCarousel(' Newly Added Books', books.new, newRef)}
       </section>
+
       <section className="p-6 max-w-6xl mx-auto">
         <RecommendationChatBot />
       </section>
+
       <Footer />
     </>
   );
