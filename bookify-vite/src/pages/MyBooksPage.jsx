@@ -36,105 +36,106 @@ function MyBooksPage({ user }) {
 
     const returnedBookIds = new Set();
 
-for (const key in borrows) {
-  const b = borrows[key];
-  if (!b || typeof b.user_id === 'undefined') continue;
+    for (const key in borrows) {
+      const b = borrows[key];
+      if (!b || typeof b.user_id === 'undefined') continue;
 
-  if (b.user_id === userId) {
-    const book = books[b.book_id];
-    if (!book) continue;
+      if (b.user_id === userId) {
+        const book = books[b.book_id];
+        if (!book) continue;
 
-    const entry = {
-      ...book,
-      id: book.book_id,
-      ret_date: b.ret_date,
-      status: b.status,
-      borrow_id: key,
-    };
+        const entry = {
+          ...book,
+          id: book.book_id,
+          ret_date: b.ret_date,
+          status: b.status,
+          borrow_id: key,
+        };
 
-    if (b.status === 'borrowed') {
-      active.push(entry);
-    } else if (!returnedBookIds.has(b.book_id)) {
-      returnedBookIds.add(b.book_id);
-      history.push(entry);
+        if (b.status === 'borrowed') {
+          active.push(entry);
+        } else if (!returnedBookIds.has(b.book_id)) {
+          returnedBookIds.add(b.book_id);
+          history.push(entry);
+        }
+      }
     }
-  }
-}
-
+    
 
     setBorrowedBooks(active);
     setReturnedBooks(history);
   };
 
   const returnBook = async (book) => {
-  if (!user || !book) return;
+    if (!user || !book) return;
 
-  const borrowsSnap = await get(ref(db, 'borrows'));
-  const borrows = borrowsSnap.val() || {};
+    const borrowsSnap = await get(ref(db, 'borrows'));
+    const borrows = borrowsSnap.val() || {};
 
-  const entry = Object.entries(borrows).find(
-    ([, b]) =>
-      String(b.book_id) === String(book.book_id) &&
-      String(b.user_id) === String(user.user_id) &&
-      b.status === 'borrowed'
-  );
+    const entry = Object.entries(borrows).find(
+      ([, b]) =>
+        String(b.book_id) === String(book.book_id) &&
+        String(b.user_id) === String(user.user_id) &&
+        b.status === 'borrowed'
+    );
 
-  if (!entry) return;
+    if (!entry) return;
 
-  const [borrowId, borrow] = entry;
+    const [borrowId, borrow] = entry;
 
-  await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
+    await update(ref(db, `borrows/${borrowId}`), { status: 'returned' });
 
-  const bookRef = ref(db, `books/${book.book_id}`);
-  const bookSnap = await get(bookRef);
-  const bookData = bookSnap.val();
+    const bookRef = ref(db, `books/${book.book_id}`);
+    const bookSnap = await get(bookRef);
+    const bookData = bookSnap.val();
 
-  if (!bookData) return;
+    if (!bookData) return;
 
-  const updatedAvailable = (bookData.available_copies || 0) + 1;
-  await update(bookRef, { available_copies: updatedAvailable });
+    const updatedAvailable = (bookData.available_copies || 0) + 1;
+    await update(bookRef, { available_copies: updatedAvailable });
 
-  const today = new Date();
-  const dueDate = new Date(borrow.ret_date);
-  const isLate = today > dueDate;
-  const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+    const today = new Date();
+    const dueDate = new Date(borrow.ret_date);
+    const isLate = today > dueDate;
+    const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
+  
 
-  if (isLate) {
-    alert(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
-  } else {
-    alert(`Returned "${bookData.name}" on time. Thank you!`);
-  }
-
-  const usersSnap = await get(ref(db, 'users'));
-  const allUsers = usersSnap.val() || [];
-
-  const notifSnap = await get(ref(db, 'managment/noti_index'));
-  let notiId = notifSnap.val() + 1;
-  const now = new Date().toISOString();
-
-  for (let i = 1; i < allUsers.length; i++) {
-    const u = allUsers[i];
-    if (!u || !u.notify_list) continue;
-
-    if (u.notify_list.includes(book.book_id)) {
-      await set(ref(db, `notifications/${notiId}`), {
-        noti_id: notiId,
-        user_index: i,
-        user_id: u.user_id,
-        type: "System",
-        content: `Good news! '${bookData.name}' from your notify list is now available.`,
-        time: now
-      });
-      notiId++;
+    if (isLate) {
+      setMessage(`Returned "${bookData.name}". ⚠️ You are ${lateDays} day(s) late.`);
+    } else {
+      setMessage(`Returned "${bookData.name}" on time. Thank you!`);
     }
-  }
 
-  await update(ref(db, 'managment'), { noti_index: notiId - 1 });
+    const usersSnap = await get(ref(db, 'users'));
+    const allUsers = usersSnap.val() || [];
 
-  // update UI
-  setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
-  setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
-};
+    const notifSnap = await get(ref(db, 'managment/noti_index'));
+    let notiId = notifSnap.val() + 1;
+    const now = new Date().toISOString();
+
+    for (let i = 1; i < allUsers.length; i++) {
+      const u = allUsers[i];
+      if (!u || !u.notify_list) continue;
+
+      if (u.notify_list.includes(book.book_id)) {
+        await set(ref(db, `notifications/${notiId}`), {
+          noti_id: notiId,
+          user_index: i,
+          user_id: u.user_id,
+          type: "System",
+          content: `Good news! '${bookData.name}' from your notify list is now available.`,
+          time: now
+        });
+        notiId++;
+      }
+    }
+
+    await update(ref(db, 'managment'), { noti_index: notiId - 1 });
+
+    // update UI
+    setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
+    setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
+  };
 
   const scrollCarousel = (ref, direction = 'left') => {
     if (ref.current) {

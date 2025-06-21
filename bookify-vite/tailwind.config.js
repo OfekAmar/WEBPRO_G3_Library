@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'ui-sans-serif', 'system-ui'], // or any font you prefer
+        sans: ['Poppins', 'ui-sans-serif', 'system-ui'],
       },
       colors: {
         background: "rgb(var(--background))",
@@ -18,7 +18,21 @@ module.exports = {
         "copy-primary": "rgb(var(--copy-primary))",
         "copy-secondary": "rgb(var(--copy-secondary))",
       },
+      keyframes: {
+        "spinslow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "rotate-circle": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+      },
+      animation: {
+        "spinslow": "spinslow 8s linear infinite",
+        "rotate-circle": "rotate-circle 12s linear infinite",
+      },
     },
-  },
-  plugins: [],
+    plugins: [],
+  }
 }

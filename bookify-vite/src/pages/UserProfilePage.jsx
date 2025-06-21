@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "/src/utils/userProfile.css";
-import avatarImage from "/src/utils/user.png";
 import { TbLockFilled } from "react-icons/tb";
 import { IoSaveSharp } from "react-icons/io5";
 import { BiCalendarEvent } from "react-icons/bi";
@@ -125,7 +124,12 @@ const UserProfile = ({ user }) => {
             <div className="basic-info-card card">
               <div className="basic-info-top-item d-flex">
                 <div className="profile-card">
-                  <img src={avatarImage} alt="User" className="form-photo" />
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(formData.first_name + ' ' + formData.last_name)}&background=random&color=fff`}
+                    alt={formData.first_name}
+                    className="form-photo"
+                  />
+
                   <div className="profile-info">
                     <span className="profile-name">{formData.first_name} {formData.last_name}</span>
                     <div className="name-line">

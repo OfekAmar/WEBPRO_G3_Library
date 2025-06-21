@@ -55,7 +55,9 @@ const SearchPage = ({ user, onSelectBook }) => {
   return (
     <>
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-4">Search Results :</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Search Results for : <span className="text-black">"{search}"</span>
+        </h2>
 
         {hasSearched && (
           filteredBooks.length > 0 ? (

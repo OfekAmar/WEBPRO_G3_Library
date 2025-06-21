@@ -18,6 +18,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
     if (search.trim()) query.set("q", search.trim());
     if (searchType) query.set("by", searchType);
     navigate(`/search?${query.toString()}`);
+    setSearch('');
   };
 
   useEffect(() => {
@@ -98,25 +99,30 @@ const Header = ({ user, onLogout, onLoginClick }) => {
 
       {/* Right actions */}
       <div className="flex items-center gap-4 relative">
-
+        {user?.name && (
+          <span className="text-sm font-medium text-[rgb(15,44,66)] hidden sm:inline">
+            Hello {user.name}
+          </span>
+        )}
         <button
           onClick={toggleTheme}
-          className="text-copy-primary hover:text-cta transition "
+          className="text-[rgb(15,44,66)] hover:text-cta transition "
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
+
         {user && (
           <>
             <Link to="/profile" className="hover:text-cta transition">
-              <User size={20} className='text-copy-primary' />
+              <User size={20} className='text-[rgb(15,44,66)]' />
             </Link>
             <Link to="/notifications" className="hover:text-cta transition">
-              <Bell size={20} className='text-copy-primary' />
+              <Bell size={20} className='text-[rgb(15,44,66)]' />
             </Link>
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button
-                onClick={() => setShowMenu(!showMenu)}
-                className="text-copy-primary bg-border hover:bg-border/80 p-2 rounded-full transition"
+                onClick={() => setShowMenu((prev) => !prev)}
+                className="text-[rgb(15,44,66)] bg-border hover:bg-border/80 p-2 rounded-full transition"
               >
                 <Menu size={24} />
               </button>
@@ -125,12 +131,14 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                   ref={menuRef}
                   className="bg-[rgba(var(--bookcard),1)] absolute right-0 top-full mt-2 shadow-xl rounded-lg p-4 w-60 z-50"
                 >
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 text-sm">
                     <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <BookOpen size={18} className='text-copy-primary' /> <span className="text-copy-primary w-full">My Books</span>
+                      <BookOpen size={18} className="text-[rgb(15,44,66)]" />
+                      <span className="text-[rgb(15,44,66)]">My Books</span>
                     </Link>
                     <Link to="/wishlist" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <Heart size={18} className='text-copy-primary' /> <span className="text-copy-primary w-full">Wish List</span>
+                      <Heart size={18} className="text-[rgb(15,44,66)]" />
+                      <span className="text-[rgb(15,44,66)]">Wish List</span>
                     </Link>
                     <hr className="my-2 border-t border-border" />
                     <button
@@ -138,11 +146,13 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                         onLogout();
                         navigate('/');
                       }}
-                      className="flex items-center gap-2 py-2 text-red-600 hover:text-red-800 w-full"
+                      className="flex items-center gap-2 py-2 text-[rgb(15,44,66)] hover:text-red-800 w-full"
                     >
-                      <LogOut size={18} /> <span className="w-full text-start">Log Out</span>
+                      <LogOut size={18} />
+                      <span className="w-full text-start">Log Out</span>
                     </button>
                   </div>
+
                 </div>
               )}
             </div>
@@ -150,12 +160,14 @@ const Header = ({ user, onLogout, onLoginClick }) => {
         )}
 
         {!user && (
-          <Button
+          <button
             onClick={onLoginClick}
-            className="bg-cta hover:bg-cta-active text-cta-text px-4 py-1.5 rounded-md transition"
+            className="flex items-center gap-2 text-[rgb(15,44,66)] text-xs  hover:text-cta transition"
           >
+            <User size={18} className="text-[rgb(15,44,66)]" />
             Login
-          </Button>
+          </button>
+
         )}
       </div>
     </header>
