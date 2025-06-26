@@ -140,15 +140,31 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                   className="bg-[rgba(var(--bookcard),1)] absolute right-0 top-full mt-2 shadow-xl rounded-lg p-4 w-60 z-50"
                 >
                   <div className="flex flex-col gap-1 text-sm">
-                    <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <BookOpen size={18} className='text-[rgba(var(--icon-color),1)]' />
-                      <span className='text-[rgba(var(--icon-color),1)]'>My Books</span>
-                    </Link>
-                    <Link to="/wishlist" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                      <Heart size={18} className='text-[rgba(var(--icon-color),1)]' />
-                      <span className='text-[rgba(var(--icon-color),1)]'>Wish List</span>
-                    </Link>
-                    <hr className="my-2 border-t border-border" />
+                    {user?.position === 'admin' ? (
+  <>
+                      <Link to="/manage-books" className="flex items-center gap-2 py-2 hover:text-cta w-full">
+                        📚 <span>Manage Books</span>
+                      </Link>
+                      <Link to="/manage-users" className="flex items-center gap-2 py-2 hover:text-cta w-full">
+                        👥 <span>Manage Users</span>
+                      </Link>
+                      <Link to="/statistics" className="flex items-center gap-2 py-2 hover:text-cta w-full">
+                        📊 <span>Statistics</span>
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/myBooks" className="flex items-center gap-2 py-2 hover:text-cta w-full">
+                        <BookOpen size={18} className='text-[rgba(var(--icon-color),1)]' />
+                        <span className='text-[rgba(var(--icon-color),1)]'>My Books</span>
+                      </Link>
+                      <Link to="/wishlist" className="flex items-center gap-2 py-2 hover:text-cta w-full">
+                        <Heart size={18} className='text-[rgba(var(--icon-color),1)]' />
+                        <span className='text-[rgba(var(--icon-color),1)]'>Wish List</span>
+                      </Link>
+                    </>
+                  )}
+                  <hr className="my-2 border-t border-border" />
                     <button
                       onClick={() => {
                         onLogout();

@@ -12,7 +12,8 @@ import MyNotifyListPage from './pages/MyNotifyListPage';
 import SearchPage from './pages/SearchPage';
 import LoginCard from './components/LoginCard';
 import RegisterCard from './components/RegisterCard';
-
+import ManageBooksPage from './pages/ManageBooksPage';
+import ManageUsersPage from './pages/ManageUsersPage';
 function App() {
   const [user, setUser] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -79,6 +80,7 @@ function App() {
           />
         )}
         <Routes>
+          
           <Route path="/" element={<HomePage user={user} onSelectBook={setSelectedBook} />} />
           <Route path="/book" element={<BookPage user={user} selectedBook={selectedBook} />} />
           <Route path="/book/:id" element={<BookPage user={user} />} />
@@ -88,6 +90,9 @@ function App() {
           <Route path="/profile" element={<UserProfilePage user={user} />} />
           <Route path="/notifylist" element={<MyNotifyListPage user={user} />} />
           <Route path="/search" element={<SearchPage user={user} onSelectBook={setSelectedBook} />} />
+          <Route path="/manage-books" element={<ManageBooksPage />} />
+          <Route path="/manage-users" element={<ManageUsersPage />} />
+
         </Routes>
       </Layout>
 
