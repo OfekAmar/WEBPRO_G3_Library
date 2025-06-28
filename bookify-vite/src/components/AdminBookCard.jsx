@@ -1,29 +1,37 @@
-import { useNavigate } from 'react-router-dom';
-import Button from './Button';
+import { useState } from 'react';
+import EditBookCard from './EditBookCard';
 
-const AdminBookCard = ({ book, onAddCopies }) => {
-  const navigate = useNavigate();
+const AdminBookCard = ({ book, onSave }) => {
+  const [showEdit, setShowEdit] = useState(false);
 
   return (
     <div
-      onClick={() => navigate(`/book/${book.book_id}`)}
       className="bg-white border rounded shadow p-4 relative transition hover:bg-gray-50 cursor-pointer"
+      onClick={() => window.location.href = `/book/${book.book_id}`}
     >
-      <div className="text-sm text-gray-600 mb-1">
-        <strong>{book.name}</strong> by {book.author}
+      <div>
+        <p className="font-semibold text-gray-800">{book.name}</p>
+        <p className="text-sm text-gray-500">{book.author}</p>
+        <p className="text-sm text-gray-500 mt-1">Available Copies: {book.available_copies}</p>
       </div>
-      <p className="text-xs text-gray-500 mb-2">
-        Available Copies: {book.available_copies ?? 0}
-      </p>
-      <Button
-        label="Add Copy"
+
+      <button
         onClick={(e) => {
           e.stopPropagation(); // prevent navigation
-          onAddCopies?.(book);
+          setShowEdit(true);
         }}
-        variant="teal"
-        size="sm"
-      />
+        className="absolute top-2 right-2 text-xs px-3 py-1 bg-teal-600 text-white rounded hover:bg-teal-700"
+      >
+        Edit
+      </button>
+
+      {showEdit && (
+        <EditBookCard
+          book={book}
+          onClose={() => setShowEdit(false)}
+          onSave={onSave}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { get, ref, remove } from 'firebase/database';
 import { db } from '../firebase';
-import SearchBar from '../components/SearchBar';
+import UserSearchBar from '../components/UserSearchBar';
 import AdminUserCard from '../components/AdminUserCard';
 import RegisterCard from '../components/RegisterCard';
 import Button from '../components/Button';
@@ -38,7 +38,7 @@ function ManageUsersPage() {
         <Button label="Add User" onClick={() => setShowRegister(true)} variant="teal" />
       </div>
 
-      <SearchBar value={query} onSearch={setQuery} />
+      <UserSearchBar value={query} onSearch={setQuery} />
 
       <div className="grid gap-4">
         {filtered.map((user, i) => (
