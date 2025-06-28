@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { get, ref, update } from 'firebase/database';
+import { get, ref } from 'firebase/database';
 import { db } from '../firebase';
 import SearchBar from '../components/SearchBar';
 import AdminBookCard from '../components/AdminBookCard';
@@ -17,16 +17,10 @@ function ManageBooksPage() {
     load();
   }, []);
 
-  const handleAddCopies = async (selectedBook) => {
-    const refPath = ref(db, `books/${selectedBook.book_id}`);
-    const newCount = (selectedBook.available_copies || 0) + 1;
-    await update(refPath, { available_copies: newCount });
-
+  const handleBookUpdate = (updatedBook) => {
     setBooks(prev =>
       prev.map(b =>
-        b.book_id === selectedBook.book_id
-          ? { ...b, available_copies: newCount }
-          : b
+        b.book_id === updatedBook.book_id ? updatedBook : b
       )
     );
   };
@@ -45,7 +39,7 @@ function ManageBooksPage() {
           <AdminBookCard
             key={i}
             book={book}
-            onAddCopies={handleAddCopies}
+            onSave={handleBookUpdate}
           />
         ))}
       </div>

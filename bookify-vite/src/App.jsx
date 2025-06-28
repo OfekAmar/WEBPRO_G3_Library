@@ -14,6 +14,7 @@ import LoginCard from './components/LoginCard';
 import RegisterCard from './components/RegisterCard';
 import ManageBooksPage from './pages/ManageBooksPage';
 import ManageUsersPage from './pages/ManageUsersPage';
+import StatisticsPage from './pages/StatisticsPage';
 function App() {
   const [user, setUser] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -92,6 +93,7 @@ function App() {
           <Route path="/search" element={<SearchPage user={user} onSelectBook={setSelectedBook} />} />
           <Route path="/manage-books" element={<ManageBooksPage />} />
           <Route path="/manage-users" element={<ManageUsersPage />} />
+          <Route path="/statistics" element={<StatisticsPage />} />
 
         </Routes>
       </Layout>

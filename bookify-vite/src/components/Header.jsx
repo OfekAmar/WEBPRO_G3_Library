@@ -143,13 +143,13 @@ const Header = ({ user, onLogout, onLoginClick }) => {
                     {user?.position === 'admin' ? (
   <>
                       <Link to="/manage-books" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                        📚 <span>Manage Books</span>
+                         <span className='text-[rgba(var(--icon-color),1)]'>Manage Books</span>
                       </Link>
                       <Link to="/manage-users" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                        👥 <span>Manage Users</span>
+                         <span className='text-[rgba(var(--icon-color),1)]'>Manage Users</span>
                       </Link>
                       <Link to="/statistics" className="flex items-center gap-2 py-2 hover:text-cta w-full">
-                        📊 <span>Statistics</span>
+                         <span className='text-[rgba(var(--icon-color),1)]'>Statistics</span>
                       </Link>
                     </>
                   ) : (
