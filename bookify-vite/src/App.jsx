@@ -21,6 +21,8 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [theme, setTheme] = useState('light');
+  const isModalOpen = showRegister;
+
 
 
   useEffect(() => {
@@ -81,8 +83,11 @@ function App() {
           />
         )}
         <Routes>
-          
-          <Route path="/" element={<HomePage user={user} onSelectBook={setSelectedBook} />} />
+
+          <Route
+            path="/"
+            element={<HomePage user={user} onSelectBook={setSelectedBook} isModalOpen={isModalOpen} />}
+          />
           <Route path="/book" element={<BookPage user={user} selectedBook={selectedBook} />} />
           <Route path="/book/:id" element={<BookPage user={user} />} />
           <Route path="/mybooks" element={<MyBooksPage user={user} />} />

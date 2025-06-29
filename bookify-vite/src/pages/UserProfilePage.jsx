@@ -3,7 +3,6 @@ import "/src/utils/userProfile.css";
 import { TbLockFilled } from "react-icons/tb";
 import { IoSaveSharp } from "react-icons/io5";
 import { BiCalendarEvent } from "react-icons/bi";
-import Footer from "../components/Footer";
 import { db } from "../firebase";
 import { ref, get, update } from "firebase/database";
 
@@ -222,7 +221,6 @@ const UserProfile = ({ user }) => {
         </div>
         {saveMessage && <div className="save-toast">{saveMessage}</div>}
       </div>
-      <Footer />
     </>
   );
 };

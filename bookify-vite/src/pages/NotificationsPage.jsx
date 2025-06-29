@@ -3,7 +3,6 @@ import { ref, get, update } from 'firebase/database';
 import { db } from '../firebase';
 import Button from '../components/Button';
 import { Trash2, Bell, BellOff , Check} from 'lucide-react';
-import Footer from '../components/Footer';
 
 function NotificationsPage({ user }) {
   const [notifications, setNotifications] = useState([]);
@@ -113,7 +112,6 @@ function NotificationsPage({ user }) {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 }

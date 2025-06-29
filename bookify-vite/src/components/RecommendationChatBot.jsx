@@ -8,7 +8,8 @@ import { ArrowRight } from "lucide-react";
 import { FaArrowRight } from "react-icons/fa6";
 import Buttonn from "./Buttonn";
 
-function RecommendationChatBot() {
+function RecommendationChatBot({ hidden }) {
+	if (hidden) return null;
 	const [isOpen, setIsOpen] = useState(false);
 	const [step, setStep] = useState(0);
 	const [genre, setGenre] = useState("");

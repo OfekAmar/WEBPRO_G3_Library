@@ -254,7 +254,6 @@ function MyBooksPage({ user }) {
           renderCarousel('Returned Books History', returnedBooks, returnedRef)
         )}
       </div>
-      <Footer />
     </>
   );
 }

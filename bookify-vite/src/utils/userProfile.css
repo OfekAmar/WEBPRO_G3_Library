@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: column;
   padding: var(--content-padding);
+  padding-top: 60px;
   width: 100%;
   box-sizing: border-box;
   max-width: 1100px;
@@ -41,9 +42,9 @@
 }
 
 .cancel-button {
-  background: #f7f7f7;
-  color: #333;
-  border: 1px solid #ccc;
+  background: rgba(var(--background), 1);
+  border: 1px solid rgba(var(--border), 1);
+  color: rgba(var(--copy-primary), 1);
 }
 
 .save-button {
@@ -58,7 +59,8 @@
   color: #aaa !important;
   cursor: not-allowed;
   border: 1px solid #ccc !important;
-  opacity: 1; /* הסר את שקיפות אם ברצונך לשמור על גובה אחיד */
+  opacity: 1;
+  /* הסר את שקיפות אם ברצונך לשמור על גובה אחיד */
 }
 
 .cancel-button:disabled {
@@ -75,10 +77,10 @@
 }
 
 .card {
-  background: white;
+  background: rgba(var(--card), 1);
   border-radius: 10px;
   padding: 24px;
-  box-shadow: 0 0 0 1px #eee;
+  box-shadow: 0 0 0 1px rgba(var(--border), 1);
   min-width: 320px;
 }
 
@@ -116,14 +118,16 @@
 }
 
 .profile-id {
+  color: rgba(var(--copy-secondary), 1);
   font-size: 14px;
   color: var(--subtitle-color);
 }
 
 /* Change Password Button */
 .change-password-button {
-  background: white;
-  border: 1px solid #ddd;
+  background: rgba(var(--background), 1);
+  border: 1px solid rgba(var(--border), 1);
+  color: rgba(var(--copy-primary), 1);
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 14px;
@@ -147,6 +151,7 @@
 }
 
 label {
+  color: rgba(var(--copy-primary), 1);
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 4px;
@@ -155,9 +160,10 @@ label {
 
 .dx-input {
   border: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid rgba(var(--border), 1);
   border-radius: 0;
-  background-color: rgb(225, 225, 230);
+  background-color: rgba(var(--background), 1);
+  color: rgba(var(--copy-primary), 1);
   padding: 10px 4px;
   font-size: 14px;
   width: 100%;
@@ -167,16 +173,17 @@ label {
 }
 
 .dx-input:focus {
-  border-bottom: 2px solid #03a9f4;
-  background-color: #fff;
+  border-bottom: 2px solid rgba(var(--cta), 1);
+  background-color: rgba(var(--background), 1);
 }
 
 select.dx-input {
   appearance: none;
   -webkit-appearance: none;
-  background-color: rgb(191, 191, 192);
+  background-color: rgba(var(--background), 1);
+  color: rgba(var(--copy-primary), 1);
   border: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid rgba(var(--border), 1);
   padding: 10px 30px 10px 4px;
   font-size: 14px;
   width: 100%;
@@ -188,8 +195,8 @@ select.dx-input {
 }
 
 select.dx-input:focus {
-  border-bottom: 2px solid var(--accent-color);
-  background-color: rgb(225, 225, 230);
+  border-bottom: 2px solid rgba(var(--cta), 1);
+  background-color: rgba(var(--background), 1);
 }
 
 .status-text {
@@ -218,7 +225,8 @@ select.dx-input:focus {
 }
 
 .modal-window {
-  background: white;
+  background: rgba(var(--card), 1);
+  color: rgba(var(--copy-primary), 1);
   padding: 24px;
   border-radius: 10px;
   width: 90%;
@@ -270,9 +278,9 @@ select.dx-input:focus {
 }
 
 .modal-cancel {
-  background: white;
-  border: 1px solid #999;
-  color: #333;
+  background: rgba(var(--background), 1);
+  border: 1px solid rgba(var(--border), 1);
+  color: rgba(var(--copy-primary), 1);
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -282,8 +290,8 @@ select.dx-input:focus {
 }
 
 .modal-save {
-  background: var(--accent-color);
-  color: white;
+  background: rgba(var(--cta), 1);
+  color: rgba(var(--cta-text), 1);
   border: none;
   cursor: pointer;
   display: inline-flex;
@@ -297,11 +305,14 @@ select.dx-input:focus {
   background-color: #0288d1;
 }
 
-.modal-save:disabled {
-  background-color: #eee;
-  color: #aaa;
+.save-button:disabled {
+  background-color: rgba(var(--border), 1) !important;
+  color: rgba(var(--copy-secondary), 1) !important;
   cursor: not-allowed;
+  border: 1px solid rgba(var(--border), 1) !important;
+  opacity: 1;
 }
+
 
 .form-fields-grid.two-cols {
   grid-template-columns: repeat(2, 1fr);
@@ -316,11 +327,10 @@ select.dx-input:focus {
 }
 
 .select-wrapper select.dx-input {
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: rgb(225, 225, 230);
+  background-color: rgba(var(--background), 1);
+  color: rgba(var(--copy-primary), 1);
   border: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid rgba(var(--border), 1);
   padding: 10px 30px 10px 4px;
   font-size: 14px;
   width: 100%;
@@ -330,6 +340,7 @@ select.dx-input:focus {
   background-size: 16px;
   transition: background-image 0.2s ease;
 }
+
 
 .select-wrapper.open select.dx-input {
   background-image: url("data:image/svg+xml,%3Csvg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 14l5-5 5 5z'/%3E%3C/svg%3E");
@@ -379,7 +390,7 @@ select.dx-input:focus {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #4caf50; 
+  background-color: #4caf50;
   color: white;
   padding: 12px 24px;
   border-radius: 4px 4px 0 0;
@@ -395,6 +406,7 @@ select.dx-input:focus {
     transform: translateX(-50%) translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
@@ -410,10 +422,10 @@ select.dx-input:focus {
   cursor: pointer;
   z-index: 2;
   opacity: 1;
-  background-color:#000000;
+  background-color: #000000;
 }
 
 .date-input {
   position: relative;
-  padding-right: 36px; 
+  padding-right: 36px;
 }

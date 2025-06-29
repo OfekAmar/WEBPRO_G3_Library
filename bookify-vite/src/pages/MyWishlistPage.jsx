@@ -4,7 +4,6 @@ import { ref, get, update } from "firebase/database";
 import Layout from "../Layout/Layout";
 import Button from "../components/Button";
 import Buttonn from "../components/Buttonn";
-import Footer from "../components/Footer";
 import { Trash2 } from "lucide-react";
 import { resolveBookCover } from "../utils/fetchGoogleBookCover";
 import { useNavigate } from "react-router-dom";
@@ -139,7 +138,6 @@ function MyWishlistPage({ user }) {
 					</div>
 				)}
 			</div>
-			<Footer />
 		</>
 	);
 }

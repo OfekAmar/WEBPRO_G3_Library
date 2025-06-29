@@ -10,7 +10,7 @@ import RecommendationChatBot from "../components/RecommendationChatBot";
 import Footer from "../components/Footer";
 import Buttonn from "../components/Buttonn";
 
-function HomePage() {
+function HomePage({ user, onSelectBook, isModalOpen }) {
 	const [books, setBooks] = useState({ trending: [], new: [] });
 	const [genres, setGenres] = useState([]);
 	const [theme, setTheme] = useState("light");
@@ -114,7 +114,7 @@ function HomePage() {
 
 		const scroll = (dir) => {
 			if (scrollRef.current) {
-				console.log("scrolling", dir); // הוסיפי שורת בדיקה
+				console.log("scrolling", dir);
 				const offset = dir === "left" ? -300 : 300;
 				scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
 			}
@@ -123,7 +123,7 @@ function HomePage() {
 		if (!genres.length) return null;
 
 		return (
-			<div className="relative mb-12">
+			<div className="relative mb-6">
 				<h3 className="text-3xl font-bold text-copy-primary mb-2 text-center">
 					Explore Genres
 				</h3>
@@ -149,8 +149,8 @@ function HomePage() {
 									onSelect
 										? onSelect(genre)
 										: navigate(
-												`/search?by=subject&q=${encodeURIComponent(genre)}`
-										  )
+											`/search?by=subject&q=${encodeURIComponent(genre)}`
+										)
 								}
 								className="text-xs px-4 py-1 whitespace-nowrap"
 							>
@@ -196,17 +196,14 @@ function HomePage() {
 
 			<FeaturedAuthors />
 
-			<section className="p-6 max-w-6xl mx-auto">
+			<section className="p-6 max-w-6xl mx-auto mt-0 mb-0">
 				{renderCarousel(" Newly Added Books", books.new, newRef)}
 			</section>
 
-			<section className="p-6 max-w-6xl mx-auto">
-				<RecommendationChatBot />
-			</section>
+			<RecommendationChatBot hidden={isModalOpen} />
 
-			<Footer />
 		</>
 	);
 }
- 
+
 export default HomePage;

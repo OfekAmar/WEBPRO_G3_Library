@@ -77,7 +77,7 @@ const SearchPage = ({ user, onSelectBook }) => {
 
 
       </div>
-      <Footer /></>
+    </>
   );
 };
 

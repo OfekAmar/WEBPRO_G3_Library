@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Eye, EyeOff, X, CheckCircle } from "lucide-react";
 import { db } from "../firebase";
 import { ref, get, set, update } from "firebase/database";
-import "/src/utils/register.css";
 import Buttonn from "./Buttonn";
 
 function RegisterCard({ onClose, onSwitchToLogin }) {
@@ -95,8 +94,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 		if (successMsg) {
 			const timer = setTimeout(() => {
 				onClose?.();
-			}, 5000); 
-
+			}, 5000);
 			return () => clearTimeout(timer);
 		}
 	}, [successMsg, onClose]);
@@ -105,11 +103,11 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 		<div className="fixed inset-0 bg-blur bg-opacity-40 backdrop-blur-sm z-50 flex items-center justify-center px-2">
 			<div
 				ref={popupRef}
-				className="register-card bg-white rounded-xl shadow-xl w-[90%] max-w-screen-xl h-auto p-10 relative overflow-y-auto"
+				className="register-card bg-[rgba(var(--card),1)] rounded-xl shadow-xl w-[90%] max-w-screen-xl h-auto p-10 relative overflow-y-auto text-[rgba(var(--copy-primary),1)]"
 			>
 				<div className="flex justify-between items-center mb-3">
 					<h2 className="text-lg font-bold">Sign Up</h2>
-					<button onClick={onClose} className="text-gray-500 text-xl">
+					<button onClick={onClose} className="text-copy-secondary text-xl">
 						<X size={20} />
 					</button>
 				</div>
@@ -123,7 +121,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 				{msg && <p className="text-sm text-red-500 text-center mb-2">{msg}</p>}
 
 				{/* Basic Info */}
-				<h3 className="font-medium text-gray-700 text-sm border-b border-gray-200 mb-2 pb-1">
+				<h3 className="font-medium text-sm border-b border-[rgba(var(--border),1)] mb-2 pb-1">
 					Basic Info
 				</h3>
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-3">
@@ -132,47 +130,42 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 						placeholder="First Name"
 						value={form.first_name}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 					<input
 						name="last_name"
 						placeholder="Last Name"
 						value={form.last_name}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 					<input
 						name="birthDate"
 						type="date"
 						value={form.birthDate}
 						onChange={handleChange}
-						placeholder="Birthdate"
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 					<select
 						name="Department"
 						value={form.Department}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					>
 						<option value="">Select Department</option>
 						{departments.map((dep) => (
-							<option key={dep} value={dep}>
-								{dep}
-							</option>
+							<option key={dep} value={dep}>{dep}</option>
 						))}
 					</select>
 					<select
 						name="Position"
 						value={form.Position}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					>
 						<option value="">Select Position</option>
 						{positions.map((pos) => (
-							<option key={pos} value={pos}>
-								{pos}
-							</option>
+							<option key={pos} value={pos}>{pos}</option>
 						))}
 					</select>
 				</div>
@@ -186,18 +179,18 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 							placeholder="Password"
 							value={form.password}
 							onChange={handleChange}
-							className="w-full p-2 rounded bg-gray-100 pr-10 border"
+							className="w-full p-2 rounded bg-transparent pr-10 border border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 						/>
 						{showPassword ? (
 							<EyeOff
 								size={18}
-								className="absolute right-2 top-2.5 text-gray-500 cursor-pointer"
+								className="absolute right-2 top-2.5 text-copy-secondary cursor-pointer"
 								onClick={() => setShowPassword(false)}
 							/>
 						) : (
 							<Eye
 								size={18}
-								className="absolute right-2 top-2.5 text-gray-500 cursor-pointer"
+								className="absolute right-2 top-2.5 text-copy-secondary cursor-pointer"
 								onClick={() => setShowPassword(true)}
 							/>
 						)}
@@ -208,12 +201,12 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 						placeholder="Confirm Password"
 						value={form.confirmPassword}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 				</div>
 
 				{/* Contacts */}
-				<h3 className="font-medium text-gray-700 text-sm border-b border-gray-200 mb-2 pb-1">
+				<h3 className="font-medium text-sm border-b border-[rgba(var(--border),1)] mb-2 pb-1">
 					Contacts
 				</h3>
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
@@ -223,19 +216,19 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 						placeholder="Email"
 						value={form.email}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 					<input
 						name="phone"
 						placeholder="Phone (starts with 05)"
 						value={form.phone}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 				</div>
 
 				{/* Address */}
-				<h3 className="font-medium text-gray-700 text-sm border-b border-gray-200 mb-2 pb-1">
+				<h3 className="font-medium text-sm border-b border-[rgba(var(--border),1)] mb-2 pb-1">
 					Address
 				</h3>
 				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
@@ -244,14 +237,14 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 						placeholder="City"
 						value={form.City}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 					<input
 						name="Address"
 						placeholder="Address"
 						value={form.Address}
 						onChange={handleChange}
-						className="bg-gray-100 w-full p-2 border rounded"
+						className="bg-transparent w-full p-2 border rounded border-[rgba(var(--border),1)] text-[rgba(var(--copy-primary),1)]"
 					/>
 				</div>
 
@@ -263,9 +256,9 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 					Register
 				</Buttonn>
 
-				<p className="text-xs text-center text-gray-600 mt-3">
+				<p className="text-xs text-center mt-3">
 					Already have an account?{" "}
-					<button onClick={onSwitchToLogin} className="text-blue-600 underline">
+					<button onClick={onSwitchToLogin} className="text-[rgba(var(--cta),1)] underline">
 						Log in
 					</button>
 				</p>
