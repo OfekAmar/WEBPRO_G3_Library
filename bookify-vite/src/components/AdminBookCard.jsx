@@ -6,7 +6,7 @@ const AdminBookCard = ({ book, onSave }) => {
 
   return (
     <div
-      className="bg-[rgba(var(--bookcard),1)] border rounded shadow p-4 relative transition hover:bg-gray-50 cursor-pointer"
+      className="bg-[rgba(var(--bookcard),1)] border rounded shadow p-4 relative transition hover:bg-[rgba(var(--card),1)] cursor-pointer"
       onClick={() => window.location.href = `/book/${book.book_id}`}
     >
       <div>
