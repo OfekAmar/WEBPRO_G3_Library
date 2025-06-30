@@ -7,7 +7,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Button from "../components/Button";
 import FeaturedAuthors from "../components/FeaturedAuthors";
 import RecommendationChatBot from "../components/RecommendationChatBot";
-import Footer from "../components/Footer";
 import Buttonn from "../components/Buttonn";
 
 function HomePage({ user, onSelectBook, isModalOpen }) {

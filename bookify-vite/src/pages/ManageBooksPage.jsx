@@ -31,10 +31,12 @@ function ManageBooksPage() {
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-copy-primary">
-      <h2 className="text-2xl font-bold mb-4">📚 Manage Books</h2>
-      <SearchBar value={query} onSearch={setQuery} />
-      <div className="grid gap-4">
+    <div className="pt-14 p-6 max-w-3xl mx-auto text-copy-primary">
+      <div className="flex justify-between items-baseline mb-4">
+        <h2 className="text-2xl font-bold">Manage Books</h2>
+        <SearchBar value={query} onSearch={setQuery} />
+      </div>
+      <div className="grid gap-3">
         {filtered.map((book, i) => (
           <AdminBookCard
             key={i}

@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import UserSearchBar from '../components/UserSearchBar';
 import AdminUserCard from '../components/AdminUserCard';
 import RegisterCard from '../components/RegisterCard';
-import Button from '../components/Button';
+import Buttonn from '../components/Button';
 
 function ManageUsersPage() {
   const [users, setUsers] = useState([]);
@@ -20,9 +20,9 @@ function ManageUsersPage() {
     load();
   }, [showRegister]); // re-fetch when register is closed
   const handleDeleteUser = async (user) => {
-  await remove(ref(db, `users/${user.userIndex || user.user_id}`));
-  setUsers(prev => prev.filter(u => u.user_id !== user.user_id));
-    };
+    await remove(ref(db, `users/${user.userIndex || user.user_id}`));
+    setUsers(prev => prev.filter(u => u.user_id !== user.user_id));
+  };
 
   const filtered = users.filter((u) =>
     u.first_name?.toLowerCase().includes(query.toLowerCase()) ||
@@ -32,17 +32,16 @@ function ManageUsersPage() {
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-copy-primary">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">👥 Manage Users</h2>
-        <Button label="Add User" onClick={() => setShowRegister(true)} variant="teal" />
+    <div className="pt-16 p-6 max-w-4xl mx-auto text-copy-primary">
+      <div className="flex flex-wrap justify-between items-baseline gap-4 mb-4">
+        <h2 className="text-2xl font-bold">Manage Users</h2>
+        <UserSearchBar value={query} onSearch={setQuery} className="w-72" />
+        <Buttonn label="Add User" onClick={() => setShowRegister(true)} variant="default" />
       </div>
-
-      <UserSearchBar value={query} onSearch={setQuery} />
 
       <div className="grid gap-4">
         {filtered.map((user, i) => (
-         <AdminUserCard key={i} user={user} onDelete={handleDeleteUser} />
+          <AdminUserCard key={i} user={user} onDelete={handleDeleteUser} />
         ))}
       </div>
 
@@ -53,6 +52,7 @@ function ManageUsersPage() {
         />
       )}
     </div>
+
   );
 }
 

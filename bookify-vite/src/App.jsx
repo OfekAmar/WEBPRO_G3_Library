@@ -8,7 +8,6 @@ import MyBooksPage from './pages/MyBooksPage';
 import MyWishlistPage from './pages/MyWishlistPage';
 import NotificationsPage from './pages/NotificationsPage';
 import UserProfilePage from './pages/UserProfilePage';
-import MyNotifyListPage from './pages/MyNotifyListPage';
 import SearchPage from './pages/SearchPage';
 import LoginCard from './components/LoginCard';
 import RegisterCard from './components/RegisterCard';
@@ -94,7 +93,6 @@ function App() {
           <Route path="/wishlist" element={<MyWishlistPage user={user} />} />
           <Route path="/notifications" element={<NotificationsPage user={user} />} />
           <Route path="/profile" element={<UserProfilePage user={user} />} />
-          <Route path="/notifylist" element={<MyNotifyListPage user={user} />} />
           <Route path="/search" element={<SearchPage user={user} onSelectBook={setSelectedBook} />} />
           <Route path="/manage-books" element={<ManageBooksPage />} />
           <Route path="/manage-users" element={<ManageUsersPage />} />

@@ -63,7 +63,7 @@ function NotificationsPage({ user }) {
 
   return (
     <>
-      <div className="p-6 max-w-4xl mx-auto text-copy-primary">
+      <div className="pt-16 p-6 max-w-4xl mx-auto text-copy-primary">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold flex items-center gap-2">
             Notifications

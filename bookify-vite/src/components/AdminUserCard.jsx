@@ -1,19 +1,18 @@
-import Button from './Button';
+import Buttonn from './Button';
 
 const AdminUserCard = ({ user, onDelete }) => {
   return (
-    <div className="bg-white border rounded shadow p-4 relative transition hover:bg-gray-50 cursor-default">
-      <p className="font-semibold text-gray-800 mb-1">
+    <div className="bg-[rgba(var(--bookcard),1)] border rounded shadow p-4 relative transition hover:bg-[rgba(var(--card),1)] cursor-default">
+      <p className="font-semibold text-[rgba(var(--copy-primary),1)] mb-1">
         {user.first_name} {user.last_name}
       </p>
-      <p className="text-sm text-gray-500">ID: {user.user_id}</p>
+      <p className="text-sm text-[rgba(var(--copy-primary),1)]">ID: {user.user_id}</p>
       <p className="text-sm text-gray-500">Dept: {user.Department}</p>
       <p className="text-sm text-gray-500">Position: {user.Position}</p>
 
-      <Button
+      <Buttonn
         label="Delete"
-        variant="danger"
-        size="sm"
+        variant="trash"
         onClick={() => {
           if (window.confirm(`Are you sure you want to delete ${user.first_name} ${user.last_name}?`)) {
             onDelete?.(user);

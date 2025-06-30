@@ -3,7 +3,6 @@ import { db } from '../firebase';
 import { ref, get } from 'firebase/database';
 import BookCard from '../components/BookCard';
 import { useSearchParams } from 'react-router-dom';
-import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 
 const SearchPage = ({ user, onSelectBook }) => {

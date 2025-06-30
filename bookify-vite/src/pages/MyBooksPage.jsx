@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import BookCard from '../components/BookCard';
 import { checkDueNotifications } from '../utils/notifications';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import BorrowedBookCard from '../components/BorrowedBookCard';
 import SuccessfulMessage from '../components/SuccessfulMessage';
@@ -87,7 +86,10 @@ function MyBooksPage({ user }) {
         b.status === 'borrowed'
     );
 
-    if (!entry) return;
+    if (!entry) {
+      console.log("No active borrow entry found for this book.");
+      return;
+    }
 
     const [borrowId, borrow] = entry;
 
@@ -110,7 +112,6 @@ function MyBooksPage({ user }) {
     const isLate = today > dueDate;
     const lateDays = Math.ceil((today - dueDate) / (1000 * 60 * 60 * 24));
 
-
     if (isLate) {
       setMessage(`Returned "${bookData.name}".\nYou are ${lateDays} day(s) late.`);
       setIsLateMessage(true);
@@ -120,38 +121,37 @@ function MyBooksPage({ user }) {
     }
     setPendingReturnBook({ ...book, status: 'returned' });
 
-
-
-
     const usersSnap = await get(ref(db, 'users'));
-    const allUsers = usersSnap.val() || [];
+    const usersObj = usersSnap.val() || {};
+    const allUsers = Object.values(usersObj);
 
     const notifSnap = await get(ref(db, 'managment/noti_index'));
     let notiId = notifSnap.val() + 1;
     const now = new Date().toISOString();
 
-    for (let i = 1; i < allUsers.length; i++) {
+    for (let i = 0; i < allUsers.length; i++) {
       const u = allUsers[i];
       if (!u || !u.notify_list) continue;
 
-      if (u.notify_list.includes(book.book_id)) {
+      if (u.notify_list.includes(Number(book.book_id))) {
+        console.log("==> User", u.user_id, "HAS this book in notify_list! Sending notification...");
+
         await set(ref(db, `notifications/${notiId}`), {
           noti_id: notiId,
           user_index: i,
           user_id: u.user_id,
           type: "System",
           content: `Good news! '${bookData.name}' from your notify list is now available.`,
-          time: now
+          time: now,
+          read: false,
         });
+
         notiId++;
       }
     }
 
     await update(ref(db, 'managment'), { noti_index: notiId - 1 });
-
-    // update UI
-    //setBorrowedBooks(prev => prev.filter(b => b.book_id !== book.book_id));
-    //setReturnedBooks(prev => [...prev, { ...book, status: 'returned' }]);
+    console.log("Notifications finished, new noti_index:", notiId - 1);
   };
 
   const scrollCarousel = (ref, direction = 'left') => {
@@ -176,14 +176,18 @@ function MyBooksPage({ user }) {
 
         <div
           ref={refName}
-          className="overflow-x-auto flex gap-4 pb-4 scroll-smooth px-6"
+          className="overflow-x-auto flex gap-10 pb-4 scroll-smooth px-6"
           style={{ scrollbarWidth: 'none' }}
         >
           {booksArray.map((book, i) => (
             showReturn ? (
-              <BorrowedBookCard key={i} book={book} onReturn={returnBook} />
+              <div key={i} className="flex-shrink-0 w-37">
+                <BorrowedBookCard book={book} onReturn={returnBook} />
+              </div>
             ) : (
-              <BookCard key={i} book={book} onClick={() => navigate(`/book/${book.book_id}`)} />
+              <div key={i} className="flex-shrink-0 w-37">
+                <BookCard book={book} onClick={() => navigate(`/book/${book.book_id}`)} />
+              </div>
             )
           ))}
         </div>

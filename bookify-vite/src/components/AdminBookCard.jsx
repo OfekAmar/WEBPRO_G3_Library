@@ -6,18 +6,18 @@ const AdminBookCard = ({ book, onSave }) => {
 
   return (
     <div
-      className="bg-white border rounded shadow p-4 relative transition hover:bg-gray-50 cursor-pointer"
+      className="bg-[rgba(var(--bookcard),1)] border rounded shadow p-4 relative transition hover:bg-gray-50 cursor-pointer"
       onClick={() => window.location.href = `/book/${book.book_id}`}
     >
       <div>
-        <p className="font-semibold text-gray-800">{book.name}</p>
-        <p className="text-sm text-gray-500">{book.author}</p>
+        <p className="font-semibold text-[rgba(var(--copy-primary),1)]">{book.name}</p>
+        <p className="text-sm text-[rgba(var(--copy-primary),1)]">{book.author}</p>
         <p className="text-sm text-gray-500 mt-1">Available Copies: {book.available_copies}</p>
       </div>
 
       <button
         onClick={(e) => {
-          e.stopPropagation(); // prevent navigation
+          e.stopPropagation(); 
           setShowEdit(true);
         }}
         className="absolute top-2 right-2 text-xs px-3 py-1 bg-teal-600 text-white rounded hover:bg-teal-700"
