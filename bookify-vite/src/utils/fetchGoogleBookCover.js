@@ -1,7 +1,7 @@
 const fetchGoogleBookCover = async (titleOrIsbn) => {
   const query = encodeURIComponent(titleOrIsbn);
 
-  // Try Open Library first
+ // Try to fetch book cover image from Open Library first, then fallback to Google Books API if needed
   try {
     const olUrl = `https://openlibrary.org/search.json?title=${query}`;
     const olRes = await fetch(olUrl);
@@ -36,7 +36,7 @@ const fetchGoogleBookCover = async (titleOrIsbn) => {
   return null;
 };
 
-
+// Resolve book cover by title or name, fallback to default cover if not found
 export const resolveBookCover = async (book) => {
   const fallback = await fetchGoogleBookCover(book.name || book.title);
   return fallback || '/default-cover.jpg';

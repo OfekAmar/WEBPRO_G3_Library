@@ -13,7 +13,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
   const menuRef = useRef(null);
   const location = useLocation();
 
-
+  // Handle search form submission and navigate to search page
   const handleSearch = (e) => {
     e.preventDefault();
     const query = new URLSearchParams();
@@ -30,6 +30,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
     setTheme(savedTheme);
   }, []);
 
+  // Toggle between light and dark theme and save preference
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     document.body.classList.remove("light", "dark");
@@ -38,6 +39,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
     setTheme(nextTheme);
   };
 
+  // Close dropdown menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -48,6 +50,7 @@ const Header = ({ user, onLogout, onLoginClick }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Clear search input when route changes
   useEffect(() => {
     setSearch('');
   }, [location.pathname]);

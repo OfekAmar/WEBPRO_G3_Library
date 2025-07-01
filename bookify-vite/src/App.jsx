@@ -24,11 +24,13 @@ function App() {
 
 
 
+  // Load logged-in user from sessionStorage on app start
   useEffect(() => {
     const saved = sessionStorage.getItem("loggedInUser");
     if (saved) setUser(JSON.parse(saved));
   }, []);
 
+  // Load theme from localStorage and set body class
   useEffect(() => {
     const saved = localStorage.getItem("theme") || "light";
     document.body.classList.remove("light", "dark");
@@ -37,6 +39,7 @@ function App() {
   }, []);
 
 
+  // Logout user: clear sessionStorage and reset user state
   const handleLogout = () => {
     sessionStorage.removeItem("loggedInUser");
     setUser(null);
@@ -82,7 +85,7 @@ function App() {
           />
         )}
         <Routes>
-
+          {/* Define application routes and wrap with main layout*/}
           <Route
             path="/"
             element={<HomePage user={user} onSelectBook={setSelectedBook} isModalOpen={isModalOpen} />}

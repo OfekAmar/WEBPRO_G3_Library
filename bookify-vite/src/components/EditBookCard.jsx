@@ -10,6 +10,7 @@ const EditBookCard = ({ book, onClose, onSave }) => {
 
   const maxRemovable = book.available_copies;
 
+  // Save updated book location and copies to Firebase
   const handleSave = async () => {
   const currentAvailable = book.available_copies ?? 0;
   const currentTotal = book.copies ?? 0;
@@ -40,6 +41,7 @@ const EditBookCard = ({ book, onClose, onSave }) => {
   }, 1000);
 };
 
+// Handle change in copies amount, validate against current available copies
   const handleEditAmountChange = (e) => {
     const val = parseInt(e.target.value, 10);
     if (isNaN(val)) return setEditAmount(0);
@@ -47,6 +49,7 @@ const EditBookCard = ({ book, onClose, onSave }) => {
     setEditAmount(val);
   };
 
+  // Calculate new total available copies for display
   const updatedTotal = book.available_copies + editAmount;
 
   return (

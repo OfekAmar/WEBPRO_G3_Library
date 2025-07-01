@@ -9,9 +9,12 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [msg, setMsg] = useState("");
+	// Toggle password visibility
 	const [showPassword, setShowPassword] = useState(false);
+	// Enable login button only when both fields are filled
 	const isFormValid = username.trim() && password.trim();
 
+	// Close login popup when clicking outside
 	useEffect(() => {
 		const handleClickOutside = (e) => {
 			if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -22,6 +25,7 @@ function LoginCard({ onClose, onLoginSuccess, onSwitchToRegister }) {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, [onClose]);
 
+	// Authenticate user by email and password, save to session, and handle login success
 	const handleLogin = async () => {
 		const usersRef = ref(db, "users");
 		const snapshot = await get(usersRef);

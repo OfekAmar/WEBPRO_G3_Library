@@ -9,6 +9,7 @@ function ManageBooksPage() {
   const [query, setQuery] = useState('');
 
   useEffect(() => {
+    // Load books data from Firebase and update state
     const load = async () => {
       const snap = await get(ref(db, 'books'));
       const list = Object.values(snap.val() || {});
@@ -17,6 +18,7 @@ function ManageBooksPage() {
     load();
   }, []);
 
+  // Update a single book in the books state after saving changes
   const handleBookUpdate = (updatedBook) => {
     setBooks(prev =>
       prev.map(b =>
@@ -25,6 +27,7 @@ function ManageBooksPage() {
     );
   };
 
+  // Filter books based on search query (by name or author)
   const filtered = books.filter(b =>
     b.name?.toLowerCase().includes(query.toLowerCase()) ||
     b.author?.toLowerCase().includes(query.toLowerCase())

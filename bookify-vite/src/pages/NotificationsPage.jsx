@@ -11,6 +11,7 @@ function NotificationsPage({ user }) {
 
   useEffect(() => {
     if (!user) return;
+    // Fetch user's notifications from Firebase and sort by time
     const fetchNotifications = async () => {
       const snap = await get(ref(db, 'notifications'));
       const allNoti = snap.val() || {};
@@ -30,10 +31,12 @@ function NotificationsPage({ user }) {
     setNotifications(filtered);
   }, [showAll, allNotifications]);
 
+  // Toggle between showing all notifications and only unread ones
   const toggleView = () => {
     setShowAll(prev => !prev);
   };
 
+  // Mark a single notification as read
   const markAsRead = async (key) => {
     await update(ref(db, `notifications/${key}`), { read: true });
     setAllNotifications(prev =>
@@ -41,6 +44,7 @@ function NotificationsPage({ user }) {
     );
   };
 
+  // Mark all notifications as read
   const markAllAsRead = async () => {
     const updates = {};
     allNotifications.forEach(n => {

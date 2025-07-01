@@ -31,6 +31,7 @@ function MyBooksPage({ user }) {
     checkDueNotifications(user);
   }, [user]);
 
+  // Fetch user's borrowed and returned books from Firebase
   const fetchBorrows = async (parsedUser) => {
     const borrowsSnapshot = await get(ref(db, 'borrows'));
     const borrows = borrowsSnapshot.val() || [];
@@ -73,6 +74,7 @@ function MyBooksPage({ user }) {
     setReturnedBooks(history);
   };
 
+  // Handle returning a borrowed book: update status, adjust availability, send notifications
   const returnBook = async (book) => {
     if (!user || !book) return;
 
@@ -154,13 +156,14 @@ function MyBooksPage({ user }) {
     console.log("Notifications finished, new noti_index:", notiId - 1);
   };
 
+  // Scroll carousel left or right by a fixed offset
   const scrollCarousel = (ref, direction = 'left') => {
     if (ref.current) {
       const scrollAmount = direction === 'left' ? -300 : 300;
       ref.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
-
+  // Render a horizontal carousel of books (borrowed or returned)
   const renderCarousel = (title, booksArray, refName, showReturn = false) => (
     <div className="relative mb-12">
       <h3 className="text-2xl font-bold mb-4 text-center">{title}</h3>

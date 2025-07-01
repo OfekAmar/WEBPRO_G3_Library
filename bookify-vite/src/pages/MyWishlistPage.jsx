@@ -18,7 +18,7 @@ function MyWishlistPage({ user }) {
 
 	useEffect(() => {
 		if (!user) return;
-
+		// Fetch user's wishlist books and load cover images
 		const fetchWishlist = async () => {
 			const userSnap = await get(ref(db, `users/${user.userIndex}/wishlist`));
 			const wishlist = userSnap.val() || [];
@@ -43,6 +43,7 @@ function MyWishlistPage({ user }) {
 		fetchWishlist();
 	}, [user]);
 
+	// Remove book from user's wishlist and update local state
 	const handleRemove = async (bookId) => {
 		const userRef = ref(db, `users/${user.userIndex}/wishlist`);
 		const snap = await get(userRef);
@@ -58,6 +59,7 @@ function MyWishlistPage({ user }) {
 		);
 	};
 
+	// Navigate to individual book page
 	const handleNavigateToBook = (book) => {
 		navigate(`/book/${book.book_id}`);
 	};
@@ -70,6 +72,7 @@ function MyWishlistPage({ user }) {
 		);
 	}
 
+	// Page amount calculation logic for wishlist books
 	const indexOfLast = currentPage * booksPerPage;
 	const indexOfFirst = indexOfLast - booksPerPage;
 	const currentBooks = wishlistBooks.slice(indexOfFirst, indexOfLast);

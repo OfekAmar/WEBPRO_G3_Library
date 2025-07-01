@@ -15,6 +15,7 @@ const SearchPage = ({ user, onSelectBook }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch all books from Firebase and set up search parameters
     const fetchBooks = async () => {
       const query = searchParams.get("q")?.toLowerCase() || "";
       const mode = searchParams.get("by") || "free";
@@ -36,6 +37,7 @@ const SearchPage = ({ user, onSelectBook }) => {
   }, [searchParams]);
 
   useEffect(() => {
+    // Filter books based on search query and mode (title, author, free)
     const filtered = books.filter((book) => {
       const s = search.toLowerCase();
       if (!s) return true;

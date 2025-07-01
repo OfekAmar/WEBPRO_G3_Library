@@ -23,6 +23,7 @@ const UserProfile = ({ user }) => {
 
   useEffect(() => {
     if (!user || !user.userIndex) return;
+    // Fetch user data from Firebase and set initial form states
     const fetchData = async () => {
       const snap = await get(ref(db, "users/" + user.userIndex));
       const data = snap.val();
@@ -35,12 +36,14 @@ const UserProfile = ({ user }) => {
     fetchData();
   }, [user]);
 
+  // Check if form data has changed compared to original data
   useEffect(() => {
     if (!formData || !originalData) return;
     const isChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
     setIsDirty(isChanged);
   }, [formData, originalData]);
 
+  // Validate password change form: check old password, match new passwords
   useEffect(() => {
     const { oldPassword, newPassword, confirmNewPassword } = passwordForm;
     const isComplete = oldPassword && newPassword && confirmNewPassword;
@@ -73,6 +76,7 @@ const UserProfile = ({ user }) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Save updated user profile data to Firebase
   const handleSave = async () => {
     if (!user || !formData) return;
     await update(ref(db, "users/" + user.userIndex), formData);
@@ -82,11 +86,13 @@ const UserProfile = ({ user }) => {
     setTimeout(() => setSaveMessage(""), 3000);
   };
 
+  // Cancel edits and revert form data to original
   const handleCancel = () => {
     setFormData(originalData);
     setIsDirty(false);
   };
 
+  // Save new password to Firebase and reset password form
   const handlePasswordChange = (field, value) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
   };

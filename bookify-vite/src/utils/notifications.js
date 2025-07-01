@@ -25,7 +25,7 @@ export const checkDueNotifications = async (user) => {
         user_id: user.user_id,
         user_index: user.userIndex,
         type: "Reminder",
-        content: `⏰ Reminder: Today is the return day for book ID ${borrow.book_id}.`,
+        content: ` Reminder: Today is the return day for book ID ${borrow.book_id}.`,
         time: new Date().toISOString()
       });
 

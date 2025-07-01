@@ -9,11 +9,13 @@ const FeaturedAuthors = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Fetch authors from Firebase, shuffle list, and select featured authors
     const fetchAuthors = async () => {
       const snapshot = await get(ref(db, 'authors'));
       const data = snapshot.val();
       if (!data) return;
 
+      // Use author's image if available; otherwise generate a default avatar using UI Avatars service
       const authorList = Object.entries(data).map(([_, author]) => ({
         name: author.name,
         books: author.books || 0,

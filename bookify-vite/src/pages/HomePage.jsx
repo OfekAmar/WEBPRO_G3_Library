@@ -18,6 +18,7 @@ function HomePage({ user, onSelectBook, isModalOpen }) {
 	const newRef = useRef();
 
 	useEffect(() => {
+		// Fetch books data from Firebase, set trending books, new books, and genres
 		const fetchBooks = async () => {
 			const snapshot = await get(ref(db, "books"));
 			const data = snapshot.val();
@@ -46,6 +47,7 @@ function HomePage({ user, onSelectBook, isModalOpen }) {
 
 		fetchBooks();
 
+		// Update theme state based on body class changes (dark or light)
 		const updateTheme = () => {
 			const isDark = document.body.classList.contains("dark");
 			setTheme(isDark ? "dark" : "light");
@@ -61,6 +63,7 @@ function HomePage({ user, onSelectBook, isModalOpen }) {
 		return () => observer.disconnect();
 	}, []);
 
+	// Scroll carousel container left or right by a fixed offset
 	const scrollCarousel = (ref, direction = "left") => {
 		if (ref.current) {
 			const scrollAmount = direction === "left" ? -300 : 300;
@@ -68,6 +71,7 @@ function HomePage({ user, onSelectBook, isModalOpen }) {
 		}
 	};
 
+	// Render a horizontal scrollable carousel of books with navigation buttons
 	const renderCarousel = (title, booksArray, refName) => (
 		<div className="relative mb-12">
 			<h3 className="text-3xl font-bold text-copy-primary mb-2 text-center">
@@ -108,6 +112,7 @@ function HomePage({ user, onSelectBook, isModalOpen }) {
 		</div>
 	);
 
+	// Genre carousel component to display and select genres
 	const GenreCarousel = ({ genres, onSelect }) => {
 		const scrollRef = useRef();
 

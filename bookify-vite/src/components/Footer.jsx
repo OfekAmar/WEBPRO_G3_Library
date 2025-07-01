@@ -5,6 +5,7 @@ const Footer = () => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
+  // Load Google Map with appropriate theme and add marker
   const loadMap = () => {
     if (!window.google || !mapRef.current) return;
 
@@ -22,6 +23,7 @@ const Footer = () => {
     });
   };
 
+  // Initialize Google Map script and observe theme changes to update map style
   useEffect(() => {
     const init = () => {
       if (!window.google) {
@@ -73,6 +75,7 @@ const Footer = () => {
   );
 };
 
+// Contact item component for displaying icon, label, and value
 const ContactItem = ({ icon, label, value }) => (
   <div className="flex flex-col items-center md:items-start">
     <div className="mb-2">{icon}</div>

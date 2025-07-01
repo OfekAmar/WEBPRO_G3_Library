@@ -1,4 +1,3 @@
-import { useState } from 'react';
 
 const Rating = ({ average = 0, reviewCount = 0, onOpenReviews }) => {
   return (

@@ -12,6 +12,7 @@ function ManageUsersPage() {
   const [showRegister, setShowRegister] = useState(false);
 
   useEffect(() => {
+    // Load users data from Firebase and update state
     const load = async () => {
       const snap = await get(ref(db, 'users'));
       const list = Object.values(snap.val() || {});
@@ -19,11 +20,14 @@ function ManageUsersPage() {
     };
     load();
   }, [showRegister]); // re-fetch when register is closed
+
+  // Delete user from Firebase and update local state
   const handleDeleteUser = async (user) => {
     await remove(ref(db, `users/${user.userIndex || user.user_id}`));
     setUsers(prev => prev.filter(u => u.user_id !== user.user_id));
   };
 
+  // Filter users based on search query (first name, last name, department, or ID)
   const filtered = users.filter((u) =>
     u.first_name?.toLowerCase().includes(query.toLowerCase()) ||
     u.last_name?.toLowerCase().includes(query.toLowerCase()) ||

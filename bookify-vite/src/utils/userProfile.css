@@ -60,7 +60,6 @@
   cursor: not-allowed;
   border: 1px solid #ccc !important;
   opacity: 1;
-  /* הסר את שקיפות אם ברצונך לשמור על גובה אחיד */
 }
 
 .cancel-button:disabled {

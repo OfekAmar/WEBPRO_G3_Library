@@ -35,6 +35,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 
 	const positions = ["Student", "Lecturer"];
 
+	// Enable register button only when all fields are filled
 	const isFormValid = Object.values(form).every((value) => value.trim());
 
 	useEffect(() => {
@@ -47,6 +48,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, [onClose]);
 
+	// Handle input field changes and validate phone format
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		if (name === "phone") {
@@ -57,6 +59,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
+	// Register new user: validate passwords, check email uniqueness, save to Firebase
 	const handleRegister = async () => {
 		setMsg("");
 		setSuccessMsg("");
@@ -90,6 +93,7 @@ function RegisterCard({ onClose, onSwitchToLogin }) {
 		setSuccessMsg("Registration successful! You can now log in.");
 	};
 
+	// Automatically close registration popup after success message timeout
 	useEffect(() => {
 		if (successMsg) {
 			const timer = setTimeout(() => {

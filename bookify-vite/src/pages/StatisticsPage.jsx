@@ -13,6 +13,7 @@ const StatisticsPage = () => {
   const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
+    // Fetch books and borrows data from Firebase
     const fetchData = async () => {
       const booksSnap = await get(ref(db, 'books'));
       const borrowsSnap = await get(ref(db, 'borrows'));

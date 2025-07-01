@@ -13,14 +13,13 @@ function RecommendationChatBot({ hidden }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [step, setStep] = useState(0);
 	const [genre, setGenre] = useState("");
-	//const [author, setAuthor] = useState("");
 	const [book, setBook] = useState(null);
-	//const [availableAuthors, setAvailableAuthors] = useState([]);
 	const [cover, setCover] = useState(null);
 	const [lengthCategory, setLengthCategory] = useState("");
 	const [availableLengths, setAvailableLengths] = useState([]);
 	const navigate = useNavigate();
 
+	// Reset chatbot state to initial step and clear selections
 	const resetBot = () => {
 		setStep(0);
 		setGenre("");
@@ -30,17 +29,20 @@ function RecommendationChatBot({ hidden }) {
 		setCover(null);
 	};
 
+	// Handle genre selection and move to length selection step
 	const handleGenreSelect = (g) => {
 		setGenre(g);
 		setAvailableLengths(["Short", "Medium", "Long"]);
 		setStep(1);
 	};
 
+	// Handle length category selection and proceed to book recommendation step
 	const handleLengthSelect = (length) => {
 		setLengthCategory(length);
 		setStep(2);
 	};
 
+	// Fetch books from Firebase, filter by genre and length, and select a random book
 	useEffect(() => {
 		if (step === 2) {
 			get(ref(db, "books")).then(async (snapshot) => {

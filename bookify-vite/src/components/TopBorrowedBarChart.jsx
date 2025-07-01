@@ -1,9 +1,12 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 const TopBorrowedBarChart = ({ borrows, books, startDate, endDate }) => {
+  // Check if borrow date is within the selected date range
   const isInRange = (date) => !startDate || !endDate || (new Date(date) >= new Date(startDate) && new Date(date) <= new Date(endDate));
+  // Count borrows per book within date range
   const counts = {};
   borrows.forEach(b => isInRange(b.b_date) && (counts[b.book_id] = (counts[b.book_id] || 0) + 1));
+  // Prepare top 6 most borrowed books data for chart display
   const data = Object.entries(counts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 6)
