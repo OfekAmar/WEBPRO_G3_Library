@@ -1,12 +1,69 @@
-# React + Vite
+# Bookify - Smart Library Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bookify is a modern, web-based smart library system designed to help users explore, borrow, and manage books easily. The system provides a user-friendly interface with advanced features for both regular users and admins.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+-  **Home Page**: Trending and newly added books with carousels.
+-  **Search**: Search books by title, author, or free text with dynamic filters.
+-  **Book Detail Page**: View detailed book information, borrow, wishlist, rate, and comment.
+-  **User Profile**: Manage personal information, change password, and update details.
+-  **My Books**: View and manage borrowed and returned books history.
+-  **Wishlist**: Save books for later and manage wishlist.
+-  **Notifications**: Receive notifications when a book becomes available.
+-  **Recommendation ChatBot**: Get book suggestions based on genre and reading length.
+-  **Statistics (Admin)**: View most borrowed books and borrowing trends.
+-  **Manage Books (Admin)**: Update book availability and location.
+-  **Manage Users (Admin)**: Manage user accounts and details.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Project Structure
+
+```
+src/
+├── components/           # Reusable UI components (BookCard, Header, Footer, etc.)
+├── pages/                # Main application pages
+├── utils/                # Utility functions (e.g., fetchGoogleBookCover)
+├── Layout/               # Main layout wrapper
+├── App.jsx               # Main application file
+├── firebase.js          # Firebase configuration
+```
+
+---
+
+## Technologies
+
+- React.js
+- Firebase Realtime Database
+- Tailwind CSS / Custom SCSS
+- Google Maps API
+- Open Library & Google Books API (for book covers)
+- Recharts (for statistics visualization)
+- Lucide & React Icons
+
+---
+
+##  Usage
+
+- Click on the vercel link at the top of the page 
+- Sign up as a new user or log in.
+- Search for books, view details, borrow, or add to wishlist.
+- Manage your borrowed books and view notifications.
+- Admin users can access user and book management panels and view library statistics.
+
+---
+
+##  Additional Notes
+
+- **Theme Support**: Light and dark modes are supported, and user preference is saved locally.
+- **Responsive Design**: Works on desktop and mobile devices.
+- **Recommendation Bot**: Provides suggestions based on genre and book length for an enhanced experience.
+
+---
+
+##  License
+
+This project is for educational purposes and internal use only.
