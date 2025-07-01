@@ -1,4 +1,4 @@
-# 📚 Bookify - Smart Library Management System
+# Bookify - Smart Library Management System
 
 Bookify is a modern, web-based smart library system designed to help users explore, borrow, and manage books easily. The system provides a user-friendly interface with advanced features for both regular users and admins.
 
@@ -20,7 +20,7 @@ Bookify is a modern, web-based smart library system designed to help users explo
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 src/
@@ -34,7 +34,7 @@ src/
 
 ---
 
-## ⚙️ Technologies
+## Technologies
 
 - React.js
 - Firebase Realtime Database
@@ -46,37 +46,9 @@ src/
 
 ---
 
-## 💻 Installation & Setup
-
-1️⃣ **Clone the repository**
-
-```bash
-git clone <your-repository-url>
-cd WEBPRO_G3_Library-main2
-```
-
-2️⃣ **Install dependencies**
-
-```bash
-npm install
-```
-
-3️⃣ **Set up Firebase**
-
-- Configure your `firebase.js` file with your Firebase project's credentials.
-
-4️⃣ **Start the development server**
-
-```bash
-npm run dev
-```
-
-The app will usually run on [http://localhost:5173](http://localhost:5173) (depending on your Vite config).
-
----
-
 ## ✅ Usage
 
+- Click on the vercel link at the top of the page 
 - Sign up as a new user or log in.
 - Search for books, view details, borrow, or add to wishlist.
 - Manage your borrowed books and view notifications.
@@ -89,19 +61,6 @@ The app will usually run on [http://localhost:5173](http://localhost:5173) (depe
 - **Theme Support**: Light and dark modes are supported, and user preference is saved locally.
 - **Responsive Design**: Works on desktop and mobile devices.
 - **Recommendation Bot**: Provides suggestions based on genre and book length for an enhanced experience.
-
----
-
-## 🤝 Contributors
-
-- [Your Name]
-- [Team Members]
-
----
-
-## 📬 Contact
-
-For questions or feedback, please contact: **Library@e.braude.ac.il**
 
 ---
 
