@@ -57,6 +57,30 @@ src/
 
 ---
 
+## Installation & Setup
+**Clone the repository**
+
+```bash
+git clone <https://github.com/OfekAmar/WEBPRO_G3_Library.git>
+cd WEBPRO_G3_Library-main2
+```
+**Install dependencies**
+
+```bash
+npm install
+npm install react lucide-react react-router-dom react-icons recharts
+```
+**Start the development server**
+
+```bash
+npm run dev
+```
+
+The app will usually run on [http://localhost:5173](http://localhost:5173) (depending on your Vite config).
+
+
+---
+
 ##  Additional Notes
 
 - **Theme Support**: Light and dark modes are supported, and user preference is saved locally.
